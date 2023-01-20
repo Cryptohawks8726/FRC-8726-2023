@@ -26,19 +26,25 @@ public class PhotonVision extends SubsystemBase{
     // Change this to match the name of your camera
     PhotonCamera camera = new PhotonCamera("photonvision");
 
-    public PhotonVision(){
+    public PhotonVision(){}
+    
+    public void periodic(){
+        var result = camera.getLatestResult();
 
-        if (xboxController.getAButton()) {
-            // Query the latest result from PhotonVision
-            PhotonPipelineResult result = camera.getLatestResult();
-
-            if (result.hasTargets()){
-                double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS,
-                    TARGET_HEIGHT_METERS,
-                    CAMERA_PITCH_RADIANS, 
-                    Units.degreesToRadians(result.getBestTarget().getPitch()));
-                System.out.println(range);
-            }
+        if (result.hasTargets()){
+            double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS,
+                TARGET_HEIGHT_METERS,
+                CAMERA_PITCH_RADIANS, 
+                Units.degreesToRadians(result.getBestTarget().getPitch()));
+            System.out.println(range);
         }
+        else  {
+            System.out.println("no target found");
+        }
+    }
+
+    @Override
+    public void simulationPeriodic() {
+      // This method will be called once per scheduler run during simulation
     }
 }
