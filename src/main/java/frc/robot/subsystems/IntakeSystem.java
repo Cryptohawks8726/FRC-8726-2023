@@ -27,6 +27,7 @@ public class IntakeSystem extends SubsystemBase {
     armEncoder = extendIntakeMotor.getEncoder();
     extendIntakeMotor = new CANSparkMax(RobotMap.EXTEND_INTAKE_SPARKMAX, MotorType.kBrushless);
     intakePieceMotor = new CANSparkMax(RobotMap.INTAKE_BALL_SPARKMAX, MotorType.kBrushless);
+    intakePieceMotor.setSmartCurrentLimit(20, 20);
     intakeCollapseLimitSwitch = new DigitalInput(RobotMap.INTAKE_COLLAPSE_LIMIT_SWITCH);
     intakeExtendLimitSwitch = new DigitalInput(RobotMap.INTAKE_EXTEND_LIMIT_SWITCH);  
 
@@ -34,13 +35,15 @@ public class IntakeSystem extends SubsystemBase {
     intakePieceMotor.setIdleMode(IdleMode.kBrake);
 
 
-    intakePieceMotor.setSmartCurrentLimit(20, 20);
+
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     extendIntakeMotor.set(pid.calculate(armEncoder.getVelocity()));
+    Constants.intakeCurr1.setDouble(intakePieceMotor.getOutputCurrent()); // gets the velocity instead of current supply (cant find the function)
+    Constants.intakeCurr2.setDouble(extendIntakeMotor.getOutputCurrent());
   }
 
   public RelativeEncoder getArmEncoder() {
