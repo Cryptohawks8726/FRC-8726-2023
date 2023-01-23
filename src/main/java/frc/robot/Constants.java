@@ -18,7 +18,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  */
 public final class Constants {
     //PID Constants
-    public static final double INTAKE_kP = 0.2;
+    public static final double INTAKE_kP = 0.05;
     public static final double INTAKE_kI = 0.0;
     public static final double INTAKE_kD = 0.0;
 
