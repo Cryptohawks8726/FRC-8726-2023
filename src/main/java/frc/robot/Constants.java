@@ -12,21 +12,31 @@ public final class Constants {
     public static final int DRIVER_XBOX = 0;
     public static final int OPERATOR_XBOX = 1;
 
-    public static final double ARM_kP = 0.005;
+    public static final double ARM_kP = 0.01;
     public static final double ARM_kI = 0;
     public static final double ARM_kD = 0;
 
-    public static final int ARM_MOTOR_SPARKMAX = 51;
+    public static final double HAND_kP = 0.01;
+    public static final double HAND_kI = 0;
+    public static final double HAND_kD = 0;
 
-    public static final double RAISE_ARM_SPEED = 0.5;
-    public static final double LOWER_ARM_SPEED = -0.5;
+    public static final int ARM_MOTOR_SPARKMAX = 12;
+    public static final int HAND_MOTOR_SPARKMAX = 13;
 
-    private static NetworkTableInstance instance;
-    private static NetworkTable table;
-    public static NetworkTableEntry armCurr;
-    public static void setUpNT(){
-        instance = NetworkTableInstance.getDefault();
-        table = instance.getTable("debugValues");
-        armCurr = table.getEntry("armCurr");
-      }
+    public static final double RAISE_ARM_SPEED = 0.3;
+    public static final double LOWER_ARM_SPEED = -0.3;
+
+    public static final double RAISE_HAND_SPEED = 0.3;
+    public static final double LOWER_HAND_SPEED = -0.3;
+
+    // private static NetworkTableInstance instance;
+    // private static NetworkTable table;
+    // public static NetworkTableEntry armCurr;
+    // public static NetworkTableEntry handCurr;
+    // public static void setUpNT(){
+    //   instance = NetworkTableInstance.getDefault();
+    //   table = instance.getTable("debugValues");
+    //   armCurr = table.getEntry("armCurr");
+    //   handCurr = table.getEntry("handCurr");
+    // }
 }

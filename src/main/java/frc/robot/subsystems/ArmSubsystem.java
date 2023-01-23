@@ -23,7 +23,7 @@ public class ArmSubsystem extends SubsystemBase {
     pid = armMotor.getPIDController(); //The three parameters are the proportional term (position error to 0), the derivative term (velocity error to 0), and the integral term (total accumulated error over time to 0)
 
     armMotor.setIdleMode(IdleMode.kBrake);
-    armMotor.setSmartCurrentLimit(20,20);
+    // armMotor.setSmartCurrentLimit(20,20);
 
     pid.setP(Constants.ARM_kP);
     pid.setD(Constants.ARM_kD);
@@ -33,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    Constants.armCurr.setDouble(armMotor.getOutputCurrent()); // gets the velocity instead of current supply (cant find the function)
+    // Constants.armCurr.setDouble(armMotor.getOutputCurrent()); // gets the velocity instead of current supply (cant find the function)
   }
 
   public RelativeEncoder getArmEncoder() {
@@ -43,4 +43,5 @@ public class ArmSubsystem extends SubsystemBase {
   public void setArmPower(double speed){
     pid.setReference(speed, CANSparkMax.ControlType.kVelocity);
   }
+
 }

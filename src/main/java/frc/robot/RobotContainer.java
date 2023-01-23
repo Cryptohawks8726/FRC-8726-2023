@@ -6,31 +6,37 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.HandCommand;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.HandSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer {
   private XboxController driverController, operatorController;
+  
+  private ArmSubsystem armSubsytem;
+  private HandSubsystem handSubsytem;
 
-  private final ArmSubsystem armSubsytem;
-  private final ArmCommand armCommand;
+  private ArmCommand armCommand;
+  private HandCommand handCommand;  
 
   public RobotContainer() {
     driverController = new XboxController(Constants.DRIVER_XBOX);
     operatorController = new XboxController(Constants.OPERATOR_XBOX);
 
     armSubsytem = new ArmSubsystem();
+    // handSubsytem = new HandSubsystem();
+
     armCommand = new ArmCommand(armSubsytem, driverController);
+    // handCommand = new HandCommand(handSubsytem, driverController);
 
     configureButtonBindings();
 
     armSubsytem.setDefaultCommand(armCommand);
+    // handSubsytem.setDefaultCommand(handCommand);
   }
 
-  private void configureButtonBindings() {
-    // LB - Raise Arm
-    // RB - Lower Arm
-  }
+  private void configureButtonBindings() {}
 
   public Command getAutonomousCommand() {
     return armCommand;

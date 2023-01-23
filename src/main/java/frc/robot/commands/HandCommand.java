@@ -4,16 +4,16 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.HandSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 
-public class ArmCommand extends CommandBase {
-  private ArmSubsystem m_subsystem;
+public class HandCommand extends CommandBase {
+  private HandSubsystem m_subsystem;
   private XboxController xbox;
 
-  public ArmCommand(ArmSubsystem subsystem, XboxController xbox) {
+  public HandCommand(HandSubsystem subsystem, XboxController xbox) {
     m_subsystem = subsystem;
     this.xbox = xbox;
     addRequirements(subsystem);
@@ -25,17 +25,17 @@ public class ArmCommand extends CommandBase {
   @Override
   public void execute() {
     if(xbox.getRawButton(XboxController.Button.kLeftBumper.value)) {
-      m_subsystem.setArmPower(Constants.RAISE_ARM_SPEED);
+      m_subsystem.setHandPower(Constants.RAISE_ARM_SPEED);
     } else if (xbox.getRawButton(XboxController.Button.kRightBumper.value)) {
-      m_subsystem.setArmPower(Constants.LOWER_ARM_SPEED);
+      m_subsystem.setHandPower(Constants.LOWER_ARM_SPEED);
     } else {
-      m_subsystem.setArmPower(0.0);
+      m_subsystem.setHandPower(0.0);
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setArmPower(0.0);
+    m_subsystem.setHandPower(0.0);
   }
 
   @Override
