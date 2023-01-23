@@ -19,15 +19,15 @@ public class HandSubsystem extends SubsystemBase {
 
   public HandSubsystem() {
     handMotor = new CANSparkMax(Constants.HAND_MOTOR_SPARKMAX, MotorType.kBrushless);
-    handEncoder = handMotor.getEncoder();
-    pid = handMotor.getPIDController(); //The three parameters are the proportional term (position error to 0), the derivative term (velocity error to 0), and the integral term (total accumulated error over time to 0)
+    // handEncoder = handMotor.getEncoder();
+    // pid = handMotor.getPIDController(); //The three parameters are the proportional term (position error to 0), the derivative term (velocity error to 0), and the integral term (total accumulated error over time to 0)
 
     handMotor.setIdleMode(IdleMode.kBrake);
     // handMotor.setSmartCurrentLimit(20,20);
 
-    pid.setP(Constants.HAND_kP);
-    pid.setD(Constants.HAND_kI);
-    pid.setI(Constants.HAND_kD);
+    // pid.setP(Constants.HAND_kP);
+    // pid.setD(Constants.HAND_kI);
+    // pid.setI(Constants.HAND_kD);
   }
 
   @Override
@@ -41,7 +41,8 @@ public class HandSubsystem extends SubsystemBase {
   }
 
   public void setHandPower(double speed){
-    pid.setReference(speed, CANSparkMax.ControlType.kVelocity);
+    // pid.setReference(speed, CANSparkMax.ControlType.kVelocity);
+    handMotor.set(speed);
   }
 
 }
