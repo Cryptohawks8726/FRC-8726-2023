@@ -14,6 +14,16 @@ package frc.robot;
  */
 public final class Constants {
 
-    private static final LEFT_BACK_MOTOR_SPARKMAX;
+    
+    //Motors
+    public static final int LEFT_BACK_MOTOR_SPARKMAX = 1;
+    public static final int RIGHT_BACK_MOTOR_SPARKMAX = 1;
+    public static final int LEFT_FRONT_MOTOR_SPARKMAX = 1;
+    public static final int RIGHT_FRONT_MOTOR_SPARKMAX = 1;
+
+    //Balance PID Constants
+    public static final double BalanceKp= 0.001;
+    public static final double BalanceKi= 0.00;
+    public static final double BalanceKd= 0.00;
 
 }
