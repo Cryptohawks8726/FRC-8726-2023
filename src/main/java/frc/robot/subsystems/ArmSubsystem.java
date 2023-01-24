@@ -19,15 +19,15 @@ public class ArmSubsystem extends SubsystemBase {
 
   public ArmSubsystem() {
     armMotor = new CANSparkMax(Constants.ARM_MOTOR_SPARKMAX, MotorType.kBrushless);
-    armEncoder = armMotor.getEncoder();
-    pid = armMotor.getPIDController(); //The three parameters are the proportional term (position error to 0), the derivative term (velocity error to 0), and the integral term (total accumulated error over time to 0)
+    // armEncoder = armMotor.getEncoder();
+    // pid = armMotor.getPIDController(); //The three parameters are the proportional term (position error to 0), the derivative term (velocity error to 0), and the integral term (total accumulated error over time to 0)
 
     armMotor.setIdleMode(IdleMode.kBrake);
     // armMotor.setSmartCurrentLimit(20,20);
 
-    pid.setP(Constants.ARM_kP);
-    pid.setD(Constants.ARM_kD);
-    pid.setI(Constants.ARM_kI);
+    // pid.setP(Constants.ARM_kP);
+    // pid.setD(Constants.ARM_kD);
+    // pid.setI(Constants.ARM_kI);
   }
 
   @Override
@@ -41,7 +41,8 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArmPower(double speed){
-    pid.setReference(speed, CANSparkMax.ControlType.kVelocity);
+    // pid.setReference(speed, CANSparkMax.ControlType.kVelocity);
+    armMotor.set(speed);
   }
 
 }

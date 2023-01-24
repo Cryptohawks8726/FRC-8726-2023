@@ -13,9 +13,9 @@ public class ArmCommand extends CommandBase {
   private ArmSubsystem m_subsystem;
   private XboxController xbox;
 
-  public ArmCommand(ArmSubsystem subsystem, XboxController xbox) {
+  public ArmCommand(ArmSubsystem subsystem, XboxController xboxC) {
     m_subsystem = subsystem;
-    this.xbox = xbox;
+    xbox = xboxC;
     addRequirements(subsystem);
   }
 
@@ -28,7 +28,7 @@ public class ArmCommand extends CommandBase {
       m_subsystem.setArmPower(Constants.RAISE_ARM_SPEED);
     } else if (xbox.getRawButton(XboxController.Button.kRightBumper.value)) {
       m_subsystem.setArmPower(Constants.LOWER_ARM_SPEED);
-    } else {
+    } else{
       m_subsystem.setArmPower(0.0);
     }
   }

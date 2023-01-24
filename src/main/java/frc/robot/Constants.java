@@ -23,8 +23,8 @@ public final class Constants {
     public static final int ARM_MOTOR_SPARKMAX = 12;
     public static final int HAND_MOTOR_SPARKMAX = 13;
 
-    public static final double RAISE_ARM_SPEED = 0.3;
-    public static final double LOWER_ARM_SPEED = -0.3;
+    public static final double RAISE_ARM_SPEED = 0.2;
+    public static final double LOWER_ARM_SPEED = -0.2;
 
     public static final double RAISE_HAND_SPEED = 0.3;
     public static final double LOWER_HAND_SPEED = -0.3;
