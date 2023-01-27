@@ -24,7 +24,7 @@ public class RobotContainer {
   private final PhotonVision m_photonVision = new PhotonVision();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  private final PhotonVisionCommand apDistance = new PhotonVisionCommand();
+  private final PhotonVisionCommand m_photonVisonCommand = new PhotonVisionCommand();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

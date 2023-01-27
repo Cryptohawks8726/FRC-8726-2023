@@ -12,11 +12,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class PhotonVision extends SubsystemBase{
 
     // Constants such as camera and target height stored. Change per robot and goal!
-    final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(24);
-    final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
+    // Actual values will be dependent on final bot
+    final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(6.58);
+    final double TARGET_HEIGHT_METERS = Units.feetToMeters(3);
 
     // Angle between horizontal and the camera.
-    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
+    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(181.451);
 
     // How far from the target we want to be
     final double GOAL_RANGE_METERS = Units.feetToMeters(3);
@@ -24,27 +25,37 @@ public class PhotonVision extends SubsystemBase{
     XboxController xboxController;
 
     // Change this to match the name of your camera
-    PhotonCamera camera = new PhotonCamera("photonvision");
+    PhotonCamera camera = new PhotonCamera("OV5647");
 
-    public PhotonVision(){}
+    public PhotonVision(){
+    }
     
-    public void periodic(){
-        var result = camera.getLatestResult();
+    public void periodic(){ 
+        
+        xboxController = new XboxController(0);
 
-        if (result.hasTargets()){
-            double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS,
-                TARGET_HEIGHT_METERS,
-                CAMERA_PITCH_RADIANS, 
-                Units.degreesToRadians(result.getBestTarget().getPitch()));
-            System.out.println(range);
+        if (xboxController.getAButton()) {
+            var result = camera.getLatestResult();
+
+            if (result.hasTargets()){
+                double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS,
+                    TARGET_HEIGHT_METERS,
+                    CAMERA_PITCH_RADIANS, 
+                    Units.degreesToRadians(result.getBestTarget().getPitch()));
+                System.out.println(range);
+            }
+            else  {
+                System.out.println("no target found");
+            }
         }
-        else  {
-            System.out.println("no target found");
+        else{
+            System.out.println("Press A");
         }
     }
 
-    @Override
+    @Override 
     public void simulationPeriodic() {
       // This method will be called once per scheduler run during simulation
     }
+
 }
