@@ -1,4 +1,5 @@
 package frc.robot;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
@@ -6,10 +7,16 @@ public class LED {
     private AddressableLED m_led; // will contain the AddressableLED object
     private AddressableLEDBuffer m_ledBuffer; // will contain the AddressableLEDBuffer object
 
+    public LED() {
+        
+    }
+
     public void ledinit(int PWMport, int bufferLength) {
         // Takes the PWM port as the parameter
-        m_led = new AddressableLED(PWMport); // default 9
-        m_ledBuffer = new AddressableLEDBuffer(bufferLength); // default 60
+        m_led = new AddressableLED(8); // default 9
+        m_ledBuffer = new AddressableLEDBuffer(60); // default 60
+        
+        m_led.setLength(m_ledBuffer.getLength());
 
         // Set the data
         m_led.setData(m_ledBuffer);
@@ -17,7 +24,6 @@ public class LED {
         // Default to a length of 60, start empty output
         // Length is expensive to set, so only set it once, then just update data
 
-        m_led.setLength(m_ledBuffer.getLength());
     }
 
     public void ledStart() {
