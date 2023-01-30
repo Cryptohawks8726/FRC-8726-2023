@@ -8,38 +8,66 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.Balance;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.SimpleAuto;
-import frc.robot.commands.ComplexAuto;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import io.github.oblarg.oblog.Logger;
+import io.github.oblarg.oblog.annotations.Log;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.commands.XboxTeleopDrive;
+import frc.robot.subsystems.SwerveDrive;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * This class is where the bulk of the robot should be declared. Since Com
+ * mand-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final SwerveDrive drivetrain;
+
+  // private final CommandXboxController driverController;
+  
+  private final Joystick driverController;
+  
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final Balance m_autoCommand;
 
-  Command simple_auto =  new SimpleAuto();
+  //Command simple_auto =  new SimpleAuto();
 
-  Command complex_auto = new ComplexAuto();
+  //Command complex_auto = new ComplexAuto();
 
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
+  
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    drivetrain = new SwerveDrive();
+    // driverController = new CommandXboxController(0);
+
+    m_autoCommand = new Balance(drivetrain);
+    
+    driverController = new Joystick(0);
+
     // Configure the button bindings
     configureButtonBindings();
 
-    m_chooser.setDefaultOption("Simple Auto", simple_auto);
-    m_chooser.addOption("Complex Auto", complex_auto);
+   // m_chooser.setDefaultOption("Simple Auto", simple_auto);
+   // m_chooser.addOption("Complex Auto", complex_auto);
 
     SmartDashboard.putData(m_chooser);
   }
@@ -50,7 +78,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    //drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverController).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // Trigger driverRightBumper = driverController.rightBumper();
+    // driverRightBumper.whileTrue(drivetrain.passiveBrake());
+    // Trigger driverRightTrigger = driverController.rightTrigger();
+    // driverRightTrigger.whileTrue(new RepeatCommand(new InstantCommand(()->drivetrain.normalZeroModules(),drivetrain)));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -59,6 +93,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_chooser.getSelected();
+    return m_autoCommand;
+    //return m_chooser.getSelected();
   }
 }
