@@ -16,7 +16,7 @@ public final class Constants {
     public static final double ARM_kI = 0;
     public static final double ARM_kD = 0;
 
-    public static final double HAND_kP = 0.01;
+    public static final double HAND_kP = 0.0005;
     public static final double HAND_kI = 0;
     public static final double HAND_kD = 0;
 
@@ -29,6 +29,11 @@ public final class Constants {
     public static final double RAISE_HAND_SPEED = 0.3;
     public static final double LOWER_HAND_SPEED = -0.3;
 
+    //DIO Input for the Arm Encoder
+    public static final int ENCODER_GREEN = 0;
+    public static final int ENCODER_YELLOW = 1;
+    public static final int ENCODER_BLUE = 2;
+  
     // private static NetworkTableInstance instance;
     // private static NetworkTable table;
     // public static NetworkTableEntry armCurr;
