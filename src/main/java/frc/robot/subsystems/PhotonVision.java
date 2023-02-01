@@ -25,13 +25,13 @@ public class PhotonVision extends SubsystemBase{
     XboxController xboxController;
 
     // Change this to match the name of your camera
-    PhotonCamera camera = new PhotonCamera("OV5647");
+    PhotonCamera camera = new PhotonCamera("Spinel1");
 
     public PhotonVision(){
     }
     
     public void periodic(){ 
-        
+
         xboxController = new XboxController(0);
 
         if (xboxController.getAButton()) {
@@ -42,6 +42,7 @@ public class PhotonVision extends SubsystemBase{
                     TARGET_HEIGHT_METERS,
                     CAMERA_PITCH_RADIANS, 
                     Units.degreesToRadians(result.getBestTarget().getPitch()));
+                    
                 System.out.println(range);
             }
             else  {
