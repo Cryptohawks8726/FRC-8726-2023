@@ -25,12 +25,11 @@ public final class Constants {
     private static NetworkTableInstance instance;
     private static NetworkTable table;
     // (unused) private static NetworkTableEntry intakeSpeed, outtakeSpeed,intakePeak,intakeCont,armPeak,armCont;
-    public static NetworkTableEntry intakeCurr1,intakeCurr2;
+    public static NetworkTableEntry extendSolenoidPressure;
     public static void setUpNT(){
       instance = NetworkTableInstance.getDefault();
       table = instance.getTable("debugValues");
-      intakeCurr1 = table.getEntry("intakeCurr1");
-      intakeCurr2 = table.getEntry("intakeCurr2");
+      extendSolenoidPressure = table.getEntry("extendSolenoidPressure");
 
     }
 }
