@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Balance;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import io.github.oblarg.oblog.Logger;
@@ -22,6 +20,7 @@ import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -39,11 +38,12 @@ public class RobotContainer {
 
   // private final CommandXboxController driverController;
   
-  private final Joystick driverController;
+  private final CommandJoystick driverController;
   
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Balance balance;
 
-  private final Balance m_autoCommand;
+  private Trigger balanceButton;
+  private final Command autoCommand;
 
   //Command simple_auto =  new SimpleAuto();
 
@@ -59,9 +59,10 @@ public class RobotContainer {
     drivetrain = new SwerveDrive();
     // driverController = new CommandXboxController(0);
 
-    m_autoCommand = new Balance(drivetrain);
+    balance = new Balance(drivetrain);
+    autoCommand = new Balance(drivetrain);
     
-    driverController = new Joystick(0);
+    driverController = new CommandJoystick(0);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -84,6 +85,11 @@ public class RobotContainer {
     // driverRightBumper.whileTrue(drivetrain.passiveBrake());
     // Trigger driverRightTrigger = driverController.rightTrigger();
     // driverRightTrigger.whileTrue(new RepeatCommand(new InstantCommand(()->drivetrain.normalZeroModules(),drivetrain)));
+    // balanceButton = driverController.getRawButton(8);
+    // balanceButton.onTrue(balance.balancer());
+    balanceButton = driverController.button(12);//new JoystickButton(driverController, 12);
+    balanceButton.whileTrue(new RepeatCommand(balance));
+
   }
 
   /**
@@ -93,7 +99,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return autoCommand;
     //return m_chooser.getSelected();
   }
 }
