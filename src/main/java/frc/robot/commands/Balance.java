@@ -17,6 +17,7 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class Balance extends CommandBase {
 
+    double angTolerance = 2;
     public PIDController balance;
     public AHRS gyro;
     private SwerveDrive drivetrain;
@@ -36,15 +37,14 @@ public class Balance extends CommandBase {
         double ang = gyro.getPitch();
         SmartDashboard.putNumber("robotAngle", ang);
         SmartDashboard.putNumber("balanceControlEffort", balance.calculate(ang));
-        SwerveModuleState modState = new SwerveModuleState(balance.calculate(ang),Rotation2d.fromDegrees(0));
-        drivetrain.setModuleStates(new SwerveModuleState[]{modState,modState,modState,modState});
-        drivetrain.passiveBrake();
+        if (ang >= -angTolerance && ang <= angTolerance) {
+            SwerveModuleState modState = new SwerveModuleState(0,Rotation2d.fromDegrees(0));
+            drivetrain.setModuleStates(new SwerveModuleState[]{modState,modState,modState,modState});
+            drivetrain.passiveBrake();
+        } else {
+            SwerveModuleState modState = new SwerveModuleState(balance.calculate(ang),Rotation2d.fromDegrees(0));
+            drivetrain.setModuleStates(new SwerveModuleState[]{modState,modState,modState,modState});
+        }
         //drivetrain.drive(new ChassisSpeeds(-balance.calculate(ang), 0, 0),true);
-
-        
-
-
-
     }
-    
 }
