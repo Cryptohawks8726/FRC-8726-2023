@@ -224,7 +224,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     public void logValues(){ 
         Pose2d estimatedPostition = odometry.getEstimatedPosition();
 
-        SmartDashboard.putNumber("xpos", estimatedPostition.getTranslation().getX());
+        /*SmartDashboard.putNumber("xpos", estimatedPostition.getTranslation().getX());
         SmartDashboard.putNumber("ypos", estimatedPostition.getTranslation().getY());
         SmartDashboard.putNumber("estimatedthetaPos",estimatedPostition.getRotation().getDegrees());
         SmartDashboard.putNumber("gyroAngle", gyro.getAngle());//getRotation2d().getDegrees()%360
@@ -242,6 +242,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             SmartDashboard.putNumber(modName + "actdeg", module.getCurrentState().angle.getDegrees());
             SmartDashboard.putNumber(modName + "absdeg", module.getAbsPos());
         }
+        */
 
     }
 
