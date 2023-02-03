@@ -6,19 +6,15 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArmCommand;
-import frc.robot.commands.HandCommand;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.HandSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer {
   private XboxController driverController, operatorController;
   
   private ArmSubsystem armSubsytem;
-  private HandSubsystem handSubsytem;
 
   private ArmCommand armCommand;
-  private HandCommand handCommand;  
 
   public RobotContainer() {
     driverController = new XboxController(Constants.DRIVER_XBOX);

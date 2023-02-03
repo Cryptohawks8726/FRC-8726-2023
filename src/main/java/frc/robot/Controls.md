@@ -2,6 +2,5 @@
 | :---: | :---: |
 | LB | Raise Arm |
 | RB | Lower Arm |
+| x | Test Pre-Set |
 
-
-(48/22)*48

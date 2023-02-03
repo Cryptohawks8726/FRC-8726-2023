@@ -5,73 +5,84 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-import com.revrobotics.CANSparkMax.IdleMode;
 import frc.robot.Constants;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Encoder;
+
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
+
+
 
 public class ArmSubsystem extends SubsystemBase {
+  private DutyCycleEncoder encoder;
+  private double encoderVal;
+  private Timer timer;
+  private boolean flag;
+  private PIDController posPID;
+  private SparkMaxPIDController velPID;
   private CANSparkMax armMotor;
-  private PIDController armPID;
-  private SparkMaxAbsoluteEncoder armEncoder;
-  
 
   public ArmSubsystem() {
+    timer = new Timer();
+    timer.stop();
+    timer.reset();
+    timer.start();
 
-    
+    encoder = new DutyCycleEncoder(3);
+
+    flag = true;
+
     armMotor = new CANSparkMax(Constants.ARM_MOTOR_SPARKMAX, MotorType.kBrushless);
-    armPID = new PIDController(Constants.ARM_kP, Constants.ARM_kI, Constants.ARM_kD);
-    armEncoder=armMotor.getAbsoluteEncoder(Type.kDutyCycle);
-    
-    armMotor.setIdleMode(IdleMode.kBrake);
-    
+    armMotor.setIdleMode(IdleMode.kCoast);
 
-    
-    //pid = armMotor.getPIDController(); //The three parameters are the proportional term (position error to 0), the derivative term (velocity error to 0), and the integral term (total accumulated error over time to 0)
-    // armMotor.setSmartCurrentLimit(20,20);
-
-    armMotor.setIdleMode(IdleMode.kBrake);
-
-    
-  
-    
-    
+    posPID = new PIDController(Constants.ARM_kP, Constants.ARM_kI, Constants.ARM_kD);
+    velPID = armMotor.getPIDController();
+    velPID.setP(1);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    // Constants.armCurr.setDouble(armMotor.getOutputCurrent()); // gets the velocity instead of current supply (cant find the function)
+    if(timer.get() > 3) {
+      if(flag) {
+        flag = false;
+        encoder.reset();
+        encoder.setPositionOffset(encoder.getAbsolutePosition());
+      }
+      encoderVal = encoder.getAbsolutePosition() - encoder.getPositionOffset();
+    }
   }
 
-  public SparkMaxAbsoluteEncoder getArmEncoder() {
-    return armEncoder;
+  public void setRefPoint(double pos) {
+    posPID.setSetpoint(pos);
   }
 
-  public PIDController getPID(){
-    return armPID;
+  public double getEncoderPos() {
+    return encoderVal;
   }
 
-  public void setRef(double ref){
-    armPID.setSetpoint(ref);
+  public void raiseArm() {
+    // velPID.setReference(10, ControlType.kVelocity);
+    // System.out.println("raising");
+    armMotor.set(Constants.RAISE_ARM_SPEED);
   }
 
-  public void setArmPower(double speed){
-    armPID.setReference(speed, armEncoder.kPosition);
-    armMotor.set(speed);
-    armPID.
+  public void lowerArm() {
+    // velPID.setReference(-10, ControlType.kVelocity);
+    // System.out.println("lowering");
+    armMotor.set(Constants.LOWER_ARM_SPEED);
   }
 
-  public double getAngle(double pos){
-    double ang= pos*360;
-    return ang;
+  public void kill() {
+    armMotor.set(0.0);
   }
 
+  public void stay() {
+    armMotor.set(-posPID.calculate(encoderVal));
+  }
 }
