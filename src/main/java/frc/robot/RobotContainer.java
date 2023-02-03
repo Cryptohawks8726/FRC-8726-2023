@@ -5,8 +5,8 @@
 package frc.robot;
 
 
+import frc.robot.commands.NodeChooserCommand;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import io.github.oblarg.oblog.Logger;
@@ -32,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive drivetrain;
-  private final Dashboard d1;
+  private final NodeChooserCommand d1;
 
   // private final CommandXboxController driverController;
   
@@ -47,7 +47,7 @@ public class RobotContainer {
     
     drivetrain = new SwerveDrive();
     // driverController = new CommandXboxController(0);
-    d1 = new Dashboard();
+    d1 = new NodeChooserCommand();
     
     
     driverController = new Joystick(0);
