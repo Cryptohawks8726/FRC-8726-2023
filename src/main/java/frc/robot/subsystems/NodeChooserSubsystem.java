@@ -4,13 +4,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.XboxController;
 import java.lang.Math;
 
-//Remove Xbox Controller before Merging
+//**Remove Xbox Controller before merging branches**
 
 public class NodeChooserSubsystem extends SubsystemBase {
 
     XboxController remote1;
     boolean[][] nodes;
-    //boolean selected;
     int j;
     int i;
     int delay;
@@ -26,16 +25,16 @@ public class NodeChooserSubsystem extends SubsystemBase {
         previousI = i;
         previousJ = j;
         delay = 0;
-        //selected = nodes[i][j];
       
-        for (int n = 0; n < 3; n++){
+        /*for (int n = 0; n < 3; n++){
             for (int p = 0; p < 3; p++){
                 nodes[n][p] = false;
             }
-        }
+        }*/
     }
 
     public void pushNode(){
+    
        SmartDashboard.putBoolean("Node1", nodes[0][0]);
        SmartDashboard.putBoolean("Node2", nodes[0][1]);
        SmartDashboard.putBoolean("Node3", nodes[0][2]);
@@ -47,7 +46,6 @@ public class NodeChooserSubsystem extends SubsystemBase {
        SmartDashboard.putBoolean("Node9", nodes[2][2]);
     }
 
-    
     public void selection(){
 
         if (delay > 0){
@@ -57,6 +55,7 @@ public class NodeChooserSubsystem extends SubsystemBase {
         int pov = remote1.getPOV();
         System.out.println(pov);
 
+        //Enables up, down, left, right directions on the d-pad
         if((pov == 0 || pov == 90 || pov == 180 || pov == 270) && delay == 0){
 
             nodes[i][j] = false;
@@ -76,10 +75,12 @@ public class NodeChooserSubsystem extends SubsystemBase {
                     break;
                 default:
             }
-        
+            
+            //Keeps selection within bounds of 3x3
             i = Math.max(0, Math.min(2, i));
             j = Math.max(0, Math.min(2, j));
             
+            //Can change node selection once in every 15 scheduler runs (900 ms)
             if (i != previousI || j != previousJ){
                 previousI = i;
                 previousJ = j;
@@ -92,13 +93,13 @@ public class NodeChooserSubsystem extends SubsystemBase {
 
     @Override
     public void periodic(){
-        
         selection(); 
         pushNode();
 
     }
 
-    public int[] returnPoint(){
+    //Returns current selected node 
+    public int[] returnNode(){
     
      for(int i = 0; i < 3; i++){
 
