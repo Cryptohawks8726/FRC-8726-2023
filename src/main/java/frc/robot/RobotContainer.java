@@ -3,11 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-
 import frc.robot.commands.NodeChooserCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.NodeChooserSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import io.github.oblarg.oblog.Logger;
 import io.github.oblarg.oblog.annotations.Log;
@@ -32,7 +31,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive drivetrain;
-  private final NodeChooserCommand d1;
+  //private final NodeChooserCommand d1;
+  private final NodeChooserSubsystem d2;
 
   // private final CommandXboxController driverController;
   
@@ -44,20 +44,16 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    
     drivetrain = new SwerveDrive();
     // driverController = new CommandXboxController(0);
-    d1 = new NodeChooserCommand();
+    //d1 = new NodeChooserCommand();
+    d2 = new NodeChooserSubsystem();
     
     
     driverController = new Joystick(0);
 
     // Configure the button bindings
     configureButtonBindings();
-
-
-
-    
 
   }
 
