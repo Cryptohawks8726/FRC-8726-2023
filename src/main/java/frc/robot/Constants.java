@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -55,6 +57,38 @@ public final class Constants {
         public static final double kHeadingI = 0.0;
         public static final double kHeadingD = 0.0;
         public static final double kHeadingFF = 0.0;
+
+         //system identification constants
+        public static final double ksVolts = 0;
+        public static final double kvVoltSecondsPerMeter = 0;
+        public static final double kaVoltSecondsSquaredPerMeter = 0;
+
+        public static final double kPDriveVel = 0;
+        public static final double kTrackwidthMeters = 0;
+
+        //"trackwidthmeters" =  public static final double driveBaseWidth = 0.762;
+        public static final double kMaxSpeedMetersPerSecond = 25.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 5;
+
+        //autoconstants
+        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+            new Translation2d(driveBaseWidth/2, -driveBaseLength/2), 
+            new Translation2d(driveBaseWidth/2, driveBaseLength/2),
+            new Translation2d(-driveBaseWidth/2, -driveBaseLength/2),
+            new Translation2d(-driveBaseWidth/2, driveBaseLength/2)
+        );
+        
+        public static final double kPXController = 1.5;
+        public static final double kPYController = 1.5;
+        public static final double kPThetaController = 3;
+
+        
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
+                new TrapezoidProfile.Constraints(
+                        (2*2*Math.PI)/10, //maximumangularspeed
+                        3 //maxangularaccelerationradiansperseconds);
+                );
+
         
         // Module Constants
         public enum ModulePosition{

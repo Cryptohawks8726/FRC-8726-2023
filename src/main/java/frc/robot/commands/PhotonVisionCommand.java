@@ -5,9 +5,9 @@ import frc.robot.subsystems.PhotonVision;
 
 public class PhotonVisionCommand extends CommandBase{
 
-    private PhotonVision m_photonVisionSubsystem;
+  private PhotonVision m_photonVisionSubsystem;
 
-	public void PhotonVisonCommand(PhotonVision subsystem) {
+	public PhotonVisionCommand(PhotonVision subsystem) {
         m_photonVisionSubsystem = subsystem;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(subsystem);

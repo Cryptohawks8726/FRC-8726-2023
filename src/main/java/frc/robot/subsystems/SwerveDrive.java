@@ -1,13 +1,15 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.Swerve.ModulePosition.BL;
+import static frc.robot.Constants.Swerve.ModulePosition.BR;
+import static frc.robot.Constants.Swerve.ModulePosition.FL;
+import static frc.robot.Constants.Swerve.ModulePosition.FR;
+
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.kauailabs.navx.frc.AHRS.SerialDataType;
-import edu.wpi.first.util.sendable.Sendable;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,9 +19,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,7 +30,6 @@ import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
-import static frc.robot.Constants.Swerve.ModulePosition.*;
 
 
 public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
@@ -206,6 +206,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         return Rotation2d.fromDegrees(gyro.getYaw());
     }
 
+
+
     public SwerveModulePosition[] getSwerveModulePositions(){
         
        /*  if (RobotBase.isSimulation()){
@@ -215,6 +217,17 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
        // }
         
         return modPositionStates;
+    }
+
+    
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(Rotation2d.fromDegrees(gyro.getYaw()), getSwerveModulePositions(), pose);
+    }
+
+     public void setModuleStates(SwerveModuleState[] updatedstates){
+        SwerveDriveKinematics.desaturateWheelSpeeds(updatedstates, Constants.Swerve.maxSpeed);
+        modules.forEach(mod -> {mod.closedLoopDrive(updatedstates[mod.getModPos().getVal()]);});
+
     }
 
     public void setEncoderOffsets(){

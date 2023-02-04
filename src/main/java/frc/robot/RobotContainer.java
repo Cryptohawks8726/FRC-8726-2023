@@ -5,23 +5,18 @@
 package frc.robot;
 
 
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.PhotonVisionCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.PhotonVision;
-import edu.wpi.first.wpilibj2.command.Command;
-import io.github.oblarg.oblog.Logger;
-import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.commands.XboxTeleopDrive;
-import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.PhotonVisionCommand;
+import frc.robot.commands.TargetFollowCommand;
+import frc.robot.commands.XboxTeleopDrive;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.PhotonVision;
+import frc.robot.subsystems.SwerveDrive;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Com
@@ -33,25 +28,24 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final PhotonVision m_photonVision = new PhotonVision();
-  private final SwerveDrive drivetrain;
+  private final SwerveDrive drivetrain = new SwerveDrive();
+  private final XboxController operatorController = new XboxController(0); 
 
   // private final CommandXboxController driverController;
   
-  private final Joystick driverController;
+  //private final Joystick driverController = new Joystick(0);
   
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  private final PhotonVisionCommand m_photonVisonCommand = new PhotonVisionCommand();
-
+  private final PhotonVisionCommand m_photonVisonCommand = new PhotonVisionCommand(m_photonVision);
+  private final TargetFollowCommand m_targetFollowCommand = new TargetFollowCommand(m_photonVision, operatorController, drivetrain);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     
-    drivetrain = new SwerveDrive();
     // driverController = new CommandXboxController(0);
     
-    driverController = new Joystick(0);
-
+    //driverController = new Joystick(0);
+    
     // Configure the button bindings
     configureButtonBindings();
 
@@ -68,7 +62,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverController).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    //drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverController).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // Trigger driverRightBumper = driverController.rightBumper();
     // driverRightBumper.whileTrue(drivetrain.passiveBrake());
     // Trigger driverRightTrigger = driverController.rightTrigger();
