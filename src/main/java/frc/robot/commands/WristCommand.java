@@ -4,15 +4,15 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.XboxController;
 
-public class ArmCommand extends CommandBase {
-  private ArmSubsystem subsystem;
+public class WristCommand extends CommandBase {
+  private WristSubsystem subsystem;
   private XboxController xbox;
 
-  public ArmCommand(ArmSubsystem m_subsystem, XboxController controller) {
+  public WristCommand(WristSubsystem m_subsystem, XboxController controller) {
     subsystem = m_subsystem;
     xbox = controller;
     addRequirements(subsystem);
@@ -25,17 +25,12 @@ public class ArmCommand extends CommandBase {
 
   @Override
   public void execute() {
-    if (xbox.getLeftBumperReleased() || xbox.getRightBumperReleased()) {
-      subsystem.setRefPoint(subsystem.getEncoderPos());
-      return;
-    } 
-
-    if (xbox.getLeftBumper()) {
-      subsystem.lowerArm();
-    } else if (xbox.getRightBumper()) {
+    if(xbox.getLeftBumper()) {
       subsystem.raiseArm();
+    } else if (xbox.getRightBumper()) {
+      subsystem.lowerArm();
     } else {
-      subsystem.stay();
+      subsystem.kill();
     }
   }
 
