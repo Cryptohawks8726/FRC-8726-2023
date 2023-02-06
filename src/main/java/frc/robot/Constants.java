@@ -12,6 +12,11 @@ public final class Constants {
     public static final double ARM_kI = 0;
     public static final double ARM_kD = 0;
 
+    //Change values after testing
+    public static final double CONEHELD_kP = 0;
+    public static final double CONEHELD_kI = 0;
+    public static final double CONEHELD_kD = 0;
+
     public static final int ARM_MOTOR_SPARKMAX = 12;
 
     public static final double RAISE_ARM_SPEED = 0.2;

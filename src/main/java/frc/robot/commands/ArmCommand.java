@@ -5,9 +5,11 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmCommand extends CommandBase {
   private ArmSubsystem subsystem;
@@ -26,6 +28,17 @@ public class ArmCommand extends CommandBase {
 
   @Override
   public void execute() {
+
+    boolean isConeHeld = false;
+    SmartDashboard.putBoolean("Cone Held", isConeHeld);
+
+    if(isConeHeld == true){
+      subsystem.coneHeld();
+    }
+    else{
+      subsystem.coneNotHeld();
+    }
+
     if (xbox.getLeftBumperReleased() || xbox.getRightBumperReleased()) {
       subsystem.setRefPoint(subsystem.getEncoderPos());
       return;

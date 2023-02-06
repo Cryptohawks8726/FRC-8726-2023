@@ -78,6 +78,18 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor.set(Constants.LOWER_ARM_SPEED);
   }
 
+  public void coneHeld() {
+    posPID.setP(Constants.ARM_kP);
+    posPID.setI(Constants.ARM_kI);
+    posPID.setD(Constants.ARM_kD);
+  }
+
+  public void coneNotHeld() {
+    posPID.setP(Constants.CONEHELD_kP);
+    posPID.setI(Constants.CONEHELD_kI);
+    posPID.setD(Constants.CONEHELD_kD);
+  }
+
   public void kill() {
     armMotor.set(0.0);
   }
