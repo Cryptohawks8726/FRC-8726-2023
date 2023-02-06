@@ -16,7 +16,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.Swerve.ModulePosition;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
 
 public class SwerveModule implements Loggable{
     private ModulePosition modPos;
@@ -38,7 +37,7 @@ public class SwerveModule implements Loggable{
         // config can coder
        // absEncoder.configFactoryDefault();
         canCoderOffset = modConstants.canCoderOffset;
-       absEncoder.configMagnetOffset(canCoderOffset);
+        absEncoder.configMagnetOffset(canCoderOffset);
         absEncoder.setPositionToAbsolute(0);
         
         
@@ -62,9 +61,6 @@ public class SwerveModule implements Loggable{
         //if(modPos == 1 || modPos == 3){
        //     driveMotor.setInverted(true);
        // }
-        if(modPos.equals(ModulePosition.BL)){
-            driveMotor.setInverted(true);
-        }
         
         driveMotor.enableVoltageCompensation(12.0);
         steerMotor.enableVoltageCompensation(12.0);
@@ -89,13 +85,7 @@ public class SwerveModule implements Loggable{
         driveController.setI(Constants.Swerve.kDriveI);
         driveController.setD(Constants.Swerve.kDriveD);
         driveController.setFF(Constants.Swerve.kDriveFF);
-        /* 
-        steerController.setP(Constants.Swerve.kSteerP);
-        steerController.setI(Constants.Swerve.kSteerI);
-        steerController.setD(Constants.Swerve.kSteerD);
-        steerController.setFF(Constants.Swerve.kSteerFF);
-        steerController.setPositionPIDWrappingMaxInput(180);
-        steerController.setPositionPIDWrappingMinInput(-180);*/
+
         if (modPos.equals(ModulePosition.FL)|| modPos.equals(ModulePosition.FR)){
             driveMotor.setInverted(true);
         }
@@ -144,9 +134,8 @@ public class SwerveModule implements Loggable{
         lastSetState = setPoint;
         driveController.setReference(setPoint.speedMetersPerSecond, ControlType.kVelocity); // IDK if velocity control will work well
         //System.out.println(setPoint.angle.getDegrees()%180);
-        //steerController.setReference(MathUtil.inputModulus(setPoint.angle.getDegrees(), 0, 360)%360, ControlType.kPosition);
         steerMotor.set(contSteerController.calculate(absEncoder.getAbsolutePosition(), MathUtil.inputModulus(setPoint.angle.getDegrees(), 0, 360)));
-        //ystem.out.println(setPoint.angle.getDegrees()%180);
+        //System.out.println(setPoint.angle.getDegrees()%180);
         
         return this;
     }

@@ -2,11 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.kauailabs.navx.frc.AHRS.SerialDataType;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,9 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -116,6 +111,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
        // System.out.println(gyro.getYaw());
         //System.out.println(gyro.getRotation2d().getDegrees());
     }
+
     /* 
     @Override
     public void simulationPeriodic(){
