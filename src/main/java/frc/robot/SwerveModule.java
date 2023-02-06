@@ -62,9 +62,6 @@ public class SwerveModule implements Loggable{
         //if(modPos == 1 || modPos == 3){
        //     driveMotor.setInverted(true);
        // }
-        if(modPos.equals(ModulePosition.BL)){
-            driveMotor.setInverted(true);
-        }
         
         driveMotor.enableVoltageCompensation(12.0);
         steerMotor.enableVoltageCompensation(12.0);

@@ -18,6 +18,8 @@ public class XboxTeleopDrive extends CommandBase{
     private Rotation2d lastHeading;
     private boolean isHeadingSet;
     private PIDController headingPID;
+    private boolean isRobotRelative=false;
+
 
     // TODO: Implement Optimization
     
@@ -42,42 +44,56 @@ public class XboxTeleopDrive extends CommandBase{
         */
         // boolean isRobotRelative = controller.leftBumper().getAsBoolean();
 
-        boolean isRobotRelative = controller.getTrigger();
-        isRobotRelative=true;
-    
+        if(controller.getTriggerPressed()){
+            isRobotRelative = !isRobotRelative;
+        }   
+
+        boolean theta_user_set = false;
+
+
+        
         // Get Controller Values
         // FIXME: xVel and yVel pull the wrong values? Flip them
         // double xVel = (Math.abs(controller.getLeftY()) > 0.1 ? controller.getLeftY() : 0.0); 
         // double yVel = (Math.abs(controller.getLeftX()) > 0.1 ? controller.getLeftX() : 0.0);
         // double thetaVel = (Math.abs(controller.getRightX()) > 0.1 ? controller.getRightX() * Constants.Swerve.maxAngularSpeed : 0.0);
+        double thetaVel=0;
+        double xVel = (Math.abs(controller.getX()) > 0.1 ? controller.getX() : 0.0); 
+        double yVel = (Math.abs(controller.getY()) > 0.1 ? controller.getY() : 0.0);        
+        thetaVel = (Math.abs(controller.getZ()) > 0.1 ? controller.getZ() * Constants.Swerve.maxAngularSpeed : 0.0);
         
-        double xVel = (Math.abs(controller.getY()) > 0.1 ? controller.getY() : 0.0); 
-        double yVel = (Math.abs(controller.getX()) > 0.1 ? controller.getX() : 0.0);
-        double thetaVel = (Math.abs(controller.getZ()) > 0.1 ? controller.getZ() * Constants.Swerve.maxAngularSpeed : 0.0);
+        if(thetaVel != 0){
+            theta_user_set =true;
+        }
+
         double sensitivity = (controller.getThrottle()*-1)+1.01;
-        xVel = Math.signum(xVel) * Math.pow(xVel,2) * Constants.Swerve.maxSpeed * sensitivity; //square input while preserving sign
+        xVel = -Math.signum(xVel) * Math.pow(xVel,2) * Constants.Swerve.maxSpeed * sensitivity; //square input while preserving sign
         yVel = Math.signum(yVel) * Math.pow(yVel,2) * Constants.Swerve.maxSpeed * sensitivity;
 
         // maintain heading if there's no rotational input
-         if (Math.abs(thetaVel) < 0.1){
-            if (isHeadingSet == false){
-                headingPID.reset();
-                isHeadingSet = true;
-                lastHeading = drivetrain.getRobotAngle();
-                headingPID.setSetpoint(lastHeading.getDegrees()%180);
-                thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
-            }else{
-                thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
-            }
-        } else{
-            isHeadingSet = false;
+        if (!theta_user_set){
+            //if (isHeadingSet == false){
+                    headingPID.reset();
+                    isHeadingSet = true;
+                    lastHeading = drivetrain.getRobotAngle();
+                    headingPID.setSetpoint(lastHeading.getDegrees()%180);
+                    thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
+            //}else{
+                    
+            //}
         }
-        
-        drivetrain.drive(
-             isRobotRelative ? new ChassisSpeeds(xVel, yVel, thetaVel)
-            : ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, thetaVel, drivetrain.getRobotAngle())
-            ,true
-        );
+
+
+        if(!isRobotRelative){
+            Rotation2d rotation = drivetrain.getRobotAngle();
+            ChassisSpeeds speed_fieldRel = new ChassisSpeeds(
+                xVel * rotation.getCos() - yVel * rotation.getSin(),
+                xVel * rotation.getSin() + yVel * rotation.getCos(),
+                thetaVel);
+            drivetrain.drive(speed_fieldRel, true);
+        } else {
+            drivetrain.drive(new ChassisSpeeds(xVel, yVel, thetaVel),true);
+        }
     }
 
 }
