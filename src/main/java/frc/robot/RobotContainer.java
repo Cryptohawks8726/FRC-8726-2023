@@ -6,30 +6,34 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer {
   private XboxController driverController, operatorController;
   
-  private ArmSubsystem armSubsytem;
+  private ArmSubsystem armSubsystem;
+  private WristSubsystem wristSubsystem;
 
   private ArmCommand armCommand;
+  private WristCommand wristCommand;
 
   public RobotContainer() {
     driverController = new XboxController(Constants.DRIVER_XBOX);
     operatorController = new XboxController(Constants.OPERATOR_XBOX);
 
-    armSubsytem = new ArmSubsystem();
-    // handSubsytem = new HandSubsystem();
+    armSubsystem = new ArmSubsystem();
+    armCommand = new ArmCommand(armSubsystem, driverController);
 
-    armCommand = new ArmCommand(armSubsytem, driverController);
-    // handCommand = new HandCommand(handSubsytem, driverController);
+    wristSubsystem = new WristSubsystem();
+    wristCommand = new WristCommand(wristSubsystem, operatorController);
 
     configureButtonBindings();
 
-    armSubsytem.setDefaultCommand(armCommand);
-    // handSubsytem.setDefaultCommand(handCommand);
+    armSubsystem.setDefaultCommand(armCommand);
+    wristSubsystem.setDefaultCommand(wristCommand);
   }
 
   private void configureButtonBindings() {}

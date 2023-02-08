@@ -1,6 +1,9 @@
 | Xbox Button | Function |
 | :---: | :---: |
+| Driver|
 | LB | Raise Arm |
 | RB | Lower Arm |
-| x | Test Pre-Set |
+| Operator |
+| LB | Raise Wrist |
+| RB | Lower Wrist |
 
