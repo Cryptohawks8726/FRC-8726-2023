@@ -5,14 +5,62 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-public class ExampleSubsystem extends SubsystemBase {
+public class ArmIntakeSubsystem extends SubsystemBase {
+  private boolean collapsed = false; 
+  private Solenoid claw;
+  private Compressor pcmCompressor;
+  private boolean enabled;
+  private boolean pressureSwitch;
+  private Solenoid solenoid1;
+  private Solenoid exampleSingle;
+  private CommandXboxController m_controller;
+
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
+  public ArmIntakeSubsystem(CommandXboxController xboxController) {
+    claw = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+     // Generating and Storing Pressure
+     m_controller = xboxController;
+     pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+   
+     pcmCompressor.enableDigital();
+     //pcmCompressor.disable();
+ 
+     enabled = pcmCompressor.isEnabled();
+     pressureSwitch = pcmCompressor.getPressureSwitchValue();
+  }
+
+  public void toggleState() {
+    collapsed = !collapsed;
+  }
+
+  public void toggleCollapse(){
+    System.out.println("Before:");
+    //System.out.println(collapsed);
+    System.out.println(claw.get());
+    if (claw.get()) {
+      claw.set(false);
+    } else {
+      claw.set(true);
+    }
+    System.out.println("After:");
+    //System.out.println(collapsed);
+    System.out.println(claw.get());
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (m_controller.x().getAsBoolean() && !pcmCompressor.isEnabled()) {
+      pcmCompressor.enableDigital();
+    }
+    if (m_controller.b().getAsBoolean() && pcmCompressor.isEnabled()) {
+      pcmCompressor.disable();
+    }
   }
 
   @Override

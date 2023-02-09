@@ -5,21 +5,20 @@
 package frc.robot;
 
 
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.ArmIntakeCommand;
+import frc.robot.subsystems.ArmIntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import io.github.oblarg.oblog.Logger;
 import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.commands.XboxTeleopDrive;
-import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Com
@@ -30,31 +29,22 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveDrive drivetrain;
-
-  // private final CommandXboxController driverController;
   
   private final Joystick driverController;
+  private final CommandXboxController xboxController = new CommandXboxController(0);
   
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final ArmIntakeSubsystem armSystem = new ArmIntakeSubsystem(xboxController);
+  private final ArmIntakeCommand m_autoCommand = new ArmIntakeCommand(armSystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    
-    drivetrain = new SwerveDrive();
     // driverController = new CommandXboxController(0);
     
     driverController = new Joystick(0);
 
     // Configure the button bindings
     configureButtonBindings();
-
-
-
-    
-
   }
 
   /**
@@ -64,7 +54,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverController).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    // todo: add button bindings
     // Trigger driverRightBumper = driverController.rightBumper();
     // driverRightBumper.whileTrue(drivetrain.passiveBrake());
     // Trigger driverRightTrigger = driverController.rightTrigger();
