@@ -31,15 +31,18 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   
   private final Joystick driverController;
-  private final CommandXboxController xboxController = new CommandXboxController(0);
+  private final CommandXboxController xboxController;
   
-  private final ArmIntakeSubsystem armSystem = new ArmIntakeSubsystem(xboxController);
-  private final ArmIntakeCommand m_autoCommand = new ArmIntakeCommand(armSystem);
+  private final ArmIntakeSubsystem armSystem;
+  private final ArmIntakeCommand m_autoCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     // driverController = new CommandXboxController(0);
+    xboxController = new CommandXboxController(0);
+    armSystem = new ArmIntakeSubsystem(xboxController);
+    m_autoCommand = new ArmIntakeCommand(armSystem);
     
     driverController = new Joystick(0);
 
@@ -59,6 +62,8 @@ public class RobotContainer {
     // driverRightBumper.whileTrue(drivetrain.passiveBrake());
     // Trigger driverRightTrigger = driverController.rightTrigger();
     // driverRightTrigger.whileTrue(new RepeatCommand(new InstantCommand(()->drivetrain.normalZeroModules(),drivetrain)));
+    Trigger operatorRightBumper = xboxController.rightBumper();
+    operatorRightBumper.whileTrue(m_autoCommand);
   }
 
   /**

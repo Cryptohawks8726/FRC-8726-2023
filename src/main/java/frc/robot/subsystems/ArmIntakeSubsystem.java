@@ -11,18 +11,17 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class ArmIntakeSubsystem extends SubsystemBase {
-  private boolean collapsed = false; 
+  private boolean collapsed; 
   private Solenoid claw;
   private Compressor pcmCompressor;
   private boolean enabled;
   private boolean pressureSwitch;
-  private Solenoid solenoid1;
-  private Solenoid exampleSingle;
   private CommandXboxController m_controller;
 
   /** Creates a new ExampleSubsystem. */
   public ArmIntakeSubsystem(CommandXboxController xboxController) {
     claw = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+    collapsed = claw.get();
      // Generating and Storing Pressure
      m_controller = xboxController;
      pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
@@ -39,17 +38,19 @@ public class ArmIntakeSubsystem extends SubsystemBase {
   }
 
   public void toggleCollapse(){
-    System.out.println("Before:");
-    //System.out.println(collapsed);
-    System.out.println(claw.get());
     if (claw.get()) {
-      claw.set(false);
-    } else {
       claw.set(true);
+    } else {
+      claw.set(false);
     }
-    System.out.println("After:");
-    //System.out.println(collapsed);
-    System.out.println(claw.get());
+  }
+  public void setTrue() {
+    claw.set(true);
+    collapsed = true;
+  }
+  public void setFalse() {
+    claw.set(false);
+    collapsed = false;
   }
 
   @Override

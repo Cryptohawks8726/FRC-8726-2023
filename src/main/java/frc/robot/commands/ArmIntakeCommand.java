@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ArmIntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+//import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /** An example command that uses an example subsystem. */
 public class ArmIntakeCommand extends CommandBase {
@@ -26,16 +27,30 @@ public class ArmIntakeCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.toggleCollapse();
+    System.out.println("Pressed");
+    m_subsystem.setTrue();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    /*
+    Boolean enabled = m_subsystem.m_controller.rightBumper().getAsBoolean();
+    System.out.println(enabled);
+    if (enabled) {
+      m_subsystem.setTrue();
+    } else {
+      m_subsystem.setFalse();
+    }
+    */
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("Unpressed");
+    m_subsystem.setFalse();
+  }
 
   // Returns true when the command should end.
   @Override
