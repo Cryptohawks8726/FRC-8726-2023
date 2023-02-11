@@ -27,19 +27,18 @@ public class Pneumatics extends SubsystemBase {
 
   //@Override
   public Pneumatics(CommandXboxController xboxController) {
-    // Generating and Storing Pressure
-    m_controller = xboxController;
-    pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+    // Generating and Storing Pressure
+    // m_controller = xboxController;
   
-    pcmCompressor.enableDigital();
-    pcmCompressor.disable();
+    // pcmCompressor.enableDigital();
+    // pcmCompressor.disable();
 
-    enabled = pcmCompressor.isEnabled();
-    pressureSwitch = pcmCompressor.getPressureSwitchValue();
+    // enabled = pcmCompressor.isEnabled();
+    // pressureSwitch = pcmCompressor.getPressureSwitchValue();
 
-    // Single Solenoids
-    // To set the value of the solenoid call set(true) to enable or set(false) to disable the solenoid output.
-    solenoid1 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);// add can id
+    // // Single Solenoids
+    // // To set the value of the solenoid call set(true) to enable or set(false) to disable the solenoid output.
+    // solenoid1 = new Solenoid(PneumaticsModuleType.CTREPCM, 0);// add can id
 
     // Toggling Solenoids
     // Solenoids can be switched from one output to the other (known as toggling) by using the .toggle() method.
@@ -54,29 +53,29 @@ public class Pneumatics extends SubsystemBase {
     // the scale parameter in the AnalogPotentiometer constructor is scaled from 1 instead of 5,
     // so if r is the raw AnalogPotentiometer output, the pressure is 250r-25
   }
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    // exampleSolenoidPCM.set(false);  
-
-    if (m_controller.y().getAsBoolean() && !solenoid1.get()) {
-      solenoid1.set(true);
-    } else if (!m_controller.y().getAsBoolean() && solenoid1.get()) {
-      solenoid1.set(false);
-    }
-    if (m_controller.x().getAsBoolean() && !pcmCompressor.isEnabled()) {
-      pcmCompressor.enableDigital();
-    }
-    if (m_controller.b().getAsBoolean() && pcmCompressor.isEnabled()) {
-      pcmCompressor.disable();
-    }
+  // @Override
+  // public void periodic() {
+  //   // This method will be called once per scheduler run
+  //   // exampleSolenoidPCM.set(false);  
+ 
+  //   if (m_controller.y().getAsBoolean() && !solenoid1.get()) {
+  //     solenoid1.set(true);
+  //   } else if (!m_controller.y().getAsBoolean() && solenoid1.get()) {
+  //     solenoid1.set(false);
+  //   }
+  //   if (m_controller.x().getAsBoolean() && !pcmCompressor.isEnabled()) {
+  //     pcmCompressor.enableDigital();
+  //   }
+  //   if (m_controller.b().getAsBoolean() && pcmCompressor.isEnabled()) {
+  //     pcmCompressor.disable();
+  //   }
     
-  }
+  // }
 
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
+  // @Override
+  // public void simulationPeriodic() {
+  //   // This method will be called once per scheduler run during simulation
+  // }
 
 }
 

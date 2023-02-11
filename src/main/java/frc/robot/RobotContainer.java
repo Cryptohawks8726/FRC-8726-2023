@@ -4,14 +4,20 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.GroundIntakeSub;
 import frc.robot.subsystems.Pneumatics;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,12 +30,21 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  
   private final CommandXboxController xboxController = new CommandXboxController(0);
-  private final Pneumatics pneumaticsBoard = new Pneumatics(xboxController);
+  private final Compressor pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+  private final GroundIntakeSub GI_Sub = new GroundIntakeSub(pcmCompressor);
+
+  //private final Pneumatics pneumaticsBoard = new Pneumatics(xboxController);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    System.out.println("In Robot Container");
+
+    //groundIntake.addRequirements(GI_Sub);
+    //GI_Sub.setDefaultCommand(groundIntake);
+
   }
 
   /**
@@ -38,7 +53,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    Trigger x = xboxController.x();
+    x.whileTrue(GI_Sub.capGamePiece());
+    Trigger y = xboxController.y();
+    y.whileTrue(GI_Sub.dropPiece());
+
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
