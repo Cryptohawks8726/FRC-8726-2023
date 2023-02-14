@@ -32,10 +32,10 @@ public class Robot extends TimedRobot {
         // PWM port 9
     // Must be a PWM header, not MXP or DIO
 
-    LED ledStrip = new LED();
+    System.out.println("Running");
+    LED ledStrip = new LED(8, 5);
 
-    ledStrip.ledinit(8, 60);
-
+    ledStrip.ledSetRGB(255,0,0);
     ledStrip.ledStart();
     
     m_robotContainer = new RobotContainer();

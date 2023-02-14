@@ -7,14 +7,10 @@ public class LED {
     private AddressableLED m_led; // will contain the AddressableLED object
     private AddressableLEDBuffer m_ledBuffer; // will contain the AddressableLEDBuffer object
 
-    public LED() {
-        
-    }
-
-    public void ledinit(int PWMport, int bufferLength) {
+    public LED(int DigitalPort, int bufferLength) {
         // Takes the PWM port as the parameter
-        m_led = new AddressableLED(8); // default 9
-        m_ledBuffer = new AddressableLEDBuffer(60); // default 60
+        m_led = new AddressableLED(DigitalPort); // default 9
+        m_ledBuffer = new AddressableLEDBuffer(bufferLength); // default 60
         
         m_led.setLength(m_ledBuffer.getLength());
 
@@ -27,6 +23,7 @@ public class LED {
     }
 
     public void ledStart() {
+        System.out.println("YES");
         m_led.start();
     }
 
