@@ -43,7 +43,7 @@ public class TargetFollowCommand extends CommandBase{
       public void execute() {
         System.out.println("working");
         //config
-       //if(xbox.getAButton() && m_photonVisionSubsystem.getDistance()!=-1){
+        if(m_photonVisionSubsystem.getDistance()!=-1){
             TrajectoryConfig config = new TrajectoryConfig(Constants.Swerve.kMaxSpeedMetersPerSecond, 
             Constants.Swerve.kMaxAccelerationMetersPerSecondSquared)
             .setKinematics(Constants.Swerve.kDriveKinematics);
@@ -59,7 +59,6 @@ public class TargetFollowCommand extends CommandBase{
             double finalangle = 
             */
 
-
             //actual path to follow
             Trajectory path1 = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0,0, new Rotation2d(0)), 
@@ -68,7 +67,6 @@ public class TargetFollowCommand extends CommandBase{
 
 
             //tracking path
-
             PIDController xController = new PIDController(Constants.Swerve.kPXController, 0, 0);
             PIDController yController = new PIDController(Constants.Swerve.kPYController, 0, 0);
             ProfiledPIDController thetaController = new ProfiledPIDController(Constants.Swerve.kPThetaController, 0, 0, Constants.Swerve.kThetaControllerConstraints);
@@ -91,9 +89,9 @@ public class TargetFollowCommand extends CommandBase{
             //new InstantCommand(()->drivetrain.resetOdometry(path1.getInitialPose()));
 
 
-        //}else{
-          //  System.out.println("not working");
-        //}
+        }else{
+            System.out.println("not working");
+        }
                 
       }
     

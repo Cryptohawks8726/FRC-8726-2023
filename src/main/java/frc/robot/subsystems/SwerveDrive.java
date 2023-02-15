@@ -23,7 +23,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,7 +52,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     private Field2d field; 
     private FieldObject2d[] modPoses;
    
-    public SwerveDrive(){
+    public SwerveDrive(AHRS ahrsGyro){
         modules = Arrays.asList(
             new SwerveModule(Constants.Swerve.Module.FR),
             new SwerveModule(Constants.Swerve.Module.BR),
@@ -75,7 +74,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             modules.get(FL.modPos).getCenterTransform().getTranslation()
         );
         
-        gyro = new AHRS(SerialPort.Port.kUSB1);
+        gyro = ahrsGyro;
         gyro.calibrate(); // possibly move to avoid the robot being moved during calibration
         gyro.reset();
         

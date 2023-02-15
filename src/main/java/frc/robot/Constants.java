@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -144,5 +147,28 @@ public final class Constants {
 
         }
       
+    }
+    public final class PhotonVisionConstants{
+        // Constants such as camera and target height stored. Change per robot and goal!
+        // Actual values will be dependent on final bot
+        // Measured in meters
+        public static final double CAMERA_HEIGHT_METERS = .5;
+        public static final double TARGET_HEIGHT_METERS = 1;
+        // Angle between horizontal and the camera.
+        public static final double CAMERA_PITCH_RADIANS = 1;
+        // How far from the target we want to be
+        public static final double GOAL_RANGE_METERS = 1;
+
+        public static final double kCameraHeight = 1;
+        public static final double kTargetHeight = 1;
+        public static final double kCameraPitch = 0;
+        public static final double kTargetPitch = 0;
+
+        public static final double default2dPose_X = 0;
+        public static final double default2dPose_Y = 0;
+        //public static final Rotation2d default2dPose_rotation = new Rotation2d(0);
+
+
+
     }
 }
