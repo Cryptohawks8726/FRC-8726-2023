@@ -5,15 +5,23 @@
 package frc.robot;
 
 
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.PhotonVisionCommand;
 import frc.robot.commands.TargetFollowCommand;
-import frc.robot.commands.XboxTeleopDrive;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveDrive;
@@ -29,12 +37,12 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final PhotonVision m_photonVision = new PhotonVision();
   private final SwerveDrive drivetrain = new SwerveDrive();
-  private final XboxController operatorController = new XboxController(0); 
+  private final CommandXboxController operatorController = new CommandXboxController(0); 
 
   // private final CommandXboxController driverController;
   
   //private final Joystick driverController = new Joystick(0);
-  
+  private final SwerveAutoBuilder auto; 
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final PhotonVisionCommand m_photonVisonCommand = new PhotonVisionCommand(m_photonVision);
@@ -42,12 +50,28 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     
-    // driverController = new CommandXboxController(0);
+
+    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap.put("marker1", new PrintCommand("Passed marker 1"));
     
+    // driverController = new CommandXboxController(0);
+    auto = new SwerveAutoBuilder(
+      drivetrain::getPoseEstimate,
+      drivetrain::resetOdometry,
+      Constants.Swerve.kDriveKinematics,
+      new PIDConstants(5.0, 0.0, 0.0),
+      new PIDConstants(0.5, 0.0, 0.0),
+      drivetrain::setModuleStates,
+      eventMap,
+      true,
+      drivetrain
+    );
     //driverController = new Joystick(0);
     
+
     // Configure the button bindings
     configureButtonBindings();
+
 
 
 
@@ -67,15 +91,22 @@ public class RobotContainer {
     // driverRightBumper.whileTrue(drivetrain.passiveBrake());
     // Trigger driverRightTrigger = driverController.rightTrigger();
     // driverRightTrigger.whileTrue(new RepeatCommand(new InstantCommand(()->drivetrain.normalZeroModules(),drivetrain)));
+    Trigger operatorA = operatorController.a();
+    operatorA.whileTrue(m_targetFollowCommand);
   }
 
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("NicolasValerio Path", new PathConstraints(30, 30));
+    Command run = drivetrain.followTrajectoryCommand(examplePath, true);
+    return run;
+
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    
   }
 }

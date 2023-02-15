@@ -14,16 +14,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveDrive;
 
 public class TargetFollowCommand extends CommandBase{
     private PhotonVision m_photonVisionSubsystem;
-    private XboxController xbox; 
+    private CommandXboxController xbox; 
     private SwerveDrive drivetrain;
 
-	public TargetFollowCommand(PhotonVision subsystem, XboxController controller, SwerveDrive code) {
+	public TargetFollowCommand(PhotonVision subsystem, CommandXboxController controller, SwerveDrive code) {
         m_photonVisionSubsystem = subsystem;
         xbox = controller;
         drivetrain = code;
@@ -42,7 +43,7 @@ public class TargetFollowCommand extends CommandBase{
       public void execute() {
         System.out.println("working");
         //config
-        if(xbox.getAButton() && m_photonVisionSubsystem.getDistance()!=-1){
+       //if(xbox.getAButton() && m_photonVisionSubsystem.getDistance()!=-1){
             TrajectoryConfig config = new TrajectoryConfig(Constants.Swerve.kMaxSpeedMetersPerSecond, 
             Constants.Swerve.kMaxAccelerationMetersPerSecondSquared)
             .setKinematics(Constants.Swerve.kDriveKinematics);
@@ -90,9 +91,9 @@ public class TargetFollowCommand extends CommandBase{
             //new InstantCommand(()->drivetrain.resetOdometry(path1.getInitialPose()));
 
 
-        }else{
-            System.out.println("not working");
-        }
+        //}else{
+          //  System.out.println("not working");
+        //}
                 
       }
     

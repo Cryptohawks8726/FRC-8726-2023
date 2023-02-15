@@ -78,7 +78,7 @@ public final class Constants {
             new Translation2d(-driveBaseWidth/2, driveBaseLength/2)
         );
         
-        public static final double kPXController = 1.5;
+        public static final double kPXController = 1;
         public static final double kPYController = 1.5;
         public static final double kPThetaController = 3;
 
