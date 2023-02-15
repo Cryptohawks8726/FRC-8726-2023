@@ -20,6 +20,13 @@
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[2]": "Gyro",
       "/SmartDashboard/Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables Settings": {
@@ -35,7 +42,7 @@
               "autoFit": true
             }
           ],
-          "height": 332,
+          "height": 385,
           "series": [
             {
               "color": [
@@ -80,7 +87,12 @@
     "Plot <1>": {
       "plots": [
         {
-          "height": 332,
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 314,
           "series": [
             {
               "color": [
