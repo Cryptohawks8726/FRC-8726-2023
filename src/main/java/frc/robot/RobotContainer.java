@@ -5,8 +5,16 @@
 package frc.robot;
 
 
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import java.util.HashMap;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import io.github.oblarg.oblog.Logger;
 import io.github.oblarg.oblog.annotations.Log;
@@ -20,6 +28,10 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SerialPort;
+
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Com
@@ -29,8 +41,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private AHRS gyro = new AHRS(SerialPort.Port.kUSB1);
+
   // The robot's subsystems and commands are defined here...
-  private final SwerveDrive drivetrain;
+  private final SwerveDrive drivetrain = new SwerveDrive(gyro);
+  private final CommandXboxController operatorController = new CommandXboxController(0); 
 
   // private final CommandXboxController driverController;
   
@@ -38,13 +53,26 @@ public class RobotContainer {
   
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     
-    drivetrain = new SwerveDrive();
+
+    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+    
     // driverController = new CommandXboxController(0);
+    auto = new SwerveAutoBuilder(
+      drivetrain::getPoseEstimate,
+      drivetrain::resetOdometry,
+      Constants.Swerve.kDriveKinematics,
+      new PIDConstants(5.0, 0.0, 0.0),
+      new PIDConstants(0.5, 0.0, 0.0),
+      drivetrain::setModuleStates,
+      eventMap,
+      true,
+      drivetrain
+    );
+    //driverController = new Joystick(0);
     
     driverController = new Joystick(0);
 
@@ -67,15 +95,22 @@ public class RobotContainer {
     // driverRightBumper.whileTrue(drivetrain.passiveBrake());
     // Trigger driverRightTrigger = driverController.rightTrigger();
     // driverRightTrigger.whileTrue(new RepeatCommand(new InstantCommand(()->drivetrain.normalZeroModules(),drivetrain)));
+    Trigger operatorA = operatorController.a();
+    //operatorA.whileTrue(m_targetFollowCommand);
   }
 
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("NicolasValerio Path", new PathConstraints(30, 30));
+    Command run = drivetrain.followTrajectoryCommand(examplePath, true);
+    return run;
+
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    
   }
 }

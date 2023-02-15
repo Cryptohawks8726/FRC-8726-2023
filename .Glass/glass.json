@@ -23,8 +23,11 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+<<<<<<< HEAD
         "height": 12.0,
         "width": 20.0,
+=======
+>>>>>>> april-tags
         "window": {
           "visible": true
         }
@@ -44,7 +47,11 @@
               "autoFit": true
             }
           ],
+<<<<<<< HEAD
           "height": 0,
+=======
+          "height": 385,
+>>>>>>> april-tags
           "series": [
             {
               "color": [
@@ -89,7 +96,16 @@
     "Plot <1>": {
       "plots": [
         {
+<<<<<<< HEAD
           "height": 0,
+=======
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 314,
+>>>>>>> april-tags
           "series": [
             {
               "color": [

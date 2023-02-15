@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -52,6 +57,38 @@ public final class Constants {
         public static final double kHeadingI = 0.0;
         public static final double kHeadingD = 0.0;
         public static final double kHeadingFF = 0.0;
+
+         //system identification constants
+        public static final double ksVolts = 0;
+        public static final double kvVoltSecondsPerMeter = 0;
+        public static final double kaVoltSecondsSquaredPerMeter = 0;
+
+        public static final double kPDriveVel = 0;
+        public static final double kTrackwidthMeters = 0;
+
+        //"trackwidthmeters" =  public static final double driveBaseWidth = 0.762;
+        public static final double kMaxSpeedMetersPerSecond = 25.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 5;
+
+        //autoconstants
+        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+            new Translation2d(driveBaseWidth/2, -driveBaseLength/2), 
+            new Translation2d(driveBaseWidth/2, driveBaseLength/2),
+            new Translation2d(-driveBaseWidth/2, -driveBaseLength/2),
+            new Translation2d(-driveBaseWidth/2, driveBaseLength/2)
+        );
+        
+        public static final double kPXController = 1;
+        public static final double kPYController = 1.5;
+        public static final double kPThetaController = 3;
+
+        
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
+                new TrapezoidProfile.Constraints(
+                        (2*2*Math.PI)/10, //maximumangularspeed
+                        3 //maxangularaccelerationradiansperseconds);
+                );
+
         
         // Module Constants
         public enum ModulePosition{
@@ -107,5 +144,28 @@ public final class Constants {
 
         }
       
+    }
+    public final class PhotonVisionConstants{
+        // Constants such as camera and target height stored. Change per robot and goal!
+        // Actual values will be dependent on final bot
+        // Measured in meters
+        public static final double CAMERA_HEIGHT_METERS = .5;
+        public static final double TARGET_HEIGHT_METERS = 1;
+        // Angle between horizontal and the camera.
+        public static final double CAMERA_PITCH_RADIANS = 1;
+        // How far from the target we want to be
+        public static final double GOAL_RANGE_METERS = 1;
+
+        public static final double kCameraHeight = 1;
+        public static final double kTargetHeight = 1;
+        public static final double kCameraPitch = 0;
+        public static final double kTargetPitch = 0;
+
+        public static final double default2dPose_X = 0;
+        public static final double default2dPose_Y = 0;
+        //public static final Rotation2d default2dPose_rotation = new Rotation2d(0);
+
+
+
     }
 }

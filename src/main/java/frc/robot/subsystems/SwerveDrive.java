@@ -1,10 +1,18 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.Swerve.ModulePosition.BL;
+import static frc.robot.Constants.Swerve.ModulePosition.BR;
+import static frc.robot.Constants.Swerve.ModulePosition.FL;
+import static frc.robot.Constants.Swerve.ModulePosition.FR;
+
 import java.util.Arrays;
 import java.util.List;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.util.sendable.Sendable;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,17 +22,19 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
-import static frc.robot.Constants.Swerve.ModulePosition.*;
 
 
 public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
@@ -42,7 +52,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     private Field2d field; 
     private FieldObject2d[] modPoses;
    
-    public SwerveDrive(){
+    public SwerveDrive(AHRS ahrsGyro){
         modules = Arrays.asList(
             new SwerveModule(Constants.Swerve.Module.FR),
             new SwerveModule(Constants.Swerve.Module.BR),
@@ -64,7 +74,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             modules.get(FL.modPos).getCenterTransform().getTranslation()
         );
         
-        gyro = new AHRS(SerialPort.Port.kUSB1);
+        gyro = ahrsGyro;
         gyro.calibrate(); // possibly move to avoid the robot being moved during calibration
         gyro.reset();
         
@@ -94,7 +104,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         
         // show estimated robot and mod poses on dashboard
         field.setRobotPose(odometry.getEstimatedPosition());
-        for (int i = 0;i<4;i++){
+        /*for (int i = 0;i<4;i++){
             modPoses[i].setPose(
                 odometry.getEstimatedPosition()
                 .plus(
@@ -103,7 +113,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
                         (new Transform2d(new Translation2d(),modules.get(i).getCurrentState().angle))
                     )
             );
-        }
+        }*/
         
         logValues();
        // System.out.println("---------------");
@@ -202,6 +212,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         return Rotation2d.fromDegrees(gyro.getYaw());
     }
 
+
+
     public SwerveModulePosition[] getSwerveModulePositions(){
         
        /*  if (RobotBase.isSimulation()){
@@ -211,6 +223,17 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
        // }
         
         return modPositionStates;
+    }
+
+    
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(Rotation2d.fromDegrees(gyro.getYaw()), getSwerveModulePositions(), pose);
+    }
+
+     public void setModuleStates(SwerveModuleState[] updatedstates){
+        SwerveDriveKinematics.desaturateWheelSpeeds(updatedstates, Constants.Swerve.maxSpeed);
+        modules.forEach(mod -> {mod.closedLoopDrive(updatedstates[mod.getModPos().getVal()]);});
+
     }
 
     public void setEncoderOffsets(){
@@ -290,4 +313,27 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     public double Module3Angle(){
         return modules.get(3).getCurrentState().angle.getDegrees();
     }    
+
+
+    public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+   return new SequentialCommandGroup(
+        new InstantCommand(() -> {
+          // Reset odometry for the first path you run during auto
+          if(isFirstPath){
+              this.resetOdometry(traj.getInitialHolonomicPose());
+          }
+        }),
+        new PPSwerveControllerCommand(
+            traj, 
+            this::getPoseEstimate, // Pose supplier
+            this.kinematics, // SwerveDriveKinematics
+            new PIDController(Constants.Swerve.kPXController, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            new PIDController(Constants.Swerve.kPYController, 0, 0), // Y controller (usually the same values as X controller)
+            new PIDController(0.5, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            this::setModuleStates, // Module states consumer
+            true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+            this // Requires this drive subsystem
+        )
+    );
+}
 }
