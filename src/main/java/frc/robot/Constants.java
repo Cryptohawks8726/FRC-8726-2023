@@ -32,8 +32,8 @@ public final class Constants {
         public static final double wheelDiameterMeters = 0.098; // Measure and check later. Compensating for tread wear over comp could be cool
         public static final double driveConversionFactor = wheelDiameterMeters * Math.PI / driveGearRatio;
 
-        public static final double maxSpeed = 30.0; // m/s, I have no clue if this is realistic // TODO testing
-        public static final double maxAngularSpeed = 40.0; // rad/s
+        public static final double maxSpeed = 5.0; // m/s, I have no clue if this is realistic // TODO testing
+        public static final double maxAngularSpeed = 10.0; // rad/s
         public static final double driverThetaDeadband = 0.05;
         public static final double driverTranslationDeadband = 1;
         // Electrical Constants
@@ -43,12 +43,12 @@ public final class Constants {
         
         // Controller Gains
         // TODO: Tune PID + FF constants
-        public static final double kDriveP = 0.025;
+        public static final double kDriveP = 0.55;
         public static final double kDriveI = 0.0;
         public static final double kDriveD = 0.0;
         public static final double kDriveFF = 0.0;
 
-        public static final double kSteerP = 0.004;//0.0025;
+        public static final double kSteerP = 0.01;//0.0025;
         public static final double kSteerI = 0.0;
         public static final double kSteerD = 0.0;
         public static final double kSteerFF = 0.0;

@@ -115,7 +115,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             );
         }*/
         
-        logValues();
+       // logValues();
        // System.out.println("---------------");
        // System.out.print("Yaw: ");
        // System.out.println(gyro.getYaw());
