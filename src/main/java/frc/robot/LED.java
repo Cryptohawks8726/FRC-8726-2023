@@ -14,6 +14,8 @@ public class LED {
         
         m_led.setLength(m_ledBuffer.getLength());
 
+        System.out.println(m_ledBuffer.getLength());
+
         // Set the data
         m_led.setData(m_ledBuffer);
         // Reuse buffer
@@ -33,6 +35,6 @@ public class LED {
             m_ledBuffer.setRGB(i, R, G, B);
         }
        
-       m_led.setData(m_ledBuffer);
+        m_led.setData(m_ledBuffer);
     }
 }
