@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class ArmIntakeSubsystem extends SubsystemBase {
-  private boolean collapsed; 
+  private boolean clawCollapsed; 
+  private boolean claw2Collapsed;
   private Solenoid claw;
+  private Solenoid claw2;
   private Compressor pcmCompressor;
   private boolean enabled;
   private boolean pressureSwitch;
@@ -21,7 +23,10 @@ public class ArmIntakeSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public ArmIntakeSubsystem(CommandXboxController xboxController) {
     claw = new Solenoid(PneumaticsModuleType.REVPH, 0);
-    collapsed = claw.get();
+    claw2 = new Solenoid(PneumaticsModuleType.REVPH, 1);
+    clawCollapsed = claw.get();
+    claw2Collapsed = claw2.get();
+
      // Generating and Storing Pressure
      m_controller = xboxController;
      pcmCompressor = new Compressor(0, PneumaticsModuleType.REVPH);
@@ -33,24 +38,35 @@ public class ArmIntakeSubsystem extends SubsystemBase {
      pressureSwitch = pcmCompressor.getPressureSwitchValue();
   }
 
-  public void toggleState() {
-    collapsed = !collapsed;
+  public void clawToggleState() {
+    clawCollapsed = !clawCollapsed;
+    claw2Collapsed = !claw2Collapsed;
   }
 
-  public void toggleCollapse(){
-    if (claw.get()) {
+
+  public void clawToggleCollapse(){
+    if (claw.get() || claw2.get()) {
       claw.set(true);
+      claw2.set(true);
     } else {
       claw.set(false);
+      claw2.set(false);
     }
   }
+
+
   public void setTrue() {
     claw.set(true);
-    collapsed = true;
+    clawCollapsed = true;
+    claw2.set(true);
+    claw2Collapsed = true;
   }
+  
   public void setFalse() {
     claw.set(false);
-    collapsed = false;
+    clawCollapsed = false;
+    claw2.set(false);
+    claw2Collapsed = false;
   }
 
   @Override
