@@ -52,7 +52,7 @@ public class SwerveModule implements Loggable{
         steerMotor.restoreFactoryDefaults();
         
         driveMotor.setIdleMode(IdleMode.kCoast);
-        steerMotor.setIdleMode(IdleMode.kBrake);
+        steerMotor.setIdleMode(IdleMode.kCoast);
         
         //lower later
         driveMotor.setSmartCurrentLimit(40); 

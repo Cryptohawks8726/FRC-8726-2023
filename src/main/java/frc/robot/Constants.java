@@ -43,7 +43,7 @@ public final class Constants {
         
         // Controller Gains
         // TODO: Tune PID + FF constants
-        public static final double kDriveP = 0.55;
+        public static final double kDriveP = 0.35;
         public static final double kDriveI = 0.0;
         public static final double kDriveD = 0.0;
         public static final double kDriveFF = 0.0;
@@ -53,7 +53,7 @@ public final class Constants {
         public static final double kSteerD = 0.0;
         public static final double kSteerFF = 0.0;
 
-        public static final double kHeadingP = 0.5;
+        public static final double kHeadingP = 0.3;
         public static final double kHeadingI = 0.0;
         public static final double kHeadingD = 0.0;
         public static final double kHeadingFF = 0.0;
