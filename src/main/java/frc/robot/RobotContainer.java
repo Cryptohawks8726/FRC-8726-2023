@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.XboxTeleopDrive;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -51,8 +52,7 @@ public class RobotContainer {
   
   private final Joystick driverController;
   
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final SwerveAutoBuilder auto;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     
@@ -106,7 +106,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory examplePath = PathPlanner.loadPath("NicolasValerio Path", new PathConstraints(30, 30));
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("NicolasValerio Path", new PathConstraints(2, 1.5));
     Command run = drivetrain.followTrajectoryCommand(examplePath, true);
     return run;
 
