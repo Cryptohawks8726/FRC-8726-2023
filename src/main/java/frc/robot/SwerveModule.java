@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.Swerve.ModulePosition;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
@@ -52,7 +53,7 @@ public class SwerveModule implements Loggable{
         steerMotor.restoreFactoryDefaults();
         
         driveMotor.setIdleMode(IdleMode.kCoast);
-        steerMotor.setIdleMode(IdleMode.kCoast);
+        steerMotor.setIdleMode(IdleMode.kBrake);
         
         //lower later
         driveMotor.setSmartCurrentLimit(40); 
@@ -143,6 +144,11 @@ public class SwerveModule implements Loggable{
         setPoint = SwerveModuleState.optimize(setPoint, Rotation2d.fromDegrees(absEncoder.getAbsolutePosition()));
         lastSetState = setPoint;
         driveController.setReference(setPoint.speedMetersPerSecond, ControlType.kVelocity); // IDK if velocity control will work well
+        if (modPos.equals(ModulePosition.BR)){
+            SmartDashboard.putNumber("BRactvel",driveEncoder.getVelocity());
+            SmartDashboard.putNumber("BRsetvel",setPoint.speedMetersPerSecond);
+
+        }
         //System.out.println(setPoint.angle.getDegrees()%180);
         //steerController.setReference(MathUtil.inputModulus(setPoint.angle.getDegrees(), 0, 360)%360, ControlType.kPosition);
         steerMotor.set(contSteerController.calculate(absEncoder.getAbsolutePosition(), MathUtil.inputModulus(setPoint.angle.getDegrees(), 0, 360)));
