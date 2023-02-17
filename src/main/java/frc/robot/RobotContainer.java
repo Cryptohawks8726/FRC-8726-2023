@@ -32,7 +32,7 @@ public class RobotContainer {
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   
   private final CommandXboxController xboxController = new CommandXboxController(0);
-  private final Compressor pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+  private final Compressor pcmCompressor = new Compressor(0, PneumaticsModuleType.REVPH);
   private final GroundIntakeSub GI_Sub = new GroundIntakeSub(pcmCompressor);
 
   //private final Pneumatics pneumaticsBoard = new Pneumatics(xboxController);

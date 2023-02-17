@@ -52,8 +52,8 @@ public class GroundIntakeSub extends SubsystemBase{
 
         // Single Solenoids
         // To set the value of the solenoid call set(true) to enable or set(false) to disable the solenoid output.
-        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);// add can id
-        GroundSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 1);
+        intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);// add can id
+        GroundSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 1);
 
     }
 
