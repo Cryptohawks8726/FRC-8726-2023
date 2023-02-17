@@ -25,8 +25,11 @@ public class LED {
     }
 
     public void ledStart() {
-        System.out.println("YES");
         m_led.start();
+    }
+
+    public void ledStop() {
+        m_led.stop();
     }
 
     public void ledSetRGB(int R, int G, int B) {

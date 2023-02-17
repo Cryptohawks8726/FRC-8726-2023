@@ -31,12 +31,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
         // PWM port 9
     // Must be a PWM header, not MXP or DIO
-
-    System.out.println("Running");
-    LED ledStrip = new LED(9, 5);
-
-    ledStrip.ledSetRGB(255,0,0);
-    ledStrip.ledStart();
     
     m_robotContainer = new RobotContainer();
   }
