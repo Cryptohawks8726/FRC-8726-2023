@@ -99,7 +99,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         
         // show estimated robot and mod poses on dashboard
         field.setRobotPose(odometry.getEstimatedPosition());
-        for (int i = 0;i<4;i++){
+        /*for (int i = 0;i<4;i++){
             modPoses[i].setPose(
                 odometry.getEstimatedPosition()
                 .plus(
@@ -108,9 +108,9 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
                         (new Transform2d(new Translation2d(),modules.get(i).getCurrentState().angle))
                     )
             );
-        }
+        }*/
         
-        logValues();
+       // logValues();
        // System.out.println("---------------");
        // System.out.print("Yaw: ");
        // System.out.println(gyro.getYaw());
