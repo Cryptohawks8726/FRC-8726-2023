@@ -48,7 +48,7 @@ public final class Constants {
         public static final double kDriveD = 0.0;
         public static final double kDriveFF = 0.0;
 
-        public static final double kSteerP = 0.01;//0.0025;
+        public static final double kSteerP = 0.005;//0.0025;
         public static final double kSteerI = 0.0;
         public static final double kSteerD = 0.0;
         public static final double kSteerFF = 0.0;
