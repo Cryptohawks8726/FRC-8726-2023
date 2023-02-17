@@ -20,11 +20,11 @@ public class ArmIntakeSubsystem extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   public ArmIntakeSubsystem(CommandXboxController xboxController) {
-    claw = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+    claw = new Solenoid(PneumaticsModuleType.REVPH, 0);
     collapsed = claw.get();
      // Generating and Storing Pressure
      m_controller = xboxController;
-     pcmCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+     pcmCompressor = new Compressor(0, PneumaticsModuleType.REVPH);
    
      pcmCompressor.enableDigital();
      //pcmCompressor.disable();
