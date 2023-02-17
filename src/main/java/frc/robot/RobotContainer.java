@@ -5,6 +5,7 @@
 package frc.robot;
 
 
+import frc.robot.commands.ChargeAutoCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,12 +39,14 @@ public class RobotContainer {
   
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private final ChargeAutoCommand m_autoBalance;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     
     drivetrain = new SwerveDrive();
+    m_autoBalance = new ChargeAutoCommand(drivetrain);
     // driverController = new CommandXboxController(0);
     
     driverController = new Joystick(0);
@@ -78,6 +81,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    //return m_autoCommand;
+    return m_autoBalance;
   }
 }
