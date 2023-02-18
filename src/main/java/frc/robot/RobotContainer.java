@@ -22,14 +22,16 @@ import frc.robot.subsystems.LEDSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final LEDSubsystem m_exampleSubsystem = new LEDSubsystem();
+  private final LEDSubsystem m_LedSubsystem;
 
-  private final LEDCommand m_autoCommand = new LEDCommand(m_exampleSubsystem);
+  private final LEDCommand m_autoCommand;
 
   private final CommandXboxController xboxController;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    m_LedSubsystem = new LEDSubsystem();
+    m_autoCommand = new LEDCommand(m_LedSubsystem);
     xboxController = new CommandXboxController(0);
     // Configure the button bindings
     configureButtonBindings();

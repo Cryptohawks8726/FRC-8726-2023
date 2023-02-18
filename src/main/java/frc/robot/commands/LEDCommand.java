@@ -28,9 +28,8 @@ public class LEDCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Running");
-
-    ledStrip.ledSetRGB(255,0,255);
+    System.out.println("pressed");
+    ledStrip.ledSetRGB(0,0,255);
     ledStrip.ledStart();
   }
 
@@ -41,7 +40,9 @@ public class LEDCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    ledStrip.ledStop();
+    System.out.println("stopped");
+    ledStrip.ledSetRGB(0,0,0);
+    //ledStrip.ledStop();
   }
 
   // Returns true when the command should end.
