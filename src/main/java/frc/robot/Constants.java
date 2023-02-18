@@ -6,17 +6,20 @@ package frc.robot;
 
 
 public final class Constants {
-    public static final int DRIVER_XBOX = 0;
     public static final int OPERATOR_XBOX = 1;
 
-    public static final double ARM_kP = 0.5;
+    public static final double ARM_kP = 0.05;
     public static final double ARM_kI = 0;
     public static final double ARM_kD = 0;
 
     //Change values after testing
-    public static final double CONEHELD_kP = 0;
+    public static final double CONEHELD_kP = 0.08;
     public static final double CONEHELD_kI = 0;
     public static final double CONEHELD_kD = 0;
+
+    public static final double WRIST_kP = 0.05;
+    public static final double WRIST_kI = 0;
+    public static final double WRIST_kD = 0;
 
     public static final int WRIST_MOTOR_SPARKMAX = 11;
     public static final int ARM_MOTOR_SPARKMAX = 12;
@@ -27,8 +30,10 @@ public final class Constants {
     public static final double RAISE_WRIST_SPEED = 0.5;
     public static final double LOWER_WRIST_SPEED = -0.5;
 
-    public static final int ARM_ENCODER_CHANNEL = 3;
-    public static final int WRIST_ENCODER_CHANNEL = 7;
+    public static final double WRIST_RETRACT_POS = 0.0;
+    public static final double WRIST_EXTEND_POS = 0.0;
+    //public static final int ARM_ENCODER_CHANNEL = 3;
+    //public static final int WRIST_ENCODER_CHANNEL = 7;
 
     public static final int ENCODER_TIME_DELAY = 3; // seconds
 }
