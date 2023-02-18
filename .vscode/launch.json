@@ -9,7 +9,7 @@
       "name": "Launch Main",
       "request": "launch",
       "mainClass": "frc.robot.Main",
-      "projectName": "SwerveBase"
+      "projectName": "FRC-8726-2023"
     },
     {
       "type": "wpilib",

@@ -4,9 +4,8 @@
 
 package frc.robot;
 
-
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import io.github.oblarg.oblog.Logger;
 import io.github.oblarg.oblog.annotations.Log;
@@ -20,64 +19,69 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Com
- * mand-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
- */
+
 public class RobotContainer {
+  private CommandXboxController operatorController;
+  private CommandJoystick driverJoystick;
+  private ArmSubsystem armSubsystem;
+  private WristSubsystem wristSubsystem;
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive drivetrain;
 
-  // private final CommandXboxController driverController;
-  
-  private final Joystick driverController;
-  
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     
     drivetrain = new SwerveDrive();
-    // driverController = new CommandXboxController(0);
-    
-    driverController = new Joystick(0);
+  
+    driverJoystick = new CommandJoystick(0);
+    operatorController = new CommandXboxController(Constants.OPERATOR_XBOX);
 
-    // Configure the button bindings
+    armSubsystem = new ArmSubsystem();
+    wristSubsystem = new WristSubsystem();
+
     configureButtonBindings();
-
-
-
-    
-
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
   private void configureButtonBindings() {
-    drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverController).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    
+    Trigger operatorBack = operatorController.back();
+    operatorBack.onTrue(new InstantCommand(() -> {armSubsystem.coneHeld();}));
+
+    Trigger operatorStart = operatorController.start();
+    operatorStart.onTrue(new InstantCommand(() -> {armSubsystem.coneNotHeld();}));
+    
+    // toggle wrist position
+    Trigger driverThumb = driverJoystick.top();
+    driverThumb.onTrue(new InstantCommand(()->{wristSubsystem.toggleExtend();}));
+    
+    // arm and wrist raise commands
+    Trigger driver3 = driverJoystick.button(3);
+    driver3.whileTrue(new StartEndCommand(()->{wristSubsystem.raiseArm();}, ()->{wristSubsystem.stop();}, wristSubsystem));
+
+    Trigger driver4 = driverJoystick.button(4);
+    driver4.whileTrue(new StartEndCommand(()->{wristSubsystem.lowerArm();}, ()->{wristSubsystem.stop();}, wristSubsystem));
+
+    Trigger driver5 = driverJoystick.button(5);
+    driver5.whileTrue(new StartEndCommand(()->{armSubsystem.raiseArm();}, ()->{armSubsystem.stay(); }, armSubsystem));
+  
+    drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverJoystick).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // Trigger driverRightBumper = driverController.rightBumper();
     // driverRightBumper.whileTrue(drivetrain.passiveBrake());
     // Trigger driverRightTrigger = driverController.rightTrigger();
     // driverRightTrigger.whileTrue(new RepeatCommand(new InstantCommand(()->drivetrain.normalZeroModules(),drivetrain)));
+ 
+    Trigger driver6 = driverJoystick.button(6);
+    driver6.whileTrue(new StartEndCommand(()->{armSubsystem.lowerArm();}, ()->{armSubsystem.stay();}, armSubsystem));
+
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_autoCommand;
-  }
+  //public Command getAutonomousCommand() {
+  //  return armCommand;
+ // }
 }
