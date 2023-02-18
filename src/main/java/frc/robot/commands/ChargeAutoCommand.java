@@ -13,16 +13,16 @@ import frc.robot.subsystems.SwerveDrive;
 public class ChargeAutoCommand extends CommandBase{
     
     private AHRS gyro;
-    
     private SwerveDrive drivetrain;
     public Timer timer;
 
-    public ChargeAutoCommand(SwerveDrive drivetrain){
+    public ChargeAutoCommand(SwerveDrive drivetrain, AHRS ahrsGyro){
         
         this.drivetrain = drivetrain;
         addRequirements(drivetrain);
+        this.gyro = ahrsGyro;
         timer = new Timer();
-        gyro = ahrsGyro;
+        
     }
 
     @Override

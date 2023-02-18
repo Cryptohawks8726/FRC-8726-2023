@@ -11,6 +11,9 @@ import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import io.github.oblarg.oblog.Logger;
 import io.github.oblarg.oblog.annotations.Log;
+
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.XboxTeleopDrive;
@@ -34,7 +37,7 @@ public class RobotContainer {
   private final SwerveDrive drivetrain;
 
   // private final CommandXboxController driverController;
-  
+  private AHRS gyro = new AHRS(SerialPort.Port.kUSB1);
   private final Joystick driverController;
   
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -44,19 +47,15 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    
+    gyro = new AHRS(SerialPort.Port.kUSB1);
     drivetrain = new SwerveDrive();
-    m_autoBalance = new ChargeAutoCommand(drivetrain);
+    m_autoBalance = new ChargeAutoCommand(drivetrain, gyro);
     // driverController = new CommandXboxController(0);
     
     driverController = new Joystick(0);
 
     // Configure the button bindings
     configureButtonBindings();
-
-
-
-    
 
   }
 
