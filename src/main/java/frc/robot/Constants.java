@@ -39,4 +39,10 @@ public final class Constants {
     public static final int OPERTOR_CONTROLLER = 0;
 
     public static final double WRIST_ENCODER_OFFSET = 0.0;
+
+    public static final int[] YELLOW_RGB = new int[] {255, 255, 0};
+    public static final int[] PURPLE_RGB = new int[] {75, 0, 130};
+
+    public static final int LED_PORT = 0;
+    public static final int LED_LENGTH = 0;
 }

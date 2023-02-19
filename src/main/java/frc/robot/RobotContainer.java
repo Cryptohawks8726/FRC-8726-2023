@@ -12,12 +12,14 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.GroundIntakeSubsystem;
 import frc.robot.subsystems.ArmIntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants;
+import frc.robot.LED;
 
 public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -31,13 +33,27 @@ public class RobotContainer {
   private final GroundIntakeSubsystem groundIntakeSubsystem = new GroundIntakeSubsystem();
   private final ArmIntakeSubsystem armIntakeSubsystem = new ArmIntakeSubsystem();
 
-  Trigger x, y;
+  private final LED ledStrip = new LED(Constants.LED_PORT, Constants.LED_LENGTH);
+
+  Trigger x, y, driver3, driver5, driver6;
 
   public RobotContainer() {
     configureButtonBindings();
   }
 
   private void configureButtonBindings() {
+    // turns off the LED strip
+    driver3 = driverJoystick.button(3);
+    driver3.onTrue(new InstantCommand(() -> {ledStrip.stop();}));
+
+    // sets LED strip to yellow
+    driver5 = driverJoystick.button(5);
+    driver3.onTrue(new InstantCommand(() -> {ledStrip.setRGB(Constants.YELLOW_RGB);}));
+
+    // sets LED strip to purple
+    driver6 = driverJoystick.button(6);
+    driver3.onTrue(new InstantCommand(() -> {ledStrip.setRGB(Constants.PURPLE_RGB);}));
+
     // holding x lowers and opens ground intake, releasing it closes and stores ground intake
     x = operatorController.x();
     x.whileTrue(new StartEndCommand(() -> {groundIntakeSubsystem.unstoreIntake();}, () -> {groundIntakeSubsystem.storeIntake();}, groundIntakeSubsystem));
