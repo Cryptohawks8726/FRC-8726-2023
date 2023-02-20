@@ -6,26 +6,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import frc.robot.commands.ExampleCommand;
-
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.GroundIntakeSubsystem;
 import frc.robot.subsystems.ArmIntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import frc.robot.Constants;
-import frc.robot.LED;
 
 public class RobotContainer {
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  
   private final CommandJoystick driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
   private final CommandXboxController operatorController = new CommandXboxController(Constants.OPERTOR_CONTROLLER);
 
@@ -56,14 +47,16 @@ public class RobotContainer {
 
     // holding x lowers and opens ground intake, releasing it closes and stores ground intake
     x = operatorController.x();
-    x.whileTrue(new StartEndCommand(() -> {groundIntakeSubsystem.unstoreIntake();}, () -> {groundIntakeSubsystem.storeIntake();}, groundIntakeSubsystem));
+    x.whileTrue(groundIntakeSubsystem.unstoreIntakeCmd()).onFalse(groundIntakeSubsystem.storeIntakeCmd());
+    //x.whileTrue(new StartEndCommand(() -> {groundIntakeSubsystem.unstoreIntake();}, () -> {groundIntakeSubsystem.storeIntake();}, groundIntakeSubsystem));
     
     // holding y lowers and opens arm intake, releasing it closes and stores arm intake
     y = operatorController.y();
-    y.whileTrue(new StartEndCommand(() -> {armIntakeSubsystem.unstoreIntake();}, () -> {armIntakeSubsystem.storeIntake();}, armIntakeSubsystem));
+    y.whileTrue(armIntakeSubsystem.unstoreIntakeCmd()).onFalse(armIntakeSubsystem.storeIntakeCmd());
+    //y.whileTrue(new StartEndCommand(() -> {armIntakeSubsystem.unstoreIntake();}, () -> {armIntakeSubsystem.storeIntake();}, armIntakeSubsystem));
   }
 
   public Command getAutonomousCommand() {
-    return m_autoCommand;
+    return null;
   }
 }

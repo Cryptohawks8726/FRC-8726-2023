@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
@@ -15,7 +16,12 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants;
 
 public class ArmIntakeSubsystem extends SubsystemBase {
@@ -43,7 +49,10 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         wristMotor.setIdleMode(IdleMode.kCoast);
 
         encoder = wristMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
-        
+
+        wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20); // send can encoder pos data every 20ms
+        wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20); // same but for vel
+
         posPid = wristMotor.getPIDController();
         posPid.setP(Constants.WRIST_kP);
         posPid.setI(Constants.WRIST_kI);
@@ -59,6 +68,7 @@ public class ArmIntakeSubsystem extends SubsystemBase {
             flag = false;
            }
         SmartDashboard.putNumber("Wrist Pos",encoder.getPosition());
+        SmartDashboard.putNumber("Wrist Deg", encoder.getPosition()*360);
     }
 
     @Override
@@ -84,42 +94,40 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         upperPiston.set(false);
     }
 
-    public double getEncoderPos() {
-        return encoder.getPosition();
-    }
-
     public void raiseIntake() {
-        wristMotor.set(Constants.RAISE_WRIST_SPEED);
+        posPid.setReference(Constants.RAISE_WRIST_SPEED, ControlType.kVelocity);
+        //wristMotor.set(Constants.RAISE_WRIST_SPEED);
     }
 
     public void lowerIntake() {
-        wristMotor.set(Constants.LOWER_WRIST_SPEED);
+        posPid.setReference(Constants.LOWER_WRIST_SPEED, ControlType.kVelocity);
+        //wristMotor.set(Constants.LOWER_WRIST_SPEED);
     }
 
     public void setReference(double setPoint){
         posPid.setReference(setPoint, ControlType.kPosition);
     }
 
-    public void retract(){
+    public void retractWrist(){
         isExtended = false;
         posPid.setReference(Constants.WRIST_RETRACT_POS, ControlType.kPosition);
     }
 
-    public void extend(){
+    public void extendWrist(){
         isExtended = true;
         posPid.setReference(Constants.WRIST_EXTEND_POS, ControlType.kPosition);
     }
 
     public void toggleExtend(){
         if(isExtended){
-            retract();
+            retractWrist();
         }else{
-            extend();
+            extendWrist();
         }
     } 
 
-    public void stop() {
-        wristMotor.set(0.0);
+    public void stopWrist() {
+        //wristMotor.set(0.0);
         posPid.setReference(encoder.getPosition(), ControlType.kPosition);
     }
 
@@ -133,7 +141,7 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         encoder.setZeroOffset(Constants.WRIST_ENCODER_OFFSET);
     }
 
-    public void unstoreIntake() {
+    /*public void unstoreIntake() {
         timer.start();
         lowerIntake();
         
@@ -143,9 +151,15 @@ public class ArmIntakeSubsystem extends SubsystemBase {
 
         timer.stop();
         timer.reset();
+    }*/
+
+    public SequentialCommandGroup unstoreIntakeCmd(){
+        return new InstantCommand(()->{this.lowerIntake();}, this)
+        .andThen(new WaitCommand(0.5))
+        .andThen(()->{this.openIntake();},this);
     }
 
-    public void storeIntake() {
+    /*public void storeIntake() {
         closeIntake();
         timer.start();
 
@@ -155,5 +169,13 @@ public class ArmIntakeSubsystem extends SubsystemBase {
 
         timer.stop();
         timer.reset();
+    }*/
+
+    public SequentialCommandGroup storeIntakeCmd(){
+        return new InstantCommand(()->{this.closeIntake();},this)
+        .withInterruptBehavior(InterruptionBehavior.kCancelSelf)
+        .andThen(new WaitCommand(0.5))
+        .andThen(()->{this.raiseIntake();},this)
+        ;
     }
 }

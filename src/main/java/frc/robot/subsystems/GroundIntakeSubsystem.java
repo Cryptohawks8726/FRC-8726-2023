@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import com.revrobotics.CANSparkMax;
@@ -16,8 +19,6 @@ public class GroundIntakeSubsystem extends SubsystemBase{
 
     private CANSparkMax leftMotor;
     private CANSparkMax rightMotor;
-    private MotorControllerGroup LMcontroller;
-    private MotorControllerGroup RMcontroller;
 
     private Timer timer;
     
@@ -25,9 +26,8 @@ public class GroundIntakeSubsystem extends SubsystemBase{
 
         leftMotor = new CANSparkMax(Constants.GROUND_INTAKE_LEFT_MOTOR, MotorType.kBrushless);
         rightMotor = new CANSparkMax(Constants.GROUND_INTAKE_RIGHT_MOTOR, MotorType.kBrushless);
-
-        LMcontroller = new MotorControllerGroup(leftMotor);
-        RMcontroller = new MotorControllerGroup(rightMotor);
+        leftMotor.setSmartCurrentLimit(20);
+        rightMotor.setSmartCurrentLimit(20);
 
         timer = new Timer();
             
@@ -36,18 +36,18 @@ public class GroundIntakeSubsystem extends SubsystemBase{
     }
 
     public void wheelsIn() {
-        LMcontroller.set(Constants.GROUND_INTAKE_WHEEL_SPEED);
-        RMcontroller.set(-Constants.GROUND_INTAKE_WHEEL_SPEED);
+        leftMotor.set(Constants.GROUND_INTAKE_WHEEL_SPEED);
+        rightMotor.set(-Constants.GROUND_INTAKE_WHEEL_SPEED);
     }
  
     public void wheelsOut() {
-        LMcontroller.set(-Constants.GROUND_INTAKE_WHEEL_SPEED);
-        RMcontroller.set(Constants.GROUND_INTAKE_WHEEL_SPEED);
+        leftMotor.set(-Constants.GROUND_INTAKE_WHEEL_SPEED);
+        rightMotor.set(Constants.GROUND_INTAKE_WHEEL_SPEED);
     }
 
     public void wheelsOff() {
-        LMcontroller.set(0);
-        RMcontroller.set(0);
+        leftMotor.set(0);
+        rightMotor.set(0);
     }
 
     public void lowerIntake() {
@@ -79,6 +79,13 @@ public class GroundIntakeSubsystem extends SubsystemBase{
         timer.reset();
     }
 
+    public SequentialCommandGroup unstoreIntakeCmd(){
+        return new InstantCommand(()->{this.lowerIntake();}, this)
+        .andThen(new WaitCommand(0.5))
+        .andThen(()->{this.openIntake();},this)
+        .andThen(()->{this.wheelsIn();},this);
+    }
+
     public void storeIntake() {
         closeIntake();
         timer.start();
@@ -90,6 +97,13 @@ public class GroundIntakeSubsystem extends SubsystemBase{
 
         timer.stop();
         timer.reset();
+    }
+
+    public SequentialCommandGroup storeIntakeCmd(){
+        return new InstantCommand(()->{this.closeIntake();}, this)
+        .andThen(new WaitCommand(0.5))
+        .andThen(()->{this.wheelsOff();},this)
+        .andThen(()->{this.raiseIntake();},this);
     }
 
     public void dropPiece() {
