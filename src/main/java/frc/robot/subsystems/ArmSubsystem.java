@@ -13,6 +13,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -41,6 +42,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     encoder = armMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 
+    armMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20); // send can encoder pos data every 20ms
+    armMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20); // same but for vel
+
     //posPID = new PIDController(Constants.ARM_kP, Constants.ARM_kI, Constants.ARM_kD);
     posPID = armMotor.getPIDController();
     posPID.setP(Arm.ARM_kP);
@@ -57,6 +61,7 @@ public class ArmSubsystem extends SubsystemBase {
       flag = false;
     }
     SmartDashboard.putNumber("Arm Pos",encoder.getPosition());
+    SmartDashboard.putNumber("Arm Deg",encoder.getPosition()*360);
   }
 
   public void setPosRefPoint(double pos) {
@@ -110,4 +115,8 @@ public class ArmSubsystem extends SubsystemBase {
   public void zeroOffset(){
     encoder.setZeroOffset(0.0);
   }
+
+  //public double calcAngle(double height){
+
+  //}
 }

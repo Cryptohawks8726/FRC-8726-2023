@@ -9,29 +9,14 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.subsystems.GroundIntakeSubsystem;
 import frc.robot.subsystems.ArmIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import io.github.oblarg.oblog.Logger;
-import io.github.oblarg.oblog.annotations.Log;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.XboxTeleopDrive;
 import frc.robot.subsystems.SwerveDrive;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
 public class RobotContainer {
