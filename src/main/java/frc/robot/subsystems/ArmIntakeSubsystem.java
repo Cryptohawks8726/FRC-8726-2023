@@ -55,9 +55,9 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20); // same but for vel
 
         posPid = wristMotor.getPIDController();
-        posPid.setP(Constants.WRIST_kP);
-        posPid.setI(Constants.WRIST_kI);
-        posPid.setD(Constants.WRIST_kD);
+        posPid.setP(ArmIntake.WRIST_kP);
+        posPid.setI(ArmIntake.WRIST_kI);
+        posPid.setD(ArmIntake.WRIST_kD);
         
         posPid.setFeedbackDevice(encoder);
     }

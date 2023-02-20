@@ -14,9 +14,6 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -116,7 +113,13 @@ public class ArmSubsystem extends SubsystemBase {
     encoder.setZeroOffset(0.0);
   }
 
-  //public double calcAngle(double height){
-
-  //}
+  /* 
+  calculate arm angle in deg to acheive height in inches
+  0 deg is parallel to the ground
+  */
+  public double calcAngle(double height){ 
+    double y = height-Arm.SHAFT_HEIGHT_INCHES;
+    double x = Math.sqrt(Math.pow(Arm.ARM_LENGTH_INCHES,2)-Math.pow(y, 2));
+    return Math.atan2(y, x);
+  }
 }

@@ -17,6 +17,8 @@ public final class Constants {
         
         public static final int ARM_SPARKMAX = 0;
         
+        public static final double SHAFT_HEIGHT_INCHES = 0.0;
+        public static final double ARM_LENGTH_INCHES = 35.0;
         public static final double ARM_kP = 0.05;
         public static final double ARM_kI = 0;
         public static final double ARM_kD = 0;
