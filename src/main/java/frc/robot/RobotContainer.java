@@ -12,11 +12,11 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.commands.XboxTeleopDrive;
 import frc.robot.subsystems.SwerveDrive;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
 
 public class RobotContainer {
@@ -35,7 +35,6 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    
     drivetrain = new SwerveDrive();
     armIntakeSubsystem = new ArmIntakeSubsystem();
     compressor = new Compressor(Constants.COMPRESSOR_ID, PneumaticsModuleType.REVPH);

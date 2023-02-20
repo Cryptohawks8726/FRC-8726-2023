@@ -194,6 +194,10 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         modules.get(FL.modPos).closedLoopDrive(new SwerveModuleState(0,Rotation2d.fromDegrees(Constants.Swerve.Module.FL.canCoderOffset)));
     }
 
+    public AHRS getGyro(){
+        return gyro;
+    }
+
     public void normalZeroModules(){
         modules.forEach(mod -> {mod.closedLoopDrive(new SwerveModuleState(0,Rotation2d.fromDegrees(0)));});
     }
@@ -215,6 +219,12 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
        // }
         
         return modPositionStates;
+    }
+
+    public void setModuleStates(SwerveModuleState[] updatedstates){
+        SwerveDriveKinematics.desaturateWheelSpeeds(updatedstates, Constants.Swerve.maxSpeed);
+        modules.forEach(mod -> {mod.closedLoopDrive(updatedstates[mod.getModPos().getVal()]);});
+
     }
 
     public void setEncoderOffsets(){

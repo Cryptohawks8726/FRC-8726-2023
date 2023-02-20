@@ -13,6 +13,11 @@ public final class Constants {
     public static final int OPERATOR_XBOX = 1;
     public static final int DRIVER_CONTROLLER = 0;
 
+    //Balance PID Constants
+    public static final double BalanceKp= 0.6;
+    public static final double BalanceKi= 0.00;
+    public static final double BalanceKd= 0.00;
+    
     public static final class Arm{
         
         public static final int ARM_SPARKMAX = 0;
@@ -31,6 +36,7 @@ public final class Constants {
         public static final double RAISE_ARM_SPEED = 0.2;
         public static final double LOWER_ARM_SPEED = -0.2;
     }
+
     
     public static final class GroundIntake{
         public static final int LEFT_SPARKMAX = 0;
