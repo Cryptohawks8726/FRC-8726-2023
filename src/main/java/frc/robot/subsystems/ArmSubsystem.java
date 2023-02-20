@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.Arm;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
@@ -36,16 +36,16 @@ public class ArmSubsystem extends SubsystemBase {
     isConeHeld = false;
     //encoder = new DutyCycleEncoder(Constants.ARM_ENCODER_CHANNEL); // if encoder is wired to rio
 
-    armMotor = new CANSparkMax(Constants.ARM_MOTOR_SPARKMAX, MotorType.kBrushless);
+    armMotor = new CANSparkMax(Arm.ARM_SPARKMAX, MotorType.kBrushless);
     armMotor.setIdleMode(IdleMode.kCoast);
 
     encoder = armMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
 
     //posPID = new PIDController(Constants.ARM_kP, Constants.ARM_kI, Constants.ARM_kD);
     posPID = armMotor.getPIDController();
-    posPID.setP(Constants.ARM_kP);
-    posPID.setI(Constants.ARM_kI);
-    posPID.setD(Constants.ARM_kD);
+    posPID.setP(Arm.ARM_kP);
+    posPID.setI(Arm.ARM_kI);
+    posPID.setD(Arm.ARM_kD);
   }
 
 
@@ -72,28 +72,28 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void raiseArm() {
-    setVelRefPoint(Constants.RAISE_ARM_SPEED);
-    //armMotor.set(Constants.RAISE_ARM_SPEED);
+    setVelRefPoint(Arm.RAISE_ARM_SPEED);
+    //armMotor.set(Arm.RAISE_ARM_SPEED);
   }
 
   public void lowerArm() {
-    setVelRefPoint(Constants.LOWER_ARM_SPEED);
-    //armMotor.set(Constants.LOWER_ARM_SPEED);
+    setVelRefPoint(Arm.LOWER_ARM_SPEED);
+    //armMotor.set(Arm.LOWER_ARM_SPEED);
   }
 
   
   public void coneNotHeld() {
     isConeHeld = true;
-    posPID.setP(Constants.ARM_kP);
-    posPID.setI(Constants.ARM_kI);
-    posPID.setD(Constants.ARM_kD);
+    posPID.setP(Arm.ARM_kP);
+    posPID.setI(Arm.ARM_kI);
+    posPID.setD(Arm.ARM_kD);
   }
 
   public void coneHeld() {
     isConeHeld = false;
-    posPID.setP(Constants.CONEHELD_kP);
-    posPID.setI(Constants.CONEHELD_kI);
-    posPID.setD(Constants.CONEHELD_kD);
+    posPID.setP(Arm.CONEHELD_kP);
+    posPID.setI(Arm.CONEHELD_kI);
+    posPID.setD(Arm.CONEHELD_kD);
   }
 
   public void stay() {

@@ -11,37 +11,53 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
     public static final int OPERATOR_XBOX = 1;
+    public static final int DRIVER_CONTROLLER = 0;
 
-    public static final double ARM_kP = 0.05;
-    public static final double ARM_kI = 0;
-    public static final double ARM_kD = 0;
+    public static final class Arm{
+        
+        public static final int ARM_SPARKMAX = 0;
+        
+        public static final double ARM_kP = 0.05;
+        public static final double ARM_kI = 0;
+        public static final double ARM_kD = 0;
 
-    //Change values after testing
-    public static final double CONEHELD_kP = 0.08;
-    public static final double CONEHELD_kI = 0;
-    public static final double CONEHELD_kD = 0;
+        //Change values after testing
+        public static final double CONEHELD_kP = 0.08;
+        public static final double CONEHELD_kI = 0;
+        public static final double CONEHELD_kD = 0;
 
-    public static final double WRIST_kP = 0.05;
-    public static final double WRIST_kI = 0;
-    public static final double WRIST_kD = 0;
-
-    public static final int WRIST_MOTOR_SPARKMAX = 0;
-    public static final int ARM_MOTOR_SPARKMAX = 0;
-
-    public static final double RAISE_ARM_SPEED = 0.2;
-    public static final double LOWER_ARM_SPEED = -0.2;
-
-    public static final double RAISE_WRIST_SPEED = 0.5;
-    public static final double LOWER_WRIST_SPEED = -0.5;
-
-    public static final double WRIST_RETRACT_POS = 0.0;
-    public static final double WRIST_EXTEND_POS = 0.0;
-    //public static final int ARM_ENCODER_CHANNEL = 3;
-    //public static final int WRIST_ENCODER_CHANNEL = 7;
-
-    public static final int ENCODER_TIME_DELAY = 3; // seconds
-
+        public static final double RAISE_ARM_SPEED = 0.2;
+        public static final double LOWER_ARM_SPEED = -0.2;
+    }
     
+    public static final class GroundIntake{
+        public static final int LEFT_SPARKMAX = 0;
+        public static final int RIGHT_SPARKMAX = 0;
+
+        public static final int LOWER_PISTON = 0;
+        public static final int UPPER_PISTON = 0;
+
+        public static final double WHEEL_SPEED = 0.3;
+    }
+
+    public static final class ArmIntake{
+        public static final int WRIST_SPARKMAX = 0;
+
+        public static final double WRIST_kP = 0.05;
+        public static final double WRIST_kI = 0.0;
+        public static final double WRIST_kD = 0.0;
+
+        public static final double RAISE_WRIST_SPEED = 0.5;
+        public static final double LOWER_WRIST_SPEED = -0.5;
+
+        public static final double WRIST_RETRACT_POS = 0.0;
+        public static final double WRIST_EXTEND_POS = 0.0;
+        
+        public static final double WRIST_ENCODER_OFFSET = 0.0;
+
+        public static final int LOWER_PISTON = 0;
+        public static final int UPPER_PISTON = 0;
+    }
     public static final class Swerve {
         
         // Physical Constants
@@ -135,4 +151,13 @@ public final class Constants {
         }
       
     }
+
+    public static final int COMPRESSOR_ID = 2;
+
+
+    public static final int[] YELLOW_RGB = new int[] {255, 255, 0};
+    public static final int[] PURPLE_RGB = new int[] {75, 0, 130};
+
+    public static final int LED_PORT = 0;
+    public static final int LED_LENGTH = 0;
 }
