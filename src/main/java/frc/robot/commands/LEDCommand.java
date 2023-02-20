@@ -12,7 +12,7 @@ import frc.robot.LED;
 public class LEDCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LEDSubsystem m_subsystem;
-  LED ledStrip = new LED(9, 20);
+  LED ledStrip = new LED(9, 37);
 
   /**
    * Creates a new ExampleCommand.
@@ -29,7 +29,7 @@ public class LEDCommand extends CommandBase {
   @Override
   public void initialize() {
     System.out.println("pressed");
-    ledStrip.ledSetRGB(0,0,255);
+    ledStrip.ledSetRGB(10,10,10);
     ledStrip.ledStart();
   }
 
