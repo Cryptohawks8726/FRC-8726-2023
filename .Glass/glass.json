@@ -35,7 +35,7 @@
               "autoFit": true
             }
           ],
-          "height": 332,
+          "height": 250,
           "series": [
             {
               "color": [
@@ -80,7 +80,7 @@
     "Plot <1>": {
       "plots": [
         {
-          "height": 332,
+          "height": 267,
           "series": [
             {
               "color": [
@@ -117,6 +117,32 @@
                 1.0
               ],
               "id": "NT:/SmartDashboard/BRsetvel"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <2>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 469,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Wrist Pos"
             }
           ]
         }

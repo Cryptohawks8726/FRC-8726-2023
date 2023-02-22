@@ -4,7 +4,11 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants;
 import frc.robot.Constants.Arm;
 
 import com.revrobotics.CANSparkMax;
@@ -14,18 +18,21 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class ArmSubsystem extends SubsystemBase {
   private SparkMaxAbsoluteEncoder encoder;
-  private double encoderVal;
   private Timer timer;
   private boolean flag = true;
   private boolean isConeHeld;
   private SparkMaxPIDController posPID;
   private CANSparkMax armMotor;
+  private Solenoid brake;
 
   public ArmSubsystem() {
     timer = new Timer();
@@ -38,6 +45,8 @@ public class ArmSubsystem extends SubsystemBase {
     armMotor.setIdleMode(IdleMode.kCoast);
 
     encoder = armMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+    encoder.setZeroOffset(Arm.ENCODER_OFFSET_CONFIG);
+    encoder.setPositionConversionFactor(Arm.ENCODER_POS_FACTOR);
 
     armMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20); // send can encoder pos data every 20ms
     armMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20); // same but for vel
@@ -47,43 +56,58 @@ public class ArmSubsystem extends SubsystemBase {
     posPID.setP(Arm.ARM_kP);
     posPID.setI(Arm.ARM_kI);
     posPID.setD(Arm.ARM_kD);
+    
+    brake = new Solenoid(PneumaticsModuleType.REVPH, Arm.BRAKE_PISTON);
   }
 
 
   @Override
   public void periodic() {
-    if (flag){
-      zeroOffset();
-      // zeroEncoder();
-      flag = false;
-    }
-    SmartDashboard.putNumber("Arm Pos",encoder.getPosition());
-    SmartDashboard.putNumber("Arm Deg",encoder.getPosition()*360);
+    SmartDashboard.putNumber("Arm Pos",getRawEncoderPos());
+    SmartDashboard.putNumber("Arm Deg",getDegrees());
   }
 
-  public void setPosRefPoint(double pos) {
+  public void setRawPosRefPoint(double pos){
     posPID.setReference(pos, ControlType.kPosition);
   }
 
-  public void setVelRefPoint(double vel){
-    posPID.setReference(vel, ControlType.kVelocity);
+  public void setDegRefPoint(double degrees){
+    if(degrees<-88){
+      degrees = -88;
+    }
+    if(degrees>10){
+      degrees = 10;
+    }
+    posPID.setReference(degrees+Arm.ENCODER_OFFSET_SUBTRACT, ControlType.kPosition);
   }
+
+  /*public void setVelRefPoint(double vel){
+    posPID.setReference(vel, ControlType.kVelocity);
+  }*/
   
-  public double getEncoderPos() {
-    return encoderVal;
+  public double getRawEncoderPos() {
+    return encoder.getPosition();
+  }
+
+  public double getDegrees(){
+    return encoder.getPosition()-Arm.ENCODER_OFFSET_SUBTRACT;
   }
 
   public void raiseArm() {
-    setVelRefPoint(Arm.RAISE_ARM_SPEED);
+    releaseBrake();
+    setDegRefPoint(getDegrees()+2);
+    //posPid.setReference()
+    // setVelRefPoint(Arm.RAISE_ARM_SPEED);
     //armMotor.set(Arm.RAISE_ARM_SPEED);
   }
 
   public void lowerArm() {
-    setVelRefPoint(Arm.LOWER_ARM_SPEED);
+    releaseBrake();
+    setDegRefPoint(getDegrees()-2);
+    
     //armMotor.set(Arm.LOWER_ARM_SPEED);
   }
 
-  
   public void coneNotHeld() {
     isConeHeld = true;
     posPID.setP(Arm.ARM_kP);
@@ -99,27 +123,30 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void stay() {
-    setPosRefPoint(encoder.getPosition());
+    setDegRefPoint(getDegrees());
     //armMotor.set(-posPID.calculate(encoderVal)); // why is this negative? we can use the 
-  }
-
-  public void zeroEncoder(){ // remove once we have offsets. I don't see a use for generating new offsets every match
-    encoder.setZeroOffset(encoder.getPosition()+encoder.getZeroOffset());
-    SmartDashboard.putNumber("Arm Encoder Offset",encoder.getZeroOffset());
-    SmartDashboard.putNumber("Arm Pos after Offset",encoder.getPosition()); // should be 0, double checking
-  }
-
-  public void zeroOffset(){
-    encoder.setZeroOffset(0.0);
   }
 
   /* 
   calculate arm angle in deg to acheive height in inches
   0 deg is parallel to the ground
+  - down
   */
   public double calcAngle(double height){ 
     double y = height-Arm.SHAFT_HEIGHT_INCHES;
     double x = Math.sqrt(Math.pow(Arm.ARM_LENGTH_INCHES,2)-Math.pow(y, 2));
     return Math.atan2(y, x);
+  }
+
+  public SequentialCommandGroup setBrake(){
+    return new InstantCommand(()->{this.stay();},this)
+    .andThen(new WaitCommand(0.5))
+    .andThen(()->{this.setBrake();});
+    //brake.set(false);
+    //stay();
+  }
+
+  public void releaseBrake(){
+    brake.set(true);
   }
 }

@@ -7,8 +7,8 @@ public class LED {
     private AddressableLED led;
     private AddressableLEDBuffer ledLength;
 
-    public LED(int DigitalPort, int bufferLength) {
-        led = new AddressableLED(DigitalPort); 
+    public LED(int digitalPort, int bufferLength) {
+        led = new AddressableLED(digitalPort); 
         ledLength = new AddressableLEDBuffer(bufferLength); 
         
         led.setLength(ledLength.getLength());
@@ -18,6 +18,7 @@ public class LED {
     }
 
     public void stop() {
+        setRGB(Constants.OFF_RGB);
         led.stop();
     }
 

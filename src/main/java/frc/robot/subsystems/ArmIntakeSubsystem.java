@@ -22,12 +22,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import frc.robot.Constants.ArmIntake;;
+import frc.robot.Constants.ArmIntake;
 
 
 public class ArmIntakeSubsystem extends SubsystemBase {
-    private Solenoid lowerPiston;
-    private Solenoid upperPiston;
+    private Solenoid piston;
     private SparkMaxAbsoluteEncoder encoder;
     private Timer timer;
     private boolean flag;
@@ -36,8 +35,7 @@ public class ArmIntakeSubsystem extends SubsystemBase {
     private SparkMaxPIDController posPid;
 
     public ArmIntakeSubsystem() {
-        lowerPiston = new Solenoid(PneumaticsModuleType.REVPH, ArmIntake.LOWER_PISTON);
-        upperPiston = new Solenoid(PneumaticsModuleType.REVPH, ArmIntake.UPPER_PISTON);
+        piston = new Solenoid(PneumaticsModuleType.REVPH, ArmIntake.PISTON);
     
         timer = new Timer();
         timer.reset();
@@ -48,51 +46,48 @@ public class ArmIntakeSubsystem extends SubsystemBase {
 
         wristMotor = new CANSparkMax(ArmIntake.WRIST_SPARKMAX, MotorType.kBrushed);
         wristMotor.setIdleMode(IdleMode.kCoast);
+        wristMotor.setSmartCurrentLimit(30);
 
         encoder = wristMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
-
+        encoder.setPositionConversionFactor(1);
+        encoder.setZeroOffset(ArmIntake.WRIST_ENCODER_OFFSET);
+        
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20); // send can encoder pos data every 20ms
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20); // same but for vel
-
+        wristMotor.setInverted(true);
         posPid = wristMotor.getPIDController();
+        posPid.setPositionPIDWrappingEnabled(false);
         posPid.setP(ArmIntake.WRIST_kP);
         posPid.setI(ArmIntake.WRIST_kI);
         posPid.setD(ArmIntake.WRIST_kD);
-        
+        //posPid.setOutputRange(-0.5, 0.5);
         posPid.setFeedbackDevice(encoder);
+        
     }
 
     @Override
     public void periodic() {
-        if(flag) {
-            //zeroEncoder();
-            flag = false;
-           }
         SmartDashboard.putNumber("Wrist Pos",encoder.getPosition());
-        SmartDashboard.putNumber("Wrist Deg", encoder.getPosition()*360);
+        
     }
 
     @Override
     public void simulationPeriodic() {}
 
     public void lowerPistonToggleCollapse(){
-        if (lowerPiston.get()) {
-            lowerPiston.set(true);
-            upperPiston.set(true);
+        if (piston.get()) {
+            piston.set(false);
         } else {
-            lowerPiston.set(false);
-            upperPiston.set(false);
+            piston.set(true);
         }
     }
 
     public void openIntake() {
-        lowerPiston.set(true);
-        upperPiston.set(true);
+        piston.set(true);
     }
 
     public void closeIntake() {
-        lowerPiston.set(false);
-        upperPiston.set(false);
+        piston.set(false);
     }
 
     public void raiseIntake() {
@@ -112,11 +107,14 @@ public class ArmIntakeSubsystem extends SubsystemBase {
     public void retractWrist(){
         isExtended = false;
         posPid.setReference(ArmIntake.WRIST_RETRACT_POS, ControlType.kPosition);
+        SmartDashboard.putNumber("ref",ArmIntake.WRIST_RETRACT_POS);
+        System.out.println("printy");
     }
 
     public void extendWrist(){
         isExtended = true;
         posPid.setReference(ArmIntake.WRIST_EXTEND_POS, ControlType.kPosition);
+        SmartDashboard.putNumber("ref",ArmIntake.WRIST_EXTEND_POS);
     }
 
     public void toggleExtend(){
@@ -142,6 +140,9 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         encoder.setZeroOffset(ArmIntake.WRIST_ENCODER_OFFSET);
     }
 
+    public void setSpeed(double speed){
+        wristMotor.set(speed);
+    }
     /*public void unstoreIntake() {
         timer.start();
         lowerIntake();
@@ -155,7 +156,7 @@ public class ArmIntakeSubsystem extends SubsystemBase {
     }*/
 
     public SequentialCommandGroup unstoreIntakeCmd(){
-        return new InstantCommand(()->{this.lowerIntake();}, this) //change to this.extendWrist later
+        return new InstantCommand(()->{this.extendWrist();}, this) //change to this.extendWrist later
         .andThen(new WaitCommand(0.5))
         .andThen(()->{this.stopWrist();}) // removed when change to extend
         .andThen(()->{this.openIntake();});
@@ -176,7 +177,7 @@ public class ArmIntakeSubsystem extends SubsystemBase {
     public SequentialCommandGroup storeIntakeCmd(){
         return new InstantCommand(()->{this.closeIntake();},this) 
         .andThen(new WaitCommand(0.5)) 
-        .andThen(()->{this.raiseIntake();}) // change to this.retractWrist later
+        .andThen(()->{this.retractWrist();}) // change to this.retractWrist later
         .andThen(new WaitCommand(0.5)) //remove after change
         .andThen(()->{this.stopWrist();}) //remove after change
         ;

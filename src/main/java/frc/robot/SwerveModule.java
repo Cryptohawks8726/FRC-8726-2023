@@ -39,7 +39,7 @@ public class SwerveModule implements Loggable{
         // config can coder
        // absEncoder.configFactoryDefault();
         canCoderOffset = modConstants.canCoderOffset;
-       absEncoder.configMagnetOffset(canCoderOffset);
+        absEncoder.configMagnetOffset(canCoderOffset);
         absEncoder.setPositionToAbsolute(0);
         
         
@@ -53,11 +53,11 @@ public class SwerveModule implements Loggable{
         steerMotor.restoreFactoryDefaults();
         
         driveMotor.setIdleMode(IdleMode.kCoast);
-        steerMotor.setIdleMode(IdleMode.kBrake);
+        steerMotor.setIdleMode(IdleMode.kCoast);
         
         //lower later
         driveMotor.setSmartCurrentLimit(40); 
-        steerMotor.setSmartCurrentLimit(40);
+        steerMotor.setSmartCurrentLimit(30);
         
         // doesn't work for drive, needed for pure rot
         //if(modPos == 1 || modPos == 3){

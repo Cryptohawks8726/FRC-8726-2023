@@ -17,54 +17,68 @@ public final class Constants {
     public static final double BalanceKp= 0.6;
     public static final double BalanceKi= 0.00;
     public static final double BalanceKd= 0.00;
+
+    
     
     public static final class Arm{
         
-        public static final int ARM_SPARKMAX = 0;
+        public static final int ARM_SPARKMAX = 56;
+        public static final int BRAKE_PISTON = 9;
         
-        public static final double SHAFT_HEIGHT_INCHES = 0.0;
+        public static final double SHAFT_HEIGHT_INCHES = 40.625;
         public static final double ARM_LENGTH_INCHES = 35.0;
+        
+        //Change values after testing
         public static final double ARM_kP = 0.05;
         public static final double ARM_kI = 0;
         public static final double ARM_kD = 0;
-
-        //Change values after testing
         public static final double CONEHELD_kP = 0.08;
         public static final double CONEHELD_kI = 0;
         public static final double CONEHELD_kD = 0;
 
+        public static final double HIGHNODE_HEIGHT = 0.0;
+        public static final double HIGHNODE_ANGLE = 0.0;
+        public static final double MIDNODE_HEIGHT = 0.0;
+        public static final double MIDNODE_ANGLE = 0.0;
+        public static final double SHELF_HEIGHT = 0.0;
+        public static final double SHELF_ANGLE = 0.0;
+        public static final double RETRACTED_ANGLE = -88;
+
         public static final double RAISE_ARM_SPEED = 0.2;
         public static final double LOWER_ARM_SPEED = -0.2;
+        public static final double ENCODER_OFFSET_CONFIG = 335.0433326;
+        public static final double ENCODER_OFFSET_SUBTRACT = 311.525;
+        public static final double ENCODER_POS_FACTOR = 360;
     }
 
     
     public static final class GroundIntake{
-        public static final int LEFT_SPARKMAX = 0;
-        public static final int RIGHT_SPARKMAX = 0;
+        public static final int LEFT_SPARKMAX = 57;
+        public static final int RIGHT_SPARKMAX = 58;
 
-        public static final int LOWER_PISTON = 0;
-        public static final int UPPER_PISTON = 0;
+        public static final int CLAMP_PISTON = 12;
+        public static final int UPPER_PISTON = 7;
+        public static final int LOWER_PISTON = 8;
 
         public static final double WHEEL_SPEED = 0.3;
     }
 
     public static final class ArmIntake{
-        public static final int WRIST_SPARKMAX = 0;
+        public static final int WRIST_SPARKMAX = 55;
 
-        public static final double WRIST_kP = 0.05;
+        public static final double WRIST_kP = 3.5;
         public static final double WRIST_kI = 0.0;
         public static final double WRIST_kD = 0.0;
 
         public static final double RAISE_WRIST_SPEED = 0.5;
         public static final double LOWER_WRIST_SPEED = -0.5;
 
-        public static final double WRIST_RETRACT_POS = 0.0;
-        public static final double WRIST_EXTEND_POS = 0.0;
+        public static final double WRIST_RETRACT_POS = 0.85;
+        public static final double WRIST_EXTEND_POS = 0.35;
         
-        public static final double WRIST_ENCODER_OFFSET = 0.0;
+        public static final double WRIST_ENCODER_OFFSET = 0.2;//322.0556259;
 
-        public static final int LOWER_PISTON = 0;
-        public static final int UPPER_PISTON = 0;
+        public static final int PISTON = 10;
     }
     public static final class Swerve {
         
@@ -160,12 +174,13 @@ public final class Constants {
       
     }
 
-    public static final int COMPRESSOR_ID = 2;
+    public static final int COMPRESSOR_ID = 1;
 
 
     public static final int[] YELLOW_RGB = new int[] {255, 255, 0};
     public static final int[] PURPLE_RGB = new int[] {75, 0, 130};
-
-    public static final int LED_PORT = 0;
-    public static final int LED_LENGTH = 0;
+    public static final int[] WHITE_RGB = new int[] {255,255,255};
+    public static final int[] OFF_RGB = new int[] {0,0,0};
+    public static final int LED_PORT = 9;
+    public static final int LED_LENGTH = 37;
 }
