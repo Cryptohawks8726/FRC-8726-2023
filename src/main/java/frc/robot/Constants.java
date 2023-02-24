@@ -7,8 +7,11 @@ package frc.robot;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -144,11 +147,10 @@ public final class Constants {
                 this.canCoderOffset = canCoderOffset;
                 this.displacment = displacment;
             }
-
         }
       
     }
-    public final class PhotonVisionConstants{
+    public final static class PhotonVisionConstants{
         // Constants such as camera and target height stored. Change per robot and goal!
         // Actual values will be dependent on final bot
         // Measured in meters
@@ -156,17 +158,32 @@ public final class Constants {
         public static final double TARGET_HEIGHT_METERS = 1;
         // Angle between horizontal and the camera.
         public static final double CAMERA_PITCH_RADIANS = 1;
+
+        /** Physical location of the apriltag camera on the robot, relative to the center of the robot. */
+        public static final Transform3d APRILTAG_CAMERA_TO_ROBOT =
+            new Transform3d(new Translation3d(0.0, -0.1375, -.90), new Rotation3d(0.0, 0.0, -0.10));
+        
         // How far from the target we want to be
         public static final double GOAL_RANGE_METERS = 1;
+
+        public static final double FIELD_LENGTH_METERS = 16.54175;
+        public static final double FIELD_WIDTH_METERS = 8.0137;
+        
 
         public static final double kCameraHeight = 1;
         public static final double kTargetHeight = 1;
         public static final double kCameraPitch = 0;
         public static final double kTargetPitch = 0;
 
-        public static final double default2dPose_X = 0;
-        public static final double default2dPose_Y = 0;
-        //public static final Rotation2d default2dPose_rotation = new Rotation2d(0);
+        public static final double default2dPose_X = 1;
+        public static final double default2dPose_Y = 1;
+        
+        public static final double final2dPose_X = 3;
+        public static final double final2dPose_Y = 3; 
+        
+        public static final double error2dPose_X = -1;
+        public static final double error2dPose_Y = -1;  
+
 
 
 

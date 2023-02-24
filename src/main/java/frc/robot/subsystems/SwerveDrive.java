@@ -233,6 +233,9 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         modules.forEach(mod -> {mod.setEncoderOffset();});
     }
 
+    public SwerveDrivePoseEstimator getPoseEstimator(){
+        return odometry;
+    }
     public void logValues(){ 
         Pose2d estimatedPostition = odometry.getEstimatedPosition();
 

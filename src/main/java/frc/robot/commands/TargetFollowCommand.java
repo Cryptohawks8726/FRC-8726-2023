@@ -89,8 +89,7 @@ public class TargetFollowCommand extends CommandBase{
 
         }else{
             System.out.println("not working");
-        }
-                
+        }  
       }
     
       // Called once the command ends or is interrupted.

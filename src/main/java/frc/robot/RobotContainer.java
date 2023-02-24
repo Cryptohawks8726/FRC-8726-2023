@@ -4,21 +4,27 @@
 
 package frc.robot;
 
+import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.TargetFollowCommand;
+import frc.robot.commands.PhotonVisionCommand;
+
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.PoseEstimatorSubsystem;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
-
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Com
@@ -30,26 +36,25 @@ import edu.wpi.first.wpilibj.SerialPort;
 public class RobotContainer {
   private AHRS gyro = new AHRS(SerialPort.Port.kUSB1);
 
-  // The robot's subsystems and commands are defined here...
-  private final PhotonVision m_photonVision = new PhotonVision(gyro);
-  private final SwerveDrive drivetrain = new SwerveDrive(gyro);
-  private final XboxController operatorController = new XboxController(0); 
+  public PhotonCamera photonCamera = new PhotonCamera("Spinel1");
 
-  // private final CommandXboxController driverController;
-  //private final Joystick driverController = new Joystick(0);
-  
+  // The robot's subsystems and commands are defined here...
+  private final SwerveDrive drivetrain = new SwerveDrive(gyro);
+  private final CommandXboxController operatorController = new CommandXboxController(0);
+  private final PoseEstimatorSubsystem poseEstimator = new PoseEstimatorSubsystem(photonCamera, drivetrain); 
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    
-    // driverController = new CommandXboxController(0);
-    //driverController = new Joystick(0);
-    
+
     // Configure the button bindings
     configureButtonBindings();
 
-    m_photonVision.setDefaultCommand(new TargetFollowCommand(m_photonVision, operatorController, drivetrain));
+    operatorController.leftTrigger().whileTrue(new PhotonVisionCommand(drivetrain, poseEstimator::getCurrentPose,
+      new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0.0))));
+
 
   }
 
@@ -75,5 +80,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return m_autoCommand;
+  }
+  public void onAllianceChanged(Alliance alliance) {
+    //poseEstimator.setAlliance(alliance);
   }
 }
