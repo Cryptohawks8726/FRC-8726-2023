@@ -15,6 +15,7 @@ public class Balance extends CommandBase {
     double angTolerance = 2;
     public PIDController balance;
     public AHRS gyro;
+    private Boolean isBalanced;
     private SwerveDrive drivetrain;
     private Command passiveBrake;
     public Balance(SwerveDrive drivetrain) {
@@ -23,6 +24,7 @@ public class Balance extends CommandBase {
         gyro = drivetrain.getGyro();
         passiveBrake = drivetrain.passiveBrake();
         balance.setSetpoint(0);
+        isBalanced = false;
     }
 
     @Override
@@ -34,18 +36,22 @@ public class Balance extends CommandBase {
             //SwerveModuleState modState = new SwerveModuleState(0,Rotation2d.fromDegrees(0));
             //drivetrain.setModuleStates(new SwerveModuleState[]{modState,modState,modState,modState});
             System.out.println("stable");
-            if(!passiveBrake.isScheduled()){
-                passiveBrake.schedule();
-            }
+            isBalanced = true;
+            //if(!passiveBrake.isScheduled()){
+           //     passiveBrake.schedule();
+           // }
         } else {
             SwerveModuleState modState = new SwerveModuleState(balance.calculate(ang),Rotation2d.fromDegrees(0));
             drivetrain.setModuleStates(new SwerveModuleState[]{modState,modState,modState,modState});
         }
     }
-
+     @Override 
+     public boolean isFinished(){
+        return isBalanced;
+     }
 
     @Override
     public void end(boolean isInterrupted){
-        passiveBrake.cancel();
+        //passiveBrake.cancel();
     }
 }

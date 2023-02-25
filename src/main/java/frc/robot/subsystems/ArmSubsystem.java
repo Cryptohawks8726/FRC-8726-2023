@@ -28,17 +28,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ArmSubsystem extends SubsystemBase {
   private SparkMaxAbsoluteEncoder encoder;
   private Timer timer;
-  private boolean flag = true;
   private boolean isConeHeld;
   private SparkMaxPIDController posPID;
   private CANSparkMax armMotor;
   private Solenoid brake;
 
   public ArmSubsystem() {
-    timer = new Timer();
-    timer.reset();
-    timer.start();
     isConeHeld = false;
+    timer = new Timer();
     //encoder = new DutyCycleEncoder(Constants.ARM_ENCODER_CHANNEL); // if encoder is wired to rio
 
     armMotor = new CANSparkMax(Arm.ARM_SPARKMAX, MotorType.kBrushless);
@@ -56,6 +53,8 @@ public class ArmSubsystem extends SubsystemBase {
     posPID.setP(Arm.ARM_kP);
     posPID.setI(Arm.ARM_kI);
     posPID.setD(Arm.ARM_kD);
+    posPID.setFeedbackDevice(encoder);
+    posPID.setOutputRange(-0.05, 0.2, 0);
     
     brake = new Solenoid(PneumaticsModuleType.REVPH, Arm.BRAKE_PISTON);
   }
@@ -65,13 +64,29 @@ public class ArmSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Arm Pos",getRawEncoderPos());
     SmartDashboard.putNumber("Arm Deg",getDegrees());
+    SmartDashboard.putNumber("Corrected Deg to Ref",getDegrees()+Arm.ENCODER_OFFSET_SUBTRACT);
+    SmartDashboard.putNumber("Applied Output",armMotor.getAppliedOutput());
+
+   
   }
 
-  public void setRawPosRefPoint(double pos){
-    posPID.setReference(pos, ControlType.kPosition);
+  public SequentialCommandGroup setRawPosRefPoint(double pos){
+    return new InstantCommand(()->{releaseBrake();},this)
+    .andThen(()->{posPID.setReference(getRawEncoderPos()+10, ControlType.kPosition);})
+    .andThen(new WaitCommand(0.5))
+    .andThen(()->{posPID.setReference(pos, ControlType.kPosition);});
   }
 
-  public void setDegRefPoint(double degrees){
+  public SequentialCommandGroup setDegPosRefPoint(double deg){
+    return new InstantCommand(()->{releaseBrake();},this)
+    .andThen(()->{setDegRefPoint(getDegrees() + 10);})
+    .andThen(new WaitCommand(0.5))
+    .andThen(()->{posPID.setReference(deg+Arm.ENCODER_OFFSET_SUBTRACT, ControlType.kPosition);});
+  }
+
+
+ public void setDegRefPoint(double degrees){
+    releaseBrake();
     if(degrees<-88){
       degrees = -88;
     }
@@ -90,7 +105,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double getDegrees(){
-    return encoder.getPosition()-Arm.ENCODER_OFFSET_SUBTRACT;
+    return encoder.getPosition() - Arm.ENCODER_OFFSET_SUBTRACT;
   }
 
   public void raiseArm() {
@@ -103,6 +118,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void lowerArm() {
     releaseBrake();
+
     setDegRefPoint(getDegrees()-2);
     
     //armMotor.set(Arm.LOWER_ARM_SPEED);
@@ -123,6 +139,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void stay() {
+    //setRawPosRefPoint(getRawEncoderPos());
     setDegRefPoint(getDegrees());
     //armMotor.set(-posPID.calculate(encoderVal)); // why is this negative? we can use the 
   }
@@ -135,18 +152,22 @@ public class ArmSubsystem extends SubsystemBase {
   public double calcAngle(double height){ 
     double y = height-Arm.SHAFT_HEIGHT_INCHES;
     double x = Math.sqrt(Math.pow(Arm.ARM_LENGTH_INCHES,2)-Math.pow(y, 2));
-    return Math.atan2(y, x);
+    return Math.atan2(y, x)*180.0/Math.PI;
   }
 
   public SequentialCommandGroup setBrake(){
     return new InstantCommand(()->{this.stay();},this)
-    .andThen(new WaitCommand(0.5))
-    .andThen(()->{this.setBrake();});
+    .andThen(new WaitCommand(0.15))
+    .andThen(()->{this.enableBrake();})
+    .andThen(()->{this.posPID.setReference(getRawEncoderPos(), ControlType.kPosition);});
     //brake.set(false);
     //stay();
   }
 
-  public void releaseBrake(){
+  public void enableBrake(){
     brake.set(true);
+  }
+  public void releaseBrake(){
+    brake.set(false);
   }
 }

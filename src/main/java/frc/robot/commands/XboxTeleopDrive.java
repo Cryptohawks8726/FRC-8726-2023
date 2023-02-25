@@ -18,8 +18,6 @@ public class XboxTeleopDrive extends CommandBase{
     private Rotation2d lastHeading;
     private boolean isHeadingSet;
     private PIDController headingPID;
-
-    // TODO: Implement Optimization
     
     public XboxTeleopDrive(SwerveDrive drivetrain, /*CommandXboxController controller*/ CommandJoystick controller){
         this.drivetrain = drivetrain;
@@ -43,35 +41,33 @@ public class XboxTeleopDrive extends CommandBase{
         // boolean isRobotRelative = controller.leftBumper().getAsBoolean();
 
         boolean isRobotRelative = controller.trigger().getAsBoolean();
-        isRobotRelative=false;
     
         // Get Controller Values
-        // FIXME: xVel and yVel pull the wrong values? Flip them
         // double xVel = (Math.abs(controller.getLeftY()) > 0.1 ? controller.getLeftY() : 0.0); 
         // double yVel = (Math.abs(controller.getLeftX()) > 0.1 ? controller.getLeftX() : 0.0);
         // double thetaVel = (Math.abs(controller.getRightX()) > 0.1 ? controller.getRightX() * Constants.Swerve.maxAngularSpeed : 0.0);
         
-        double xVel = (Math.abs(controller.getY()) > 0.1 ? controller.getY() : 0.0); 
-        double yVel = (Math.abs(controller.getX()) > 0.1 ? controller.getX() : 0.0);
-        double thetaVel = (Math.abs(controller.getZ()) > 0.1 ? controller.getZ() * Constants.Swerve.maxAngularSpeed : 0.0);
+        double xVel = (Math.abs(controller.getY()) > 0.2 ? controller.getY() : 0.0); 
+        double yVel = (Math.abs(controller.getX()) > 0.2 ? controller.getX() : 0.0);
+        double thetaVel = (Math.abs(controller.getZ()) > 0.2 ? controller.getZ() * Constants.Swerve.maxAngularSpeed : 0.0);
         double sensitivity = (controller.getThrottle()*-1)+1.01;
         xVel = Math.signum(xVel) * Math.pow(xVel,2) * Constants.Swerve.maxSpeed * sensitivity; //square input while preserving sign
         yVel = Math.signum(yVel) * Math.pow(yVel,2) * Constants.Swerve.maxSpeed * sensitivity;
 
         // maintain heading if there's no rotational input
-         if (Math.abs(thetaVel) < 0.1){
-            if (isHeadingSet == false){
-                headingPID.reset();
-                isHeadingSet = true;
-                lastHeading = drivetrain.getRobotAngle();
-                headingPID.setSetpoint(lastHeading.getDegrees()%180);
-                thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
-            }else{
-                thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
-            }
-        } else{
-            isHeadingSet = false;
-        }
+        //  if (Math.abs(thetaVel) < 0.1){
+        //     if (isHeadingSet == false){
+        //         headingPID.reset();
+        //         isHeadingSet = true;
+        //         lastHeading = drivetrain.getRobotAngle();
+        //         headingPID.setSetpoint(lastHeading.getDegrees()%180);
+        //         thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
+        //     }else{
+        //         thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
+        //     }
+        // } else{
+        //     isHeadingSet = false;
+        // }
         
         drivetrain.drive(
              isRobotRelative ? new ChassisSpeeds(xVel, yVel, thetaVel)

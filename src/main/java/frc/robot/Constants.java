@@ -29,20 +29,21 @@ public final class Constants {
         public static final double ARM_LENGTH_INCHES = 35.0;
         
         //Change values after testing
-        public static final double ARM_kP = 0.05;
+        public static final double ARM_kP = 0.009;
         public static final double ARM_kI = 0;
         public static final double ARM_kD = 0;
         public static final double CONEHELD_kP = 0.08;
         public static final double CONEHELD_kI = 0;
         public static final double CONEHELD_kD = 0;
 
-        public static final double HIGHNODE_HEIGHT = 0.0;
-        public static final double HIGHNODE_ANGLE = 0.0;
-        public static final double MIDNODE_HEIGHT = 0.0;
-        public static final double MIDNODE_ANGLE = 0.0;
-        public static final double SHELF_HEIGHT = 0.0;
-        public static final double SHELF_ANGLE = 0.0;
-        public static final double RETRACTED_ANGLE = -88;
+        //inches 
+        //public static final double HIGHNODE_HEIGHT = 46; 
+        public static final double HIGHNODE_ANGLE = 30.0;
+        //public static final double MIDNODE_HEIGHT = 36.0;
+       // public static final double SHELF_HEIGHT = 24.0;
+        public static final double SHELF_ANGLE = 13.0;
+        public static final double RETRACTED_ANGLE = -100.0;
+        public static final double FLOOR_ANGLE = -85.0;
 
         public static final double RAISE_ARM_SPEED = 0.2;
         public static final double LOWER_ARM_SPEED = -0.2;
@@ -60,7 +61,7 @@ public final class Constants {
         public static final int UPPER_PISTON = 7;
         public static final int LOWER_PISTON = 8;
 
-        public static final double WHEEL_SPEED = 0.3;
+        public static final double WHEEL_SPEED = 0.2;
     }
 
     public static final class ArmIntake{
@@ -73,8 +74,8 @@ public final class Constants {
         public static final double RAISE_WRIST_SPEED = 0.5;
         public static final double LOWER_WRIST_SPEED = -0.5;
 
-        public static final double WRIST_RETRACT_POS = 0.85;
-        public static final double WRIST_EXTEND_POS = 0.35;
+        public static final double WRIST_RETRACT_POS = 0.35;
+        public static final double WRIST_EXTEND_POS = 0.85;
         
         public static final double WRIST_ENCODER_OFFSET = 0.2;//322.0556259;
 
@@ -90,8 +91,8 @@ public final class Constants {
         public static final double wheelDiameterMeters = 0.098; // Measure and check later. Compensating for tread wear over comp could be cool
         public static final double driveConversionFactor = wheelDiameterMeters * Math.PI / driveGearRatio;
 
-        public static final double maxSpeed = 5.0; // m/s, I have no clue if this is realistic // TODO testing
-        public static final double maxAngularSpeed = 10.0; // rad/s
+        public static final double maxSpeed = 4.0; // m/s, I have no clue if this is realistic // TODO testing
+        public static final double maxAngularSpeed = 2.0; // rad/s
         public static final double driverThetaDeadband = 0.05;
         public static final double driverTranslationDeadband = 1;
         // Electrical Constants
@@ -149,10 +150,10 @@ public final class Constants {
             */
 
             //TODO: Define Forward
-            FR(ModulePosition.FR,10,11,12,-92.109375,new Transform2d(new Translation2d(driveBaseLength/2,-driveBaseWidth/2),new Rotation2d())), 
-            BR(ModulePosition.BR,20,21,22,182.197266,new Transform2d(new Translation2d(-driveBaseLength/2,-driveBaseWidth/2),new Rotation2d())),
-            BL(ModulePosition.BL,30,31,32,-187.734375,new Transform2d(new Translation2d(-driveBaseLength/2,driveBaseWidth/2),new Rotation2d())),
-            FL(ModulePosition.FL,40,41,42,23.554688,new Transform2d(new Translation2d(driveBaseLength/2,driveBaseWidth/2),new Rotation2d())); 
+            FR(ModulePosition.FR,10,11,12,-256.5/*-92.109375*/,new Transform2d(new Translation2d(driveBaseLength/2,-driveBaseWidth/2),new Rotation2d())), 
+            BR(ModulePosition.BR,20,21,22,-29.61914/*182.197266*/,new Transform2d(new Translation2d(-driveBaseLength/2,-driveBaseWidth/2),new Rotation2d())),
+            BL(ModulePosition.BL,30,31,32,-111.5332/*-187.734375*/,new Transform2d(new Translation2d(-driveBaseLength/2,driveBaseWidth/2),new Rotation2d())),
+            FL(ModulePosition.FL,41,40,42,-238.008/*23.554688*/,new Transform2d(new Translation2d(driveBaseLength/2,driveBaseWidth/2),new Rotation2d())); 
             
             public final ModulePosition modPos;
             public final int driveMotorid;

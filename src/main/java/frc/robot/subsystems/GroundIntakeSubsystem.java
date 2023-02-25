@@ -21,34 +21,23 @@ public class GroundIntakeSubsystem extends SubsystemBase{
 
     private CANSparkMax leftMotor;
     private CANSparkMax rightMotor;
-
-    private Timer timer;
-    private PneumaticHub pneuHub;
     
-    public GroundIntakeSubsystem(PneumaticHub pneuHub) {
-        this.pneuHub = pneuHub;
+    public GroundIntakeSubsystem() {
+
         leftMotor = new CANSparkMax(GroundIntake.LEFT_SPARKMAX, MotorType.kBrushless);
         rightMotor = new CANSparkMax(GroundIntake.RIGHT_SPARKMAX, MotorType.kBrushless);
         leftMotor.setSmartCurrentLimit(20);
         rightMotor.setSmartCurrentLimit(20);
         rightMotor.setInverted(true);
         leftMotor.setInverted(false);
-
-        timer = new Timer();
             
         intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, GroundIntake.CLAMP_PISTON);
         groundSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, GroundIntake.UPPER_PISTON,GroundIntake.LOWER_PISTON);
     }
 
-
-    @Override
-    public void periodic(){
-        //pneuHub.enableCompressorDigital();
-        //SmartDashboard.putBoolean("IsEmpty",pneuHub.getPressureSwitch());
-    }
     public void wheelsIn() {
-        leftMotor.set(GroundIntake.WHEEL_SPEED);
-        rightMotor.set(GroundIntake.WHEEL_SPEED); // should just invert the controller
+        leftMotor.set(-GroundIntake.WHEEL_SPEED);
+        rightMotor.set(-GroundIntake.WHEEL_SPEED); 
     }
  
     public void wheelsOut() {
@@ -77,62 +66,24 @@ public class GroundIntakeSubsystem extends SubsystemBase{
         intakeSolenoid.set(true);
     }
 
-    public void unstoreIntake() {
-        timer.start();
-        lowerIntake();
-        
-        if (timer.get() > 0.5){
-            openIntake();
-            wheelsIn();
-        }
-
-        timer.stop();
-        timer.reset();
-    }
-
     public SequentialCommandGroup unstoreIntakeCmd(){
         return new InstantCommand(()->{this.lowerIntake();}, this)
-        .andThen(new WaitCommand(0.5))
+        .andThen(new WaitCommand(2.1))
         .andThen(()->{this.openIntake();})
         .andThen(()->{this.wheelsIn();});
     }
 
-    public void storeIntake() {
-        closeIntake();
-        timer.start();
-
-        if (timer.get() > 0.5 ) {
-            wheelsOff();
-            raiseIntake();
-        }
-
-        timer.stop();
-        timer.reset();
-    }
-
     public SequentialCommandGroup storeIntakeCmd(){
         return new InstantCommand(()->{this.closeIntake();}, this)
-        .andThen(new WaitCommand(0.5))
+        .andThen(new WaitCommand(0.25))
         .andThen(()->{this.wheelsOff();})
         .andThen(()->{this.raiseIntake();});
     }
 
     public SequentialCommandGroup dropPiece(){
         return new InstantCommand(()->{this.lowerIntake();},this)
-        .andThen(new WaitCommand(0.5))
+        .andThen(new WaitCommand(2.1))
         .andThen(()->{this.openIntake();})
         .andThen(()->{this.wheelsOut();});
     }   
-     /* 
-    public void dropPiece() {
-        timer.start();
-        lowerIntake();
-
-        if (timer.get() > 0.5) {
-            openIntake();
-        }
-
-        timer.stop();
-        timer.reset();
-    }*/
 }

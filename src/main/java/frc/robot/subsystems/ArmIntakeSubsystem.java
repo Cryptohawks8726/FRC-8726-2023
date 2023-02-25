@@ -62,6 +62,8 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         posPid.setD(ArmIntake.WRIST_kD);
         //posPid.setOutputRange(-0.5, 0.5);
         posPid.setFeedbackDevice(encoder);
+        posPid.setOutputRange(-0.8, 0.4, 0);
+
         
     }
 
@@ -74,7 +76,7 @@ public class ArmIntakeSubsystem extends SubsystemBase {
     @Override
     public void simulationPeriodic() {}
 
-    public void lowerPistonToggleCollapse(){
+    public void toggleClamp(){
         if (piston.get()) {
             piston.set(false);
         } else {
@@ -89,7 +91,8 @@ public class ArmIntakeSubsystem extends SubsystemBase {
     public void closeIntake() {
         piston.set(false);
     }
-
+    
+    /* 
     public void raiseIntake() {
         posPid.setReference(ArmIntake.RAISE_WRIST_SPEED, ControlType.kVelocity);
         //wristMotor.set(Constants.RAISE_WRIST_SPEED);
@@ -99,6 +102,7 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         posPid.setReference(ArmIntake.LOWER_WRIST_SPEED, ControlType.kVelocity);
         //wristMotor.set(Constants.LOWER_WRIST_SPEED);
     }
+    */
 
     public void setReference(double setPoint){
         posPid.setReference(setPoint, ControlType.kPosition);
@@ -108,7 +112,6 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         isExtended = false;
         posPid.setReference(ArmIntake.WRIST_RETRACT_POS, ControlType.kPosition);
         SmartDashboard.putNumber("ref",ArmIntake.WRIST_RETRACT_POS);
-        System.out.println("printy");
     }
 
     public void extendWrist(){
@@ -130,56 +133,15 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         posPid.setReference(encoder.getPosition(), ControlType.kPosition);
     }
 
-    public void zeroEncoder(){ // remove once we have offsets. I don't see a use for generating new offsets every match
-        encoder.setZeroOffset(encoder.getPosition() + encoder.getZeroOffset());
-        SmartDashboard.putNumber("Wrist Encoder Offset", encoder.getZeroOffset());
-        SmartDashboard.putNumber("Wrist Pos after Offset", encoder.getPosition()); // should be 0, double checking
-    }
-
-    public void zeroOffset(){
-        encoder.setZeroOffset(ArmIntake.WRIST_ENCODER_OFFSET);
-    }
-
-    public void setSpeed(double speed){
-        wristMotor.set(speed);
-    }
-    /*public void unstoreIntake() {
-        timer.start();
-        lowerIntake();
-        
-        if (timer.get() > 0.5){
-            openIntake();
-        }
-
-        timer.stop();
-        timer.reset();
-    }*/
-
     public SequentialCommandGroup unstoreIntakeCmd(){
         return new InstantCommand(()->{this.extendWrist();}, this) //change to this.extendWrist later
-        .andThen(new WaitCommand(0.5))
-        .andThen(()->{this.stopWrist();}) // removed when change to extend
+        .andThen(new WaitCommand(0.8))
         .andThen(()->{this.openIntake();});
     }
 
-    /*public void storeIntake() {
-        closeIntake();
-        timer.start();
-
-        if (timer.get() > 0.5 ) {
-            raiseIntake();
-        }
-
-        timer.stop();
-        timer.reset();
-    }*/
-
     public SequentialCommandGroup storeIntakeCmd(){
-        return new InstantCommand(()->{this.closeIntake();},this) 
-        .andThen(new WaitCommand(0.5)) 
-        .andThen(()->{this.retractWrist();}) // change to this.retractWrist later
-        .andThen(new WaitCommand(0.5)) //remove after change
-        .andThen(()->{this.stopWrist();}) //remove after change
-        ;
+        return new InstantCommand(()->{this.closeIntake();},this)
+        .andThen(new WaitCommand(0.25)) 
+        .andThen(()->{this.retractWrist();});
     }
 }
