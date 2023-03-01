@@ -101,19 +101,20 @@ public class RobotContainer {
     // op rb sets mid height 
     Trigger operatorRB = operatorController.rightBumper();
     operatorRB.onTrue(armSubsystem.setDegPosRefPoint(Arm.HIGHNODE_ANGLE))
-    .onFalse(armSubsystem.setBrake());
+    .onFalse(new InstantCommand(()->{armSubsystem.stay();}));
 
     Trigger operatorLB = operatorController.leftBumper();
-    operatorLB.onTrue(armSubsystem.setDegPosRefPoint(Arm.SHELF_ANGLE))
-    .onFalse(armSubsystem.setBrake());
+    operatorLB.onTrue(armSubsystem.setDegPosRefPoint(0.0));
+    
+    //.onFalse(armSubsystem.setBrake());
     
     Trigger operatorLT = operatorController.leftTrigger();
     operatorLT.onTrue(armSubsystem.setDegPosRefPoint(Arm.RETRACTED_ANGLE))
-    .onFalse(armSubsystem.setBrake());
+    .onFalse(new InstantCommand(()->{armSubsystem.stay();}));
 
     Trigger operatorRT = operatorController.rightTrigger();
     operatorRT.onTrue(armSubsystem.setDegPosRefPoint(Arm.FLOOR_ANGLE))
-    .onFalse(armSubsystem.setBrake());
+    .onFalse(new InstantCommand(()->{armSubsystem.stay();}));
     /* 
     // raise arm intake at predefined velocity
     Trigger driver3 = driverJoystick.button(3);

@@ -35,12 +35,12 @@ public final class Constants {
 
         // PID and FF for voltage
 
-        public static final double ARM_kVP = 0.009;
-        public static final double ARM_kVI = 0;
-        public static final double ARM_kVD = 0;
+        public static final double ARM_kVP = 0.000;
+        public static final double ARM_kVI = 0.0;
+        public static final double ARM_kVD = 0.0;
         public static final double ARM_kS = 0.000;
         public static final double ARM_kV = 0.000;
-        public static final double ARM_kG = 0.000;
+        public static final double ARM_kG = 0.00;
 
         public static final double SPEED_RAD = 0.15; // increase later
         public static final double CONEHELD_kP = 0.08;

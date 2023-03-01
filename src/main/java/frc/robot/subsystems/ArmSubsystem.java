@@ -82,9 +82,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   public SequentialCommandGroup setDegPosRefPoint(double deg){
     return new InstantCommand(()->{releaseBrake();},this)
-    .andThen(()->{setDegRefPoint(getDegrees() + 10);})
-    .andThen(new WaitCommand(0.5))
-    .andThen(()->{posPID.setReference(deg+Arm.ENCODER_OFFSET_SUBTRACT, ControlType.kVoltage);})
+    .andThen(()->{setDegRefPoint(getDegrees());})
+    //.andThen(new WaitCommand(0.5))
+   // .andThen(()->{posPID.setReference(deg+Arm.ENCODER_OFFSET_SUBTRACT, ControlType.kVoltage);})
     .andThen(()->{setFF(deg);});
   }
 
@@ -151,6 +151,7 @@ public class ArmSubsystem extends SubsystemBase {
   public void stay() {
     //setRawPosRefPoint(getRawEncoderPos());
     setDegRefPoint(getDegrees());
+    setFF(getDegrees());
     //armMotor.set(-posPID.calculate(encoderVal)); // why is this negative? we can use the 
   }
 
