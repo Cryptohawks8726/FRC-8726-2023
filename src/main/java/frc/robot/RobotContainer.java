@@ -47,7 +47,7 @@ public class RobotContainer {
     pneumaticHub = new PneumaticHub(Constants.COMPRESSOR_ID);
     //pneumaticHub.disableCompressor();
     pneumaticHub.enableCompressorDigital();
-    //groundIntakeSubsystem = new GroundIntakeSubsystem();
+    groundIntakeSubsystem = new GroundIntakeSubsystem();
     armSubsystem = new ArmSubsystem();
   
     driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
@@ -71,17 +71,9 @@ public class RobotContainer {
     // Trigger driverRightTrigger = driverController.rightTrigger();
     // driverRightTrigger.whileTrue(new RepeatCommand(new InstantCommand(()->drivetrain.normalZeroModules(),drivetrain)));
     setArmBindings();
-    //setGroundIntakeBindings();
+    setGroundIntakeBindings();
     setLedBindings();
-
-    Trigger operatorY = operatorController.y();
-    //operatorY.whileTrue(new InstantCommand(()->{armIntakeSubsystem.extendWrist();},armIntakeSubsystem).withName("Extend Arm Intake"))
-     // .onFalse(new InstantCommand(()->{armIntakeSubsystem.retractWrist();},armIntakeSubsystem).withName("Retract Arm Intake"));
-
-    
-    operatorY.whileTrue(armIntakeSubsystem.unstoreIntakeCmd().withName("Unstore Arm Intake"))
-    .onFalse(armIntakeSubsystem.storeIntakeCmd().withName("Store Arm Intake"));
-    
+  
 
     
 
@@ -97,13 +89,15 @@ public class RobotContainer {
     operatorStart.onTrue(new InstantCommand(() -> {armSubsystem.coneNotHeld();}));
     
     // toggle wrist position
-    //Trigger driverThumb = driverJoystick.top();
-    //driverThumb.onTrue(new InstantCommand(()->{armIntakeSubsystem.toggleExtend();},armIntakeSubsystem));
+    Trigger operatorB = operatorController.b();
+    operatorB.onTrue(new InstantCommand(()->{armIntakeSubsystem.toggleExtend();},armIntakeSubsystem));
 
     // holding y lowers and opens arm intake, releasing it closes and stores arm intake
+    Trigger operatorY = operatorController.y();
+    operatorY.whileTrue(armIntakeSubsystem.unstoreIntakeCmd().withName("Unstore Arm Intake"))
+    .onFalse(armIntakeSubsystem.storeIntakeCmd().withName("Store Arm Intake"));
     
     
-    //y.whileTrue(new StartEndCommand(() -> {armIntakeSubsystem.unstoreIntake();}, () -> {armIntakeSubsystem.storeIntake();}, armIntakeSubsystem));
     // op rb sets mid height 
     Trigger operatorRB = operatorController.rightBumper();
     operatorRB.onTrue(armSubsystem.setDegPosRefPoint(Arm.HIGHNODE_ANGLE))
