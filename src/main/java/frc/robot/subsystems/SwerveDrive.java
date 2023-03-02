@@ -10,6 +10,8 @@ import java.util.List;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,6 +21,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -32,13 +35,23 @@ import io.github.oblarg.oblog.annotations.Log;
 
 
 public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
-    
+    /**
+     * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
+     * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
+     */
+    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
+
+    /*
+     * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
+     * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
+     */
+    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, 0.9);
     private List<SwerveModule> modules;
 
     private SwerveModuleState[] modStates;
     private SwerveModulePosition[] modPositionStates;
     private SwerveDriveKinematics kinematics;
-    private SwerveDrivePoseEstimator odometry;
+    private static SwerveDrivePoseEstimator odometry;
     private ChassisSpeeds lastSetChassisSpeeds;
     private AHRS gyro;
     // private AnalogGyroSim simGyro;
@@ -74,7 +87,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         
         // simGyro = new AnalogGyroSim(0);
         
-        odometry = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), modPositionStates, new Pose2d()); 
+        odometry = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), modPositionStates, new Pose2d(),stateStdDevs,
+        visionMeasurementStdDevs); 
         
         lastSetChassisSpeeds = new ChassisSpeeds();
         
@@ -233,7 +247,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         modules.forEach(mod -> {mod.setEncoderOffset();});
     }
 
-    public SwerveDrivePoseEstimator getPoseEstimator(){
+    public static SwerveDrivePoseEstimator getPoseEstimator(){
         return odometry;
     }
     public void logValues(){ 

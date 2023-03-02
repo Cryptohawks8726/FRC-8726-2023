@@ -13,7 +13,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
@@ -52,8 +53,8 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    operatorController.leftTrigger().whileTrue(new PhotonVisionCommand(drivetrain, poseEstimator::getCurrentPose,
-      new Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0.0))));
+    // operatorController.leftStick().whileTrue(new PhotonVisionCommand(drivetrain, poseEstimator::getCurrentPose,
+    //   new Pose2d(15.878784, 6.949796, Rotation2d.fromDegrees(0.0))));
 
 
   }
@@ -82,6 +83,6 @@ public class RobotContainer {
     return m_autoCommand;
   }
   public void onAllianceChanged(Alliance alliance) {
-    //poseEstimator.setAlliance(alliance);
+    poseEstimator.setAlliance(alliance);
   }
 }

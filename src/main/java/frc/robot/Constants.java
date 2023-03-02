@@ -160,11 +160,13 @@ public final class Constants {
         public static final double CAMERA_PITCH_RADIANS = 1;
 
         /** Physical location of the apriltag camera on the robot, relative to the center of the robot. */
+        // public static final Transform3d APRILTAG_CAMERA_TO_ROBOT =
+        //     new Transform3d(new Translation3d(0.0, -0.1375, -.90), new Rotation3d(0.0, 0.0, -0.10));
         public static final Transform3d APRILTAG_CAMERA_TO_ROBOT =
-            new Transform3d(new Translation3d(0.0, -0.1375, -.90), new Rotation3d(0.0, 0.0, -0.10));
-        
+        new Transform3d(new Translation3d(0.0, 0.125, .025), new Rotation3d(0.0, 0.0, 0.0));
+
         // How far from the target we want to be
-        public static final double GOAL_RANGE_METERS = 1;
+        //public static final double GOAL_RANGE_METERS = 1;
 
         public static final double FIELD_LENGTH_METERS = 16.54175;
         public static final double FIELD_WIDTH_METERS = 8.0137;

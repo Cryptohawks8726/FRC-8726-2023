@@ -6,11 +6,13 @@ import static frc.robot.Constants.PhotonVisionConstants.FIELD_LENGTH_METERS;
 import static frc.robot.Constants.PhotonVisionConstants.FIELD_WIDTH_METERS;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -25,6 +27,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -32,6 +35,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.PhotonVisionConstants;
@@ -41,28 +45,20 @@ import frc.robot.subsystems.SwerveDrive;
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
 
-    /**
-     * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
-     * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
-     */
-    private static final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, 0.1);
-
-    /*
-     * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
-     * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
-     */
-    private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, 0.9);
+    
   
     public PhotonCamera photonCamera = new PhotonCamera("Spinel1");
     private SwerveDrivePoseEstimator poseEstimator;
+    private SwerveDriveKinematics kinematics;
     private SwerveDrive drivetrain;
     private PhotonPoseEstimator photonPoseEstimator;
 
     private double previousPipelineTimestamp = 0;
     private OriginPosition originPosition = OriginPosition.kBlueAllianceWallRightSide;
+
     private boolean sawTag = false;
     private final Field2d field2d = new Field2d();
-
+   
     public PoseEstimatorSubsystem(PhotonCamera photonCamera, SwerveDrive drivetrain) {
         this.drivetrain = drivetrain;
         PhotonPoseEstimator photonPoseEstimator = null;
@@ -71,7 +67,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             layout.setOrigin(originPosition);
             if (photonCamera != null) {
               photonPoseEstimator =
-                  new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP, photonCamera, APRILTAG_CAMERA_TO_ROBOT);
+                  new PhotonPoseEstimator(layout, PoseStrategy.LOWEST_AMBIGUITY, photonCamera, APRILTAG_CAMERA_TO_ROBOT);
             }
           } catch(IOException e) {
             DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
@@ -79,16 +75,22 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
           }
           this.photonPoseEstimator = photonPoseEstimator;
 
-        ShuffleboardTab tab = Shuffleboard.getTab("Vision");
+        poseEstimator = SwerveDrive.getPoseEstimator();
 
-        poseEstimator = new SwerveDrivePoseEstimator(null,
-            drivetrain.getRobotAngle(),
-            drivetrain.getSwerveModulePositions(),
-            new Pose2d(),
-            stateStdDevs,
-            visionMeasurementStdDevs);
+          
 
     }
+
+    /*public void addDashboardWidgets(ShuffleboardTab tab) {
+      //tab.add("Field", field2d).withPosition(0, 0).withSize(6, 4);
+     // tab.addString("Pose", this::getFomattedPose).withPosition(6, 2).withSize(2, 1);
+      tab.add("Field", field2d);
+      tab.addString("Pose", this::getFomattedPose);
+      
+
+    }
+    /*
+    
     /**
     * Sets the alliance. This is used to configure the origin of the AprilTag map
     * @param alliance alliance
@@ -118,27 +120,43 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             setCurrentPose(newPose);
         }
     }
-    
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    poseEstimator.update(drivetrain.getRobotAngle(), drivetrain.getSwerveModulePositions());
+    //poseEstimator.update(drivetrain.getRobotAngle(), drivetrain.getSwerveModulePositions());
+    PhotonTrackedTarget lowestAmbiguityTarget = null;
+    var result = photonCamera.getLatestResult();
+    double lowestAmbiguityScore = 10;
+
+        for (PhotonTrackedTarget target : result.targets) {
+            double targetPoseAmbiguity = target.getPoseAmbiguity();
+            System.out.println(targetPoseAmbiguity);
+            // Make sure the target is a Fiducial target.
+            if (targetPoseAmbiguity != -1 && targetPoseAmbiguity < lowestAmbiguityScore) {
+                lowestAmbiguityScore = targetPoseAmbiguity;
+                lowestAmbiguityTarget = target;
+                System.out.println("yay");
+            }
+        }
 
     if (photonPoseEstimator != null) {
-        // Update pose estimator with the best visible target
-        photonPoseEstimator.update().ifPresent(estimatedRobotPose -> {
-        sawTag = true;
-        var estimatedPose = estimatedRobotPose.estimatedPose;
+        //System.out.println("IDK");
+      // Update pose estimator with the best visible target
+        Optional<EstimatedRobotPose> estPose = photonPoseEstimator.update(photonCamera.getLatestResult());
+        estPose.ifPresent((estimatedRobotPose -> {
+          //System.out.println("Maybe this works");
+          //sawTag = true;
+        //var estimatedPose = estimatedRobotPose.estimatedPose;
         // Make sure we have a new measurement, and that it's on the field
-        if (estimatedRobotPose.timestampSeconds != previousPipelineTimestamp
+        /*if (estimatedRobotPose.timestampSeconds != previousPipelineTimestamp
             && estimatedPose.getX() > 0.0 && estimatedPose.getX() <= PhotonVisionConstants.FIELD_LENGTH_METERS
-            && estimatedPose.getY() > 0.0 && estimatedPose.getY() <= PhotonVisionConstants.FIELD_WIDTH_METERS) {
-            previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
-            poseEstimator.addVisionMeasurement(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
-            }
-        });
-
+            && estimatedPose.getY() > 0.0 && estimatedPose.getY() <= PhotonVisionConstants.FIELD_WIDTH_METERS) {*/
+            //previousPipelineTimestamp = estimatedRobotPose.timestampSeconds;
+            getFormattedPose(estimatedRobotPose);
+           // poseEstimator.addVisionMeasurement(estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
+           // }
+        }));
     } 
     
     Pose2d dashboardPose = getCurrentPose();
@@ -148,10 +166,27 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
     field2d.setRobotPose(dashboardPose);
 
+    //getFormattedPose();
+
+  }
+
+  private String getFormattedPose(EstimatedRobotPose estPose) {
+    //var pose = getCurrentPose();    
+    Pose2d pose = estPose.estimatedPose.toPose2d();
+   
+    String values = String.format("(%.3f, %.3f) %.2f degrees", 
+    pose.getX(), 
+    pose.getY(),
+    pose.getRotation().getDegrees());
+
+    SmartDashboard.putString("X,Y, Rotational", values);
+
+    return values;
   }
 
   public Pose2d getCurrentPose() {
     return poseEstimator.getEstimatedPosition();
+    
   }
 
   public void setCurrentPose(Pose2d newPose) {

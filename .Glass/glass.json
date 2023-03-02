@@ -12,6 +12,9 @@
           "open": true
         },
         "open": true
+      },
+      "photonvision": {
+        "open": true
       }
     },
     "types": {
@@ -35,7 +38,7 @@
               "autoFit": true
             }
           ],
-          "height": 332,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -80,7 +83,7 @@
     "Plot <1>": {
       "plots": [
         {
-          "height": 332,
+          "height": 0,
           "series": [
             {
               "color": [
