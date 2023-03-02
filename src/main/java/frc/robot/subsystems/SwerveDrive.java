@@ -1,17 +1,16 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Swerve.ModulePosition.BL;
-import static frc.robot.Constants.Swerve.ModulePosition.BR;
-import static frc.robot.Constants.Swerve.ModulePosition.FL;
-import static frc.robot.Constants.Swerve.ModulePosition.FR;
-
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.kauailabs.navx.frc.AHRS.SerialDataType;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,7 +21,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,6 +36,7 @@ import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
+import static frc.robot.Constants.Swerve.ModulePosition.*;
 
 
 public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
@@ -47,12 +49,14 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     private SwerveDrivePoseEstimator odometry;
     private ChassisSpeeds lastSetChassisSpeeds;
     private AHRS gyro;
+    private PIDController xController,yController,thetaController;
+    private SwerveModuleState testState;
     // private AnalogGyroSim simGyro;
 
     private Field2d field; 
     private FieldObject2d[] modPoses;
    
-    public SwerveDrive(AHRS ahrsGyro){
+    public SwerveDrive(AHRS gyro){
         modules = Arrays.asList(
             new SwerveModule(Constants.Swerve.Module.FR),
             new SwerveModule(Constants.Swerve.Module.BR),
@@ -74,7 +78,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             modules.get(FL.modPos).getCenterTransform().getTranslation()
         );
         
-        gyro = ahrsGyro;
+        //gyro = new AHRS(SerialPort.Port.kUSB1);
+        this.gyro = gyro;
         gyro.calibrate(); // possibly move to avoid the robot being moved during calibration
         gyro.reset();
         
@@ -93,6 +98,13 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         };
         SmartDashboard.putData("Field", field);
         logValues();
+
+        
+        /*xController = new PIDController(0.05, 0, 0,20);
+        yController = new PIDController(0.05, 0, 0,20);
+        thetaController = new PIDController(0.5, 0, 0,20);
+        thetaController.enableContinuousInput(0, 360);*/
+        testState = new SwerveModuleState(4.0,Rotation2d.fromDegrees(45));
     }
 
     @Override
@@ -101,9 +113,22 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             gyro.getRotation2d(), 
             getSwerveModulePositions()
         );
+        //modules.get(0).closedLoopDrive(testState);
+        //modules.get(1).closedLoopDrive(testState);
+        //modules.get(2).closedLoopDrive(testState);
+        //modules.get(3).closedLoopDrive(testState);
+        // modules.forEach(mod->{mod.closedLoopDrive(testState);});
+        
+        modules.forEach(mod->{mod.updateSteerPid();});
+        logValues();
+       /*  SmartDashboard.putNumber("FR ABS Encoder",modules.get(FR.modPos).getAbsPos());
+        SmartDashboard.putNumber("BR ABS Encoder",modules.get(BR.modPos).getAbsPos());
+        SmartDashboard.putNumber("BL ABS Encoder",modules.get(BL.modPos).getAbsPos());
+        SmartDashboard.putNumber("FL ABS Encoder",modules.get(FL.modPos).getAbsPos());*/
         
         // show estimated robot and mod poses on dashboard
         field.setRobotPose(odometry.getEstimatedPosition());
+
         /*for (int i = 0;i<4;i++){
             modPoses[i].setPose(
                 odometry.getEstimatedPosition()
@@ -121,7 +146,6 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
        // System.out.println(gyro.getYaw());
         //System.out.println(gyro.getRotation2d().getDegrees());
     }
-
     /* 
     @Override
     public void simulationPeriodic(){
@@ -132,9 +156,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             new Rotation2d(simGyro.getAngle()), 
             getSwerveModulePositions()
         );
-
         Pose2d estimatedPostition = odometry.getEstimatedPosition();
-
         field.setRobotPose(estimatedPostition);
         // sim new positions of modules
         for (int i = 0;i<4;i++){
@@ -177,7 +199,6 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             
                 modStates[1] = new SwerveModuleState(-modStates[1].speedMetersPerSecond,modStates[1].angle);
                 modStates[3] = new SwerveModuleState(-modStates[3].speedMetersPerSecond,modStates[3].angle);
-
         
         }*/
         modules.forEach(mod -> {mod.closedLoopDrive(modStates[mod.getModPos().getVal()]);});
@@ -193,11 +214,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         );
     }
 
-    public void jankyZeroModules(){
-        modules.get(FR.modPos).closedLoopDrive(new SwerveModuleState(0,Rotation2d.fromDegrees(Constants.Swerve.Module.FR.canCoderOffset)));
-        modules.get(BR.modPos).closedLoopDrive(new SwerveModuleState(0,Rotation2d.fromDegrees(Constants.Swerve.Module.BR.canCoderOffset)));
-        modules.get(BL.modPos).closedLoopDrive(new SwerveModuleState(0,Rotation2d.fromDegrees(Constants.Swerve.Module.BL.canCoderOffset)));
-        modules.get(FL.modPos).closedLoopDrive(new SwerveModuleState(0,Rotation2d.fromDegrees(Constants.Swerve.Module.FL.canCoderOffset)));
+    public AHRS getGyro(){
+        return gyro;
     }
 
     public void normalZeroModules(){
@@ -208,50 +226,41 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         return odometry.getEstimatedPosition();
     }
 
-    public Rotation2d getRobotAngle() {
-        return Rotation2d.fromDegrees(gyro.getYaw());
+    public void setOdometryPosition(Pose2d setPosition){
+        odometry.resetPosition(getRobotAngle(), getSwerveModulePositions(), setPosition);
     }
 
-
+    public Rotation2d getRobotAngle() {
+        // return Rotation2d.fromDegrees(gyro.getYaw());
+        return gyro.getRotation2d();
+    }
 
     public SwerveModulePosition[] getSwerveModulePositions(){
-        
-       /*  if (RobotBase.isSimulation()){
-           modules.forEach(mod -> {modPositionStates[mod.getModPos().getVal()] = mod.getSimulatedPosition(0.02);});
-        } else {*/
-            modules.forEach(mod -> {modPositionStates[mod.getModPos().getVal()] = mod.getCurrentPosition();});
-       // }
-        
+        modules.forEach(mod -> {modPositionStates[mod.getModPos().getVal()] = mod.getCurrentPosition();});
         return modPositionStates;
     }
 
-    
-    public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(Rotation2d.fromDegrees(gyro.getYaw()), getSwerveModulePositions(), pose);
-    }
-
-     public void setModuleStates(SwerveModuleState[] updatedstates){
+    public void setModuleStates(SwerveModuleState[] updatedstates){
         SwerveDriveKinematics.desaturateWheelSpeeds(updatedstates, Constants.Swerve.maxSpeed);
         modules.forEach(mod -> {mod.closedLoopDrive(updatedstates[mod.getModPos().getVal()]);});
-
     }
 
     public void setEncoderOffsets(){
         modules.forEach(mod -> {mod.setEncoderOffset();});
     }
 
+    
     public void logValues(){ 
         Pose2d estimatedPostition = odometry.getEstimatedPosition();
 
         SmartDashboard.putNumber("xpos", estimatedPostition.getTranslation().getX());
         SmartDashboard.putNumber("ypos", estimatedPostition.getTranslation().getY());
         SmartDashboard.putNumber("estimatedthetaPos",estimatedPostition.getRotation().getDegrees());
-        SmartDashboard.putNumber("gyroAngle", gyro.getAngle());//getRotation2d().getDegrees()%360
+        SmartDashboard.putNumber("gyroAngle", gyro.getYaw());//getRotation2d().getDegrees()%360
         SmartDashboard.putBoolean("isGyroConnected", gyro.isConnected());
         SmartDashboard.putNumber("setXVel", lastSetChassisSpeeds.vxMetersPerSecond);
         SmartDashboard.putNumber("setYVel", lastSetChassisSpeeds.vyMetersPerSecond);
         
-
         for (SwerveModule module : modules) {
             String modName = module.getModPos().toString();
             module.seedRelativeEncoder();
@@ -260,9 +269,18 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             SmartDashboard.putNumber(modName + "setdeg", module.gettSetStateAngle());
             SmartDashboard.putNumber(modName + "actdeg", module.getCurrentState().angle.getDegrees());
             SmartDashboard.putNumber(modName + "absdeg", module.getAbsPos());
+            SmartDashboard.putNumber(modName + "built in steer", module.getRelativePos());
+            //SmartDashboard.putNumber(modName + "built in drive", module.getRelativeVel());
+            //SmartDashboard.putNumber(modName + "drive current", module.getDriveCurrent());
+            //SmartDashboard.putNumber(modName + "steer current", module.getSteerCurrent());
+            
         }
 
     }
+
+   // public SequentialCommandGroup driveToPos(){
+    //    return new InstantCommand(()->{xController.reset();})
+   // }
 
     @Log
     public double XCoordinate(){
@@ -313,6 +331,10 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     public double Module3Angle(){
         return modules.get(3).getCurrentState().angle.getDegrees();
     }    
+
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(Rotation2d.fromDegrees(gyro.getYaw()), getSwerveModulePositions(), pose);
+    }
 
 
     public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {

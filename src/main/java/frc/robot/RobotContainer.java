@@ -12,6 +12,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -50,22 +52,20 @@ public class RobotContainer {
 
   // private final CommandXboxController driverController;
   
-  private final Joystick driverController;
+  private final HashMap<String, Command> eventMap = new HashMap<>();
+  private final CommandJoystick driverController;
   
   private final SwerveAutoBuilder auto;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     
-
-    HashMap<String, Command> eventMap = new HashMap<>();
-    eventMap.put("marker1", new PrintCommand("Passed marker 1"));
     
     // driverController = new CommandXboxController(0);
     auto = new SwerveAutoBuilder(
       drivetrain::getPoseEstimate,
       drivetrain::resetOdometry,
       Constants.Swerve.kDriveKinematics,
-      new PIDConstants(5.0, 0.0, 0.0),
+      new PIDConstants(.25, 0.0, 0.0),
       new PIDConstants(0.5, 0.0, 0.0),
       drivetrain::setModuleStates,
       eventMap,
@@ -74,7 +74,7 @@ public class RobotContainer {
     );
     //driverController = new Joystick(0);
     
-    driverController = new Joystick(0);
+    driverController = new CommandJoystick(0);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -106,8 +106,18 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory examplePath = PathPlanner.loadPath("NicolasValerio Path", new PathConstraints(2, 1.5));
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("Num1", new PathConstraints(2, 1.5));
     Command run = drivetrain.followTrajectoryCommand(examplePath, true);
+    eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+
+  
+    FollowPathWithEvents command = new FollowPathWithEvents(
+    auto.followPath(examplePath),
+    examplePath.getMarkers(),
+    eventMap
+    );
+
+
     return run;
 
     // An ExampleCommand will run in autonomous

@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 2.8638402226859956,
-        "y": 3.3197048858026688
+        "x": 2.0028178678486794,
+        "y": 5.044068292729488
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.571129586210338,
-        "y": 3.3197048858026688
+        "x": 3.0028178678486794,
+        "y": 5.044068292729488
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -24,16 +24,41 @@
     },
     {
       "anchorPoint": {
-        "x": 7.821349087374585,
-        "y": 3.386563850371959
+        "x": 6.854471495999361,
+        "y": 4.59516083959099
       },
       "prevControl": {
-        "x": 6.821349087374585,
-        "y": 3.386563850371959
+        "x": 5.854471495999361,
+        "y": 4.59516083959099
       },
       "nextControl": {
-        "x": 8.821349087374585,
-        "y": 3.386563850371959
+        "x": 7.854471495999361,
+        "y": 4.59516083959099
+      },
+      "holonomicAngle": 0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.951020854025007,
+        "y": 4.336175770472626
+      },
+      "prevControl": {
+        "x": 2.451020854025007,
+        "y": 4.336175770472626
+      },
+      "nextControl": {
+        "x": 1.451020854025007,
+        "y": 4.336175770472626
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -49,12 +74,12 @@
     },
     {
       "anchorPoint": {
-        "x": 5.231498396190946,
-        "y": 3.438360864195634
+        "x": 3.902041708050014,
+        "y": 3.213907137626383
       },
       "prevControl": {
-        "x": 7.026423741782766,
-        "y": 3.4124623572837964
+        "x": 1.4931866335838309,
+        "y": 3.213907137626383
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -72,21 +97,15 @@
   ],
   "markers": [
     {
-      "position": 0.0,
+      "position": 2.116363636363634,
       "names": [
-        "event"
+        "scoring"
       ]
     },
     {
-      "position": 0.0,
+      "position": 1.0909090909090817,
       "names": [
-        "event"
-      ]
-    },
-    {
-      "position": 0.30545454545454637,
-      "names": [
-        "marker 1"
+        "intake"
       ]
     }
   ]
