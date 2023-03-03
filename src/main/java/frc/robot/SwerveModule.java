@@ -204,4 +204,11 @@ public class SwerveModule implements Loggable{
         return MathUtil.inputModulus(lastSetState.angle.getDegrees(), 0, 360);
     }
 
+    public CANSparkMax getSparkMaxDriverMotor(){
+        return driveMotor;
+    }
+
+    public CANSparkMax getSparkMaxSteerMotor(){
+        return steerMotor;
+    }
 }

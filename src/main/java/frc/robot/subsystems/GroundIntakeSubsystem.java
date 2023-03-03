@@ -86,4 +86,15 @@ public class GroundIntakeSubsystem extends SubsystemBase{
         .andThen(()->{this.openIntake();})
         .andThen(()->{this.wheelsOut();});
     }   
+
+    
+    public CANSparkMax getSparkErrorLeftMotor(){
+        return leftMotor;
+    }
+
+    
+    public CANSparkMax getSparkErrorRightMotor(){
+        return rightMotor;
+    }
+
 }

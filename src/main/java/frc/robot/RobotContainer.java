@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.GroundIntakeSubsystem;
+import frc.robot.subsystems.SparkMaxError;
 import frc.robot.subsystems.ArmIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.Constants.Arm;
@@ -32,7 +33,8 @@ public class RobotContainer {
   private  GroundIntakeSubsystem groundIntakeSubsystem;
   private ArmIntakeSubsystem armIntakeSubsystem;
   private ArmSubsystem armSubsystem;
- private final SwerveDrive drivetrain;
+  private SparkMaxError sparkMaxStatus;
+  private final SwerveDrive drivetrain;
 
   private final LED ledStrip = new LED(Constants.LED_PORT, Constants.LED_LENGTH);
 
@@ -40,15 +42,21 @@ public class RobotContainer {
   private CommandJoystick driverJoystick;
 
 
+
   public RobotContainer() {
 
     drivetrain = new SwerveDrive();
-   armIntakeSubsystem = new ArmIntakeSubsystem();
+    armIntakeSubsystem = new ArmIntakeSubsystem();
     pneumaticHub = new PneumaticHub(Constants.COMPRESSOR_ID);
     //pneumaticHub.disableCompressor();
     pneumaticHub.enableCompressorDigital();
-    //groundIntakeSubsystem = new GroundIntakeSubsystem();
+    groundIntakeSubsystem = new GroundIntakeSubsystem();
     armSubsystem = new ArmSubsystem();
+    sparkMaxStatus = new SparkMaxError(
+      drivetrain.getSparkMaxModules(), armIntakeSubsystem.getSparkErrorArmIntake(), 
+      armSubsystem.getSparkErrorArmMotor(), groundIntakeSubsystem.getSparkErrorLeftMotor(), 
+      groundIntakeSubsystem.getSparkErrorRightMotor() 
+      );
   
     driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
     operatorController = new CommandXboxController(Constants.OPERATOR_XBOX);

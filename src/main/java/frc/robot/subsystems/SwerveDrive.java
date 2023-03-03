@@ -7,6 +7,8 @@ import java.util.function.DoubleSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.kauailabs.navx.frc.AHRS.SerialDataType;
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -328,4 +330,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     public double Module3Angle(){
         return modules.get(3).getCurrentState().angle.getDegrees();
     }    
+
+    public List<SwerveModule> getSparkMaxModules(){
+        return modules;
+    }
 }

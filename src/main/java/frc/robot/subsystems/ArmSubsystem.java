@@ -164,6 +164,9 @@ public class ArmSubsystem extends SubsystemBase {
     //stay();
   }
 
+  public CANSparkMax getSparkErrorArmMotor(){
+    return armMotor;
+  }
   public void enableBrake(){
     brake.set(true);
   }

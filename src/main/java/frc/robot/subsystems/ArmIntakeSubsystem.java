@@ -92,6 +92,10 @@ public class ArmIntakeSubsystem extends SubsystemBase {
         piston.set(false);
     }
     
+
+    public CANSparkMax getSparkErrorArmIntake(){
+        return wristMotor;
+    }
     /* 
     public void raiseIntake() {
         posPid.setReference(ArmIntake.RAISE_WRIST_SPEED, ControlType.kVelocity);
