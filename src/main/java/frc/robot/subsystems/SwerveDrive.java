@@ -349,9 +349,9 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             traj, 
             this::getPoseEstimate, // Pose supplier
             this.kinematics, // SwerveDriveKinematics
-            new PIDController(0.25, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-            new PIDController(0.25, 0, 0), // Y controller (usually the same values as X controller)
-            new PIDController(1, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            new PIDController(.25, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+            new PIDController(.25, 0, 0), // Y controller (usually the same values as X controller)
+            new PIDController(.35, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
             this::setModuleStates, // Module states consumer
             true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
             this // Requires this drive subsystem

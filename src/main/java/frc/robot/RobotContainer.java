@@ -10,10 +10,13 @@ import java.util.HashMap;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -66,7 +69,7 @@ public class RobotContainer {
       drivetrain::resetOdometry,
       Constants.Swerve.kDriveKinematics,
       new PIDConstants(.25, 0.0, 0.0),
-      new PIDConstants(0.5, 0.0, 0.0),
+      new PIDConstants(.35, 0.0, 0.0),
       drivetrain::setModuleStates,
       eventMap,
       true,
@@ -106,17 +109,24 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory examplePath = PathPlanner.loadPath("Num1", new PathConstraints(2, 1.5));
-    Command run = drivetrain.followTrajectoryCommand(examplePath, true);
-    eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("NicolasValerio Path", .5, .5, false);
+    Command run = auto.followPath(examplePath);
+    
+    eventMap.put("marker 1", new PrintCommand("Passed marker 1"));
 
-  
+    PathPlannerTrajectory traj1 = PathPlanner.generatePath(
+    new PathConstraints(1, .5), 
+    new PathPoint(new Translation2d(1.0, 1.0), Rotation2d.fromDegrees(0)), // position, heading
+    new PathPoint(new Translation2d(3.0, 1.0), Rotation2d.fromDegrees(0))); // position, heading
+
+    
     FollowPathWithEvents command = new FollowPathWithEvents(
     auto.followPath(examplePath),
     examplePath.getMarkers(),
     eventMap
     );
-
+    
+    Command bruh = auto.followPath(traj1);
 
     return run;
 

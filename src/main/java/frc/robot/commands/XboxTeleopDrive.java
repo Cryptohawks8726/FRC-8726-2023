@@ -54,21 +54,22 @@ public class XboxTeleopDrive extends CommandBase{
         double sensitivity = (controller.getThrottle()*-1)+1.01;
         xVel = Math.signum(xVel) * Math.pow(xVel,2) * Constants.Swerve.maxSpeed * sensitivity; //square input while preserving sign
         yVel = Math.signum(yVel) * Math.pow(yVel,2) * Constants.Swerve.maxSpeed * sensitivity;
+        thetaVel *= -sensitivity;
 
         // maintain heading if there's no rotational input
-        //  if (Math.abs(thetaVel) < 0.1){
-        //     if (isHeadingSet == false){
-        //         headingPID.reset();
-        //         isHeadingSet = true;
-        //         lastHeading = drivetrain.getRobotAngle();
-        //         headingPID.setSetpoint(lastHeading.getDegrees()%180);
-        //         thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
-        //     }else{
-        //         thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
-        //     }
-        // } else{
-        //     isHeadingSet = false;
-        // }
+         if (Math.abs(thetaVel) < 0.1){
+            if (isHeadingSet == false){
+                headingPID.reset();
+                isHeadingSet = true;
+                lastHeading = drivetrain.getRobotAngle();
+                headingPID.setSetpoint(lastHeading.getDegrees()%180);
+                thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
+            }else{
+                thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
+            }
+        } else{
+            isHeadingSet = false;
+        }
         
         drivetrain.drive(
              isRobotRelative ? new ChassisSpeeds(xVel, yVel, thetaVel)

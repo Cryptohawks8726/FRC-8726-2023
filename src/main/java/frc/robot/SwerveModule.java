@@ -89,7 +89,10 @@ public class SwerveModule implements Loggable{
         driveController.setD(Constants.Swerve.kDriveD);
         driveController.setFF(Constants.Swerve.kDriveFF);
 
-        driveMotor.setInverted(true);
+        if (modConstants == Constants.Swerve.Module.BR || modConstants == Constants.Swerve.Module.BL) {
+            driveMotor.setInverted(true);
+        }
+
         /* 
         steerController.setP(Constants.Swerve.kSteerP);
         steerController.setI(Constants.Swerve.kSteerI);
