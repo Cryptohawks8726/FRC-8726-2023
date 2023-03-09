@@ -8,10 +8,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.GroundIntakeSubsystem;
 import frc.robot.subsystems.ArmIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ArmIntake2Subsystem;
 import frc.robot.Constants.Arm;
 import frc.robot.commands.Balance;
 import frc.robot.commands.XboxTeleopDrive;
@@ -30,7 +32,7 @@ public class RobotContainer {
 
   private final PneumaticHub pneumaticHub;
   private  GroundIntakeSubsystem groundIntakeSubsystem;
-  private ArmIntakeSubsystem armIntakeSubsystem;
+  private ArmIntake2Subsystem armIntakeSubsystem;
   private ArmSubsystem armSubsystem;
  private final SwerveDrive drivetrain;
 
@@ -43,7 +45,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     drivetrain = new SwerveDrive();
-   armIntakeSubsystem = new ArmIntakeSubsystem();
+    armIntakeSubsystem = new ArmIntake2Subsystem();
     pneumaticHub = new PneumaticHub(Constants.COMPRESSOR_ID);
     //pneumaticHub.disableCompressor();
     pneumaticHub.enableCompressorDigital();
@@ -79,8 +81,8 @@ public class RobotContainer {
      // .onFalse(new InstantCommand(()->{armIntakeSubsystem.retractWrist();},armIntakeSubsystem).withName("Retract Arm Intake"));
 
     
-    operatorY.whileTrue(armIntakeSubsystem.unstoreIntakeCmd().withName("Unstore Arm Intake"))
-    .onFalse(armIntakeSubsystem.storeIntakeCmd().withName("Store Arm Intake"));
+    //operatorY.whileTrue(armIntakeSubsystem.unstoreIntakeCmd().withName("Unstore Arm Intake"))
+    //.onFalse(armIntakeSubsystem.storeIntakeCmd().withName("Store Arm Intake"));
     
 
     
@@ -120,6 +122,13 @@ public class RobotContainer {
     Trigger operatorRT = operatorController.rightTrigger();
     operatorRT.onTrue(armSubsystem.setDegPosRefPoint(Arm.FLOOR_ANGLE))
     .onFalse(armSubsystem.setBrake());
+
+    Trigger operatorIntake = operatorController.button(7);
+    operatorIntake.onTrue(armIntakeSubsystem.intake())
+    .onFalse(armIntakeSubsystem.stop());
+
+    Trigger operatorExtake = operatorController.button(8);
+    operatorExtake.onTrue(armIntakeSubsystem.eject());
     /* 
     // raise arm intake at predefined velocity
     Trigger driver3 = driverJoystick.button(3);

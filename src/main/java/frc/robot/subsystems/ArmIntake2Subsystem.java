@@ -9,19 +9,19 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
-public class ArmIntake2Subsystem {
+public class ArmIntake2Subsystem extends SubsystemBase {
     private CANSparkMax motor;
-    private boolean isHeld;
+    //private boolean isHeld;
     private String motorStatus = "Stopped";
 
 
     public ArmIntake2Subsystem() {
-        isHeld = false;
+        //isHeld = false;
 
-        motor = new CANSparkMax(0, MotorType.kBrushless);
+        motor = new CANSparkMax(11, MotorType.kBrushless);
 
         // Set Current Limits
         motor.setSmartCurrentLimit(2);
