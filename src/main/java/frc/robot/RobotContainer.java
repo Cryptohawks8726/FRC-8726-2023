@@ -68,8 +68,8 @@ public class RobotContainer {
       drivetrain::getPoseEstimate,
       drivetrain::resetOdometry,
       Constants.Swerve.kDriveKinematics,
-      new PIDConstants(.25, 0.0, 0.0),
-      new PIDConstants(.35, 0.0, 0.0),
+      new PIDConstants(0.05, 0.0, 0.0),
+      new PIDConstants(0.5, 0.0, 0.0),
       drivetrain::setModuleStates,
       eventMap,
       true,
@@ -109,7 +109,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory examplePath = PathPlanner.loadPath("NicolasValerio Path", .5, .5, false);
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("NicolasValerio Path", 3, 3
+    , false);
     Command run = auto.followPath(examplePath);
     
     eventMap.put("marker 1", new PrintCommand("Passed marker 1"));
@@ -117,7 +118,7 @@ public class RobotContainer {
     PathPlannerTrajectory traj1 = PathPlanner.generatePath(
     new PathConstraints(1, .5), 
     new PathPoint(new Translation2d(1.0, 1.0), Rotation2d.fromDegrees(0)), // position, heading
-    new PathPoint(new Translation2d(3.0, 1.0), Rotation2d.fromDegrees(0))); // position, heading
+    new PathPoint(new Translation2d(4, 4.0), Rotation2d.fromDegrees(0))); // position, heading
 
     
     FollowPathWithEvents command = new FollowPathWithEvents(

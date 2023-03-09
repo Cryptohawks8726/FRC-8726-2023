@@ -106,6 +106,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
         thetaController.enableContinuousInput(0, 360);*/
         testState = new SwerveModuleState(4.0,Rotation2d.fromDegrees(45));
     }
+    
 
     @Override
     public void periodic(){
@@ -113,6 +114,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             gyro.getRotation2d(), 
             getSwerveModulePositions()
         );
+        System.out.println(getPoseEstimate().getY());
         //modules.get(0).closedLoopDrive(testState);
         //modules.get(1).closedLoopDrive(testState);
         //modules.get(2).closedLoopDrive(testState);
@@ -223,7 +225,8 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     }
 
     public Pose2d getPoseEstimate(){
-        return odometry.getEstimatedPosition();
+        return new Pose2d(odometry.getEstimatedPosition().getX(),odometry.getEstimatedPosition().getY(),gyro.getRotation2d());
+        //return odometry.getEstimatedPosition();
     }
 
     public void setOdometryPosition(Pose2d setPosition){
