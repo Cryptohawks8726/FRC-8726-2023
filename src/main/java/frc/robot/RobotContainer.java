@@ -90,13 +90,6 @@ public class RobotContainer {
   }
 
   private void setArmBindings(){
-    // set arm pid for cone
-    Trigger operatorBack = operatorController.back();
-    operatorBack.onTrue(new InstantCommand(() -> {armSubsystem.coneHeld();}));
-
-    // set arm pid for no cone or cube
-    Trigger operatorStart = operatorController.start();
-    operatorStart.onTrue(new InstantCommand(() -> {armSubsystem.coneNotHeld();}));
     
     // toggle wrist position
     //Trigger driverThumb = driverJoystick.top();

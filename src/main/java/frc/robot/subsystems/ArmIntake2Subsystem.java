@@ -24,7 +24,7 @@ public class ArmIntake2Subsystem extends SubsystemBase {
         motor = new CANSparkMax(Constants.ArmIntake.ARM_INTAKE_SPARKMAX, MotorType.kBrushless);
 
         // Set Current Limits
-        motor.setSmartCurrentLimit(20);
+        motor.setSmartCurrentLimit(10, 15);
 
         motor.setIdleMode(IdleMode.kBrake);
 
