@@ -123,8 +123,11 @@ public class RobotContainer {
     .onFalse(armIntakeSubsystem.stop());
 
     Trigger operatorExtake = operatorController.button(8);
-    operatorExtake.onTrue(armIntakeSubsystem.eject());
+    operatorExtake.onTrue(armIntakeSubsystem.eject())
+    .onFalse(armIntakeSubsystem.stop());
 
+    Trigger operatorDRight = operatorController.povRight();
+    operatorDRight.onTrue(new InstantCommand(()->{wristSubsystem.shelfExtend();}));
     Trigger operatorY = operatorController.y();
     operatorY.onTrue(new InstantCommand(()->{wristSubsystem.toggleExtend();}));
     /* 

@@ -75,8 +75,9 @@ public final class Constants {
         public static final double RAISE_WRIST_SPEED = 0.5;
         public static final double LOWER_WRIST_SPEED = -0.5;
 
-        public static final double WRIST_RETRACT_POS = 0.35;
-        public static final double WRIST_EXTEND_POS = 0.85;
+        public static final double WRIST_RETRACT_POS = 0.37;
+        public static final double WRIST_EXTEND_POS = 0.70;
+        public static final double WRIST_SHELF_POS = 0.62;
         
         public static final double WRIST_ENCODER_OFFSET = 0.2;//322.0556259;
 

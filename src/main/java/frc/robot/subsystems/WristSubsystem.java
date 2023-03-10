@@ -106,6 +106,11 @@ public class WristSubsystem extends SubsystemBase {
             extendWrist();
         }
     } 
+    
+    public void shelfExtend(){
+        isExtended = true;
+        posPid.setReference(ArmIntake.WRIST_SHELF_POS, ControlType.kPosition);
+    }
 
     public void stopWrist() {
         //wristMotor.set(0.0);
