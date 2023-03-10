@@ -11,13 +11,13 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.GroundIntakeSubsystem;
-import frc.robot.subsystems.ArmIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmIntake2Subsystem;
 import frc.robot.Constants.Arm;
 import frc.robot.commands.Balance;
 import frc.robot.commands.XboxTeleopDrive;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,7 +34,9 @@ public class RobotContainer {
   private  GroundIntakeSubsystem groundIntakeSubsystem;
   private ArmIntake2Subsystem armIntakeSubsystem;
   private ArmSubsystem armSubsystem;
- private final SwerveDrive drivetrain;
+  private final SwerveDrive drivetrain;
+  private final WristSubsystem wristSubsystem;
+
 
   private final LED ledStrip = new LED(Constants.LED_PORT, Constants.LED_LENGTH);
 
@@ -51,7 +53,7 @@ public class RobotContainer {
     pneumaticHub.enableCompressorDigital();
     //groundIntakeSubsystem = new GroundIntakeSubsystem();
     armSubsystem = new ArmSubsystem();
-  
+    wristSubsystem = new WristSubsystem();
     driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
     operatorController = new CommandXboxController(Constants.OPERATOR_XBOX);
 
@@ -122,6 +124,9 @@ public class RobotContainer {
 
     Trigger operatorExtake = operatorController.button(8);
     operatorExtake.onTrue(armIntakeSubsystem.eject());
+
+    Trigger operatorY = operatorController.y();
+    operatorY.onTrue(new InstantCommand(()->{wristSubsystem.toggleExtend();}));
     /* 
     // raise arm intake at predefined velocity
     Trigger driver3 = driverJoystick.button(3);

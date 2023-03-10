@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.ArmIntake;
 
 
-public class ArmIntakeSubsystem extends SubsystemBase {
+public class WristSubsystem extends SubsystemBase {
     private Solenoid piston;
     private SparkMaxAbsoluteEncoder encoder;
     private Timer timer;
@@ -34,12 +34,8 @@ public class ArmIntakeSubsystem extends SubsystemBase {
     private CANSparkMax wristMotor;
     private SparkMaxPIDController posPid;
 
-    public ArmIntakeSubsystem() {
-        piston = new Solenoid(PneumaticsModuleType.REVPH, ArmIntake.PISTON);
-    
-        timer = new Timer();
-        timer.reset();
-        timer.start();
+    public WristSubsystem() {
+       
         
         flag = true;
         isExtended = false;
@@ -75,23 +71,6 @@ public class ArmIntakeSubsystem extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {}
-
-    public void toggleClamp(){
-        if (piston.get()) {
-            piston.set(false);
-        } else {
-            piston.set(true);
-        }
-    }
-
-    public void openIntake() {
-        piston.set(true);
-    }
-
-    public void closeIntake() {
-        piston.set(false);
-    }
-    
     /* 
     public void raiseIntake() {
         posPid.setReference(ArmIntake.RAISE_WRIST_SPEED, ControlType.kVelocity);
@@ -131,17 +110,5 @@ public class ArmIntakeSubsystem extends SubsystemBase {
     public void stopWrist() {
         //wristMotor.set(0.0);
         posPid.setReference(encoder.getPosition(), ControlType.kPosition);
-    }
-
-    public SequentialCommandGroup unstoreIntakeCmd(){
-        return new InstantCommand(()->{this.extendWrist();}, this) //change to this.extendWrist later
-        .andThen(new WaitCommand(0.8))
-        .andThen(()->{this.openIntake();});
-    }
-
-    public SequentialCommandGroup storeIntakeCmd(){
-        return new InstantCommand(()->{this.closeIntake();},this)
-        .andThen(new WaitCommand(0.25)) 
-        .andThen(()->{this.retractWrist();});
     }
 }
