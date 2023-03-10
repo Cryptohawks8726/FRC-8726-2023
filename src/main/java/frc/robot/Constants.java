@@ -66,6 +66,7 @@ public final class Constants {
 
     public static final class ArmIntake{
         public static final int WRIST_SPARKMAX = 55;
+        public static final int ARM_INTAKE_SPARKMAX = 0;
 
         public static final double WRIST_kP = 3.5;
         public static final double WRIST_kI = 0.0;

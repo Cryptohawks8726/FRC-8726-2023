@@ -21,10 +21,10 @@ public class ArmIntake2Subsystem extends SubsystemBase {
     public ArmIntake2Subsystem() {
         //isHeld = false;
 
-        motor = new CANSparkMax(11, MotorType.kBrushless);
+        motor = new CANSparkMax(Constants.ArmIntake.ARM_INTAKE_SPARKMAX, MotorType.kBrushless);
 
         // Set Current Limits
-        motor.setSmartCurrentLimit(2);
+        motor.setSmartCurrentLimit(20);
 
         motor.setIdleMode(IdleMode.kBrake);
 
@@ -48,7 +48,7 @@ public class ArmIntake2Subsystem extends SubsystemBase {
     }
 
     public void runIntake(){
-        motor.set(1);
+        motor.set(2);
         motorStatus = "Intaking...";
     }
 
@@ -59,6 +59,6 @@ public class ArmIntake2Subsystem extends SubsystemBase {
 
     public void stopIntake(){
         motor.set(0);
-        motorStatus = "Ejecting";
+        motorStatus = "Stopped..";
     }
 }
