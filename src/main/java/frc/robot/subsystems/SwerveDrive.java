@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.kauailabs.navx.frc.AHRS.SerialDataType;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -46,9 +48,9 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     private SwerveModuleState[] modStates;
     private SwerveModulePosition[] modPositionStates;
     private SwerveDriveKinematics kinematics;
-    private SwerveDrivePoseEstimator odometry;
+    public SwerveDrivePoseEstimator odometry;
     private ChassisSpeeds lastSetChassisSpeeds;
-    private AHRS gyro;
+    public AHRS gyro;
     private PIDController xController,yController,thetaController;
     private SwerveModuleState testState;
     // private AnalogGyroSim simGyro;
@@ -110,11 +112,11 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
 
     @Override
     public void periodic(){
+        System.out.println("Updating Odometry");
         odometry.update(
             gyro.getRotation2d(), 
             getSwerveModulePositions()
         );
-        System.out.println(getPoseEstimate().getY());
         //modules.get(0).closedLoopDrive(testState);
         //modules.get(1).closedLoopDrive(testState);
         //modules.get(2).closedLoopDrive(testState);

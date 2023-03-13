@@ -22,6 +22,11 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static final double BalanceKp = 0.6;
+    public static final double BalanceKi = 0.00;
+    public static final double BalanceKd = 0.00;
+
     public static final class Swerve {
         
         // Physical Constants
@@ -40,6 +45,7 @@ public final class Constants {
         public static final int  driveMotorFreeCurrentLimit = 30;
         public static final int  driveMotorStallCurrentLimit = 30;
         public static final int  driveMotorfreeCurrentLimit = 30;
+
         
         // Controller Gains
         // TODO: Tune PID + FF constants
