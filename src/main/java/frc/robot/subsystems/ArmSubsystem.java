@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.Arm;
 
+import javax.management.relation.Relation;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -18,7 +20,11 @@ import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
+import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -27,19 +33,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystem extends SubsystemBase {
   private SparkMaxAbsoluteEncoder encoder;
-  private Timer timer;
-  private boolean isConeHeld;
-  private SparkMaxPIDController posPID;
+  private ProfiledPIDController controller;
+  private Constraints armConstraints;
+  private ArmFeedforward arbFF;
+  private double tempFF,lastSetRad,setVolt;
   private CANSparkMax armMotor;
   private Solenoid brake;
 
   public ArmSubsystem() {
-    isConeHeld = false;
-    timer = new Timer();
-    //encoder = new DutyCycleEncoder(Constants.ARM_ENCODER_CHANNEL); // if encoder is wired to rio
+
 
     armMotor = new CANSparkMax(Arm.ARM_SPARKMAX, MotorType.kBrushless);
     armMotor.setIdleMode(IdleMode.kCoast);
+    armMotor.enableVoltageCompensation(12.0);
 
     encoder = armMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
     encoder.setZeroOffset(Arm.ENCODER_OFFSET_CONFIG);
@@ -47,14 +53,18 @@ public class ArmSubsystem extends SubsystemBase {
 
     armMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20); // send can encoder pos data every 20ms
     armMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20); // same but for vel
-
-    //posPID = new PIDController(Constants.ARM_kP, Constants.ARM_kI, Constants.ARM_kD);
-    posPID = armMotor.getPIDController();
-    posPID.setP(Arm.ARM_kP);
-    posPID.setI(Arm.ARM_kI);
-    posPID.setD(Arm.ARM_kD);
+    tempFF = 0.0;
+    setVolt = 0.43;
+    arbFF = new ArmFeedforward(Arm.ARM_kS,Arm.ARM_kG,Arm.ARM_kV);
+    armConstraints = new Constraints(0.15, 0.05); // dg/s
+    controller = new ProfiledPIDController(Arm.ARM_kVP, Arm.ARM_kVI, Arm.ARM_kVD, armConstraints,0.2);
+    controller.setGoal(getRadians());
+    /*posPID = armMotor.getPIDController();
+    posPID.setP(Arm.ARM_kVP);
+    posPID.setI(Arm.ARM_kVI);
+    posPID.setD(Arm.ARM_kVD);
     posPID.setFeedbackDevice(encoder);
-    posPID.setOutputRange(-0.05, 0.2, 0);
+    posPID.setOutputRange(-0.05, 0.2, 0);*/
     
     brake = new Solenoid(PneumaticsModuleType.REVPH, Arm.BRAKE_PISTON);
   }
@@ -62,44 +72,33 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Arm Pos",getRawEncoderPos());
-    SmartDashboard.putNumber("Arm Deg",getDegrees());
-    SmartDashboard.putNumber("Corrected Deg to Ref",getDegrees()+Arm.ENCODER_OFFSET_SUBTRACT);
-    SmartDashboard.putNumber("Applied Output",armMotor.getAppliedOutput());
-
-   
-  }
-
-  public SequentialCommandGroup setRawPosRefPoint(double pos){
-    return new InstantCommand(()->{releaseBrake();},this)
-    .andThen(()->{posPID.setReference(getRawEncoderPos()+10, ControlType.kPosition);})
-    .andThen(new WaitCommand(0.5))
-    .andThen(()->{posPID.setReference(pos, ControlType.kPosition);});
-  }
-
-  public SequentialCommandGroup setDegPosRefPoint(double deg){
-    return new InstantCommand(()->{releaseBrake();},this)
-    .andThen(()->{setDegRefPoint(getDegrees() + 10);})
-    .andThen(new WaitCommand(0.5))
-    .andThen(()->{posPID.setReference(deg+Arm.ENCODER_OFFSET_SUBTRACT, ControlType.kPosition);});
-  }
-
-
- public void setDegRefPoint(double degrees){
-    releaseBrake();
-    if(degrees<-88){
-      degrees = -88;
-    }
-    if(degrees>10){
-      degrees = 10;
-    }
-    posPID.setReference(degrees+Arm.ENCODER_OFFSET_SUBTRACT, ControlType.kPosition);
-  }
-
-  /*public void setVelRefPoint(double vel){
-    posPID.setReference(vel, ControlType.kVelocity);
-  }*/
   
+    double pidOutput = controller.calculate(getRadians());
+    double ff = arbFF.calculate(controller.getSetpoint().position, controller.getSetpoint().velocity);
+    // change to radians + change pid to radians
+    armMotor.setVoltage(pidOutput+ff);
+
+    
+    SmartDashboard.putNumber("PID Effort",pidOutput);
+    SmartDashboard.putNumber("FF",ff);
+    SmartDashboard.putNumber("Arm Deg",getDegrees());
+    SmartDashboard.putNumber("Applied Voltage",pidOutput+ff);
+    SmartDashboard.putNumber("PID Vel",controller.getSetpoint().velocity);
+  }
+
+  public void setGoal(double deg){
+    SmartDashboard.putNumber("last set deg",deg);
+    controller.setGoal(Math.toRadians(deg));
+  }
+
+  public double getFF(double degrees,double vel){
+    lastSetRad = Math.toRadians(degrees);
+    tempFF = arbFF.calculate(lastSetRad, vel);
+  
+    SmartDashboard.putNumber("tempFF",tempFF);
+    return tempFF;
+  }
+
   public double getRawEncoderPos() {
     return encoder.getPosition();
   }
@@ -107,41 +106,9 @@ public class ArmSubsystem extends SubsystemBase {
   public double getDegrees(){
     return encoder.getPosition() - Arm.ENCODER_OFFSET_SUBTRACT;
   }
-
-  public void raiseArm() {
-    releaseBrake();
-    setDegRefPoint(getDegrees()+2);
-    //posPid.setReference()
-    // setVelRefPoint(Arm.RAISE_ARM_SPEED);
-    //armMotor.set(Arm.RAISE_ARM_SPEED);
-  }
-
-  public void lowerArm() {
-    releaseBrake();
-
-    setDegRefPoint(getDegrees()-2);
-    
-    //armMotor.set(Arm.LOWER_ARM_SPEED);
-  }
-
-  public void coneNotHeld() {
-    isConeHeld = true;
-    posPID.setP(Arm.ARM_kP);
-    posPID.setI(Arm.ARM_kI);
-    posPID.setD(Arm.ARM_kD);
-  }
-
-  public void coneHeld() {
-    isConeHeld = false;
-    posPID.setP(Arm.CONEHELD_kP);
-    posPID.setI(Arm.CONEHELD_kI);
-    posPID.setD(Arm.CONEHELD_kD);
-  }
-
-  public void stay() {
-    //setRawPosRefPoint(getRawEncoderPos());
-    setDegRefPoint(getDegrees());
-    //armMotor.set(-posPID.calculate(encoderVal)); // why is this negative? we can use the 
+  
+  public double getRadians(){
+    return Math.toRadians(getDegrees());
   }
 
   /* 
@@ -155,18 +122,10 @@ public class ArmSubsystem extends SubsystemBase {
     return Math.atan2(y, x)*180.0/Math.PI;
   }
 
-  public SequentialCommandGroup setBrake(){
-    return new InstantCommand(()->{this.stay();},this)
-    .andThen(new WaitCommand(0.15))
-    .andThen(()->{this.enableBrake();})
-    .andThen(()->{this.posPID.setReference(getRawEncoderPos(), ControlType.kPosition);});
-    //brake.set(false);
-    //stay();
-  }
-
   public void enableBrake(){
     brake.set(true);
   }
+
   public void releaseBrake(){
     brake.set(false);
   }

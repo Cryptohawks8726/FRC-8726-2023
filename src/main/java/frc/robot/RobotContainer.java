@@ -31,12 +31,11 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 public class RobotContainer {
 
   private final PneumaticHub pneumaticHub;
-  private  GroundIntakeSubsystem groundIntakeSubsystem;
-  private ArmIntake2Subsystem armIntakeSubsystem;
-  private ArmSubsystem armSubsystem;
+  private final GroundIntakeSubsystem groundIntakeSubsystem;
+  private final ArmIntake2Subsystem armIntakeSubsystem;
+  private final ArmSubsystem armSubsystem;
   private final SwerveDrive drivetrain;
   private final WristSubsystem wristSubsystem;
-
 
   private final LED ledStrip = new LED(Constants.LED_PORT, Constants.LED_LENGTH);
 
@@ -51,7 +50,7 @@ public class RobotContainer {
     pneumaticHub = new PneumaticHub(Constants.COMPRESSOR_ID);
     //pneumaticHub.disableCompressor();
     pneumaticHub.enableCompressorDigital();
-    //groundIntakeSubsystem = new GroundIntakeSubsystem();
+    groundIntakeSubsystem = new GroundIntakeSubsystem();
     armSubsystem = new ArmSubsystem();
     wristSubsystem = new WristSubsystem();
     driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
@@ -61,62 +60,56 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    //armIntakeSubsystem.setDefaultCommand(new InstantCommand(()->{armIntakeSubsystem.retractWrist();},armIntakeSubsystem));
-    //groundIntakeSubsystem.setDefaultCommand(groundIntakeSubsystem.storeIntakeCmd());
     //drive cmds
     drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverJoystick).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     //Trigger driver11 = driverJoystick.button(11);
     //driver11.whileTrue(new RepeatCommand(new InstantCommand(()->{drivetrain.normalZeroModules();},drivetrain))/*new InstantCommand(()->{drivetrain.drive(new ChassisSpeeds(1, 0, 0), false);}*/)
     //.onFalse(new InstantCommand(()->{drivetrain.drive(new ChassisSpeeds(0, 0, 0), false);}));
 
-    
-    // Trigger driverRightBumper = driverController.rightBumper();
-    // driverRightBumper.whileTrue(drivetrain.passiveBrake());
+    Trigger driver12 = driverJoystick.button(12);
+    driver12.whileTrue(drivetrain.passiveBrake());
     // Trigger driverRightTrigger = driverController.rightTrigger();
     // driverRightTrigger.whileTrue(new RepeatCommand(new InstantCommand(()->drivetrain.normalZeroModules(),drivetrain)));
     setArmBindings();
-    //setGroundIntakeBindings();
+    setGroundIntakeBindings();
     setLedBindings();
-
-    Trigger operatorY = operatorController.y();
-    //operatorY.whileTrue(new InstantCommand(()->{armIntakeSubsystem.extendWrist();},armIntakeSubsystem).withName("Extend Arm Intake"))
-     // .onFalse(new InstantCommand(()->{armIntakeSubsystem.retractWrist();},armIntakeSubsystem).withName("Retract Arm Intake"));
-
-    
-    //operatorY.whileTrue(armIntakeSubsystem.unstoreIntakeCmd().withName("Unstore Arm Intake"))
-    //.onFalse(armIntakeSubsystem.storeIntakeCmd().withName("Store Arm Intake"));
-    
-
-    
 
   }
 
   private void setArmBindings(){
     
-    // toggle wrist position
-    //Trigger driverThumb = driverJoystick.top();
-    //driverThumb.onTrue(new InstantCommand(()->{armIntakeSubsystem.toggleExtend();},armIntakeSubsystem));
-
-    // holding y lowers and opens arm intake, releasing it closes and stores arm intake
+    Trigger operatorDown = operatorController.povDown();
+    operatorDown.onTrue(new InstantCommand(()->{
+      armSubsystem.setGoal(Arm.FLOOR_ANGLE)
+      ;}));
     
+    Trigger operatorLeft = operatorController.povLeft();
+    operatorLeft.onTrue(new InstantCommand(()->{
+      armSubsystem.setGoal(Arm.MID_CUBE_ANGLE)
+      ;}));
     
-    //y.whileTrue(new StartEndCommand(() -> {armIntakeSubsystem.unstoreIntake();}, () -> {armIntakeSubsystem.storeIntake();}, armIntakeSubsystem));
-    // op rb sets mid height 
-    Trigger operatorRB = operatorController.rightBumper();
-    operatorRB.onTrue(armSubsystem.setDegPosRefPoint(Arm.HIGHNODE_ANGLE))
-    .onFalse(armSubsystem.setBrake());
-
-    Trigger operatorLB = operatorController.leftBumper();
-    operatorLB.onTrue(armSubsystem.setDegPosRefPoint(Arm.SHELF_ANGLE))
-    .onFalse(armSubsystem.setBrake());
+    Trigger operatorRight = operatorController.povRight();
+    operatorRight.onTrue(new InstantCommand(()->{
+      armSubsystem.setGoal(Arm.MID_ANGLE)
+      ;}));
     
-    Trigger operatorLT = operatorController.leftTrigger();
-    operatorLT.onTrue(armSubsystem.setDegPosRefPoint(Arm.RETRACTED_ANGLE))
-    .onFalse(armSubsystem.setBrake());
+    Trigger opUp = operatorController.povUp();
+    opUp.onTrue(new InstantCommand(()->{
+      armSubsystem.setGoal(Arm.HIGHNODE_ANGLE)
+      ;}));
 
     Trigger operatorRT = operatorController.rightTrigger();
-    operatorRT.onTrue(armSubsystem.setDegPosRefPoint(Arm.FLOOR_ANGLE))
-    .onFalse(armSubsystem.setBrake());
+    operatorRT.onTrue(new InstantCommand(()->{
+      armSubsystem.setGoal(Arm.SHELF_ANGLE)
+      ;}));
+
+    Trigger operatorLT = operatorController.leftTrigger();
+    operatorLT.onTrue(new InstantCommand(() -> {
+      armSubsystem.setGoal(Arm.RETRACTED_ANGLE);
+    })
+        .andThen(new InstantCommand(() -> {
+          wristSubsystem.retractWrist();
+        })));
 
     Trigger operatorIntake = operatorController.button(7);
     operatorIntake.onTrue(armIntakeSubsystem.intake())
@@ -126,29 +119,14 @@ public class RobotContainer {
     operatorExtake.onTrue(armIntakeSubsystem.eject())
     .onFalse(armIntakeSubsystem.stop());
 
-    Trigger operatorDRight = operatorController.povRight();
-    operatorDRight.onTrue(new InstantCommand(()->{wristSubsystem.shelfExtend();}));
+
+    Trigger operatorLB = operatorController.leftBumper();
+    operatorLB.onTrue(new InstantCommand(()->{wristSubsystem.shelfExtend();}));
+
+    Trigger operatorRB = operatorController.rightBumper();
+    
     Trigger operatorY = operatorController.y();
     operatorY.onTrue(new InstantCommand(()->{wristSubsystem.toggleExtend();}));
-    /* 
-    // raise arm intake at predefined velocity
-    Trigger driver3 = driverJoystick.button(3);
-    driver3.whileTrue(new StartEndCommand(()->{armIntakeSubsystem.raiseIntake();}, ()->{armIntakeSubsystem.stopWrist();}, armIntakeSubsystem));
-
-    // lower arm intake at predefined velocity
-    Trigger driver4 = driverJoystick.button(4);
-    driver4.whileTrue(new StartEndCommand(()->{armIntakeSubsystem.lowerIntake();}, ()->{armIntakeSubsystem.stopWrist();}, armIntakeSubsystem));
-
-    // raise arm at set vel
-    Trigger driver5 = driverJoystick.button(5);
-    driver5.whileTrue(new RepeatCommand(new InstantCommand(()->{armSubsystem.raiseArm();},armSubsystem))).onFalse(armSubsystem.setBrake());
-  
-    // lower arm at set vel
-    Trigger driver6 = driverJoystick.button(6);
-    driver6.whileTrue(new RepeatCommand(new InstantCommand(()->{armSubsystem.lowerArm();},armSubsystem))).onFalse(armSubsystem.setBrake());
-    //driver6.whileTrue(new InstantCommand(()->{armSubsystem.releaseBrake();},armSubsystem)).onFalse(armSubsystem.setBrake());
-    //driver6.whileTrue(new InstantCommand(()->{armSubsystem.lowerArm();},armSubsystem)).onFalse(armSubsystem.setBrake());
-    */
   }
 
   private void setGroundIntakeBindings(){

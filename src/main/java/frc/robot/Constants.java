@@ -28,25 +28,26 @@ public final class Constants {
         public static final double SHAFT_HEIGHT_INCHES = 40.625;
         public static final double ARM_LENGTH_INCHES = 35.0;
         
-        //Change values after testing
-        public static final double ARM_kP = 0.009;
-        public static final double ARM_kI = 0;
-        public static final double ARM_kD = 0;
-        public static final double CONEHELD_kP = 0.08;
-        public static final double CONEHELD_kI = 0;
-        public static final double CONEHELD_kD = 0;
+        // PID and FF for voltage
 
-        //inches 
-        //public static final double HIGHNODE_HEIGHT = 46; 
-        public static final double HIGHNODE_ANGLE = 30.0;
-        //public static final double MIDNODE_HEIGHT = 36.0;
-       // public static final double SHELF_HEIGHT = 24.0;
+        public static final double ARM_kVP = 4.5;//maybe increase after kv
+        public static final double ARM_kVI = 0.0;
+        public static final double ARM_kVD = 0.0;
+        public static final double ARM_kS = 0.545;//545;
+        public static final double ARM_kV = 0.85;//increase kv
+        public static final double ARM_kG = 1.2;//
+
+        public static final double SPEED_RAD = 1.0; // increase later
+
+        //deg
+        public static final double HIGHNODE_ANGLE = 10.0;
+        public static final double MID_ANGLE = -10.0;
+        public static final double MID_CUBE_ANGLE = -25.0;
         public static final double SHELF_ANGLE = 13.0;
-        public static final double RETRACTED_ANGLE = -100.0;
+        public static final double RETRACTED_ANGLE = -90.0;
         public static final double FLOOR_ANGLE = -85.0;
+        
 
-        public static final double RAISE_ARM_SPEED = 0.2;
-        public static final double LOWER_ARM_SPEED = -0.2;
         public static final double ENCODER_OFFSET_CONFIG = 335.0433326;
         public static final double ENCODER_OFFSET_SUBTRACT = 311.525;
         public static final double ENCODER_POS_FACTOR = 360;
@@ -76,13 +77,12 @@ public final class Constants {
         public static final double LOWER_WRIST_SPEED = -0.5;
 
         public static final double WRIST_RETRACT_POS = 0.37;
-        public static final double WRIST_EXTEND_POS = 0.70;
+        public static final double WRIST_EXTEND_POS = 0.74;
         public static final double WRIST_SHELF_POS = 0.62;
         
-        public static final double WRIST_ENCODER_OFFSET = 0.2;//322.0556259;
-
-        public static final int PISTON = 10;
+        public static final double WRIST_ENCODER_OFFSET = 0.2;
     }
+
     public static final class Swerve {
         
         // Physical Constants
@@ -102,8 +102,6 @@ public final class Constants {
         public static final int  driveMotorStallCurrentLimit = 30;
         public static final int  driveMotorfreeCurrentLimit = 30;
 
-
-        
         // Controller Gains
         // TODO: Tune PID + FF constants
         public static final double kDriveP = 0.55;
@@ -132,11 +130,9 @@ public final class Constants {
 
             public int getVal(){
                 return this.modPos;
-            }
-
-            
-
+            }      
         }
+
         public enum Module{
             /*       
             From Translation2d docs: 
@@ -178,7 +174,6 @@ public final class Constants {
     }
 
     public static final int COMPRESSOR_ID = 1;
-
 
     public static final int[] YELLOW_RGB = new int[] {255, 255, 0};
     public static final int[] PURPLE_RGB = new int[] {75, 0, 130};
