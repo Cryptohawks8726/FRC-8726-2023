@@ -48,8 +48,8 @@ public class RobotContainer {
     drivetrain = new SwerveDrive();
     armIntakeSubsystem = new ArmIntake2Subsystem();
     pneumaticHub = new PneumaticHub(Constants.COMPRESSOR_ID);
-    //pneumaticHub.disableCompressor();
-    pneumaticHub.enableCompressorDigital();
+    pneumaticHub.disableCompressor();
+    //pneumaticHub.enableCompressorDigital();
     groundIntakeSubsystem = new GroundIntakeSubsystem();
     armSubsystem = new ArmSubsystem();
     wristSubsystem = new WristSubsystem();
@@ -62,14 +62,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //drive cmds
     drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverJoystick).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    //Trigger driver11 = driverJoystick.button(11);
-    //driver11.whileTrue(new RepeatCommand(new InstantCommand(()->{drivetrain.normalZeroModules();},drivetrain))/*new InstantCommand(()->{drivetrain.drive(new ChassisSpeeds(1, 0, 0), false);}*/)
-    //.onFalse(new InstantCommand(()->{drivetrain.drive(new ChassisSpeeds(0, 0, 0), false);}));
-
     Trigger driver12 = driverJoystick.button(12);
     driver12.whileTrue(drivetrain.passiveBrake());
-    // Trigger driverRightTrigger = driverController.rightTrigger();
-    // driverRightTrigger.whileTrue(new RepeatCommand(new InstantCommand(()->drivetrain.normalZeroModules(),drivetrain)));
     setArmBindings();
     setGroundIntakeBindings();
     setLedBindings();
@@ -100,33 +94,36 @@ public class RobotContainer {
 
     Trigger operatorRT = operatorController.rightTrigger();
     operatorRT.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.SHELF_ANGLE)
+      armSubsystem.setGoal(Arm.SHELF_CONE) //cone
       ;}));
 
     Trigger operatorLT = operatorController.leftTrigger();
-    operatorLT.onTrue(new InstantCommand(() -> {
+    operatorLT.onTrue(new InstantCommand(()->{
+      armSubsystem.setGoal(Arm.SHELF_CUBE) //cube 
+      ;}));
+
+    Trigger operatorIntake = operatorController.button(7);
+    operatorIntake.onTrue(armIntakeSubsystem.eject())
+    .onFalse(armIntakeSubsystem.stop());
+
+    Trigger operatorExtake = operatorController.button(8);
+    operatorExtake.onTrue(armIntakeSubsystem.intake())
+    .onFalse(armIntakeSubsystem.stop());
+
+
+    Trigger operatorLB = operatorController.leftBumper();
+    operatorLB.onTrue(new InstantCommand(()->{wristSubsystem.shelfExtend();})); //cube
+
+    Trigger operatorRB = operatorController.rightBumper();
+    operatorRB.onTrue(new InstantCommand(()->{wristSubsystem.toggleExtend();}));
+
+    Trigger operatorY = operatorController.y();
+    operatorY.onTrue(new InstantCommand(() -> {
       armSubsystem.setGoal(Arm.RETRACTED_ANGLE);
     })
         .andThen(new InstantCommand(() -> {
           wristSubsystem.retractWrist();
         })));
-
-    Trigger operatorIntake = operatorController.button(7);
-    operatorIntake.onTrue(armIntakeSubsystem.intake())
-    .onFalse(armIntakeSubsystem.stop());
-
-    Trigger operatorExtake = operatorController.button(8);
-    operatorExtake.onTrue(armIntakeSubsystem.eject())
-    .onFalse(armIntakeSubsystem.stop());
-
-
-    Trigger operatorLB = operatorController.leftBumper();
-    operatorLB.onTrue(new InstantCommand(()->{wristSubsystem.shelfExtend();}));
-
-    Trigger operatorRB = operatorController.rightBumper();
-    
-    Trigger operatorY = operatorController.y();
-    operatorY.onTrue(new InstantCommand(()->{wristSubsystem.toggleExtend();}));
   }
 
   private void setGroundIntakeBindings(){

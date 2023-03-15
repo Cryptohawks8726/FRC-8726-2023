@@ -52,6 +52,6 @@ public class Balance extends CommandBase {
 
     @Override
     public void end(boolean isInterrupted){
-        //passiveBrake.cancel();
+        passiveBrake.cancel();
     }
 }

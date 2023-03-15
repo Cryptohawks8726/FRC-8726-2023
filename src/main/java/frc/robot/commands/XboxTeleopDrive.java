@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.Constants;
@@ -19,13 +20,14 @@ public class XboxTeleopDrive extends CommandBase{
     private boolean isHeadingSet;
     private PIDController headingPID;
     
-    public XboxTeleopDrive(SwerveDrive drivetrain, /*CommandXboxController controller*/ CommandJoystick controller){
+    public XboxTeleopDrive(SwerveDrive drivetrain, CommandJoystick controller){
         this.drivetrain = drivetrain;
         this.controller = controller;
         addRequirements(drivetrain);
         headingPID = new PIDController(Constants.Swerve.kHeadingP, Constants.Swerve.kHeadingI, Constants.Swerve.kHeadingD, 20);
         headingPID.enableContinuousInput(0, 360);
     }
+   
     @Override
     public void initialize(){
         isHeadingSet = false;
@@ -38,14 +40,8 @@ public class XboxTeleopDrive extends CommandBase{
     See https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html 
         The controller axes have x as left-right and y as up-down
         */
-        // boolean isRobotRelative = controller.leftBumper().getAsBoolean();
 
         boolean isRobotRelative = controller.trigger().getAsBoolean();
-    
-        // Get Controller Values
-        // double xVel = (Math.abs(controller.getLeftY()) > 0.1 ? controller.getLeftY() : 0.0); 
-        // double yVel = (Math.abs(controller.getLeftX()) > 0.1 ? controller.getLeftX() : 0.0);
-        // double thetaVel = (Math.abs(controller.getRightX()) > 0.1 ? controller.getRightX() * Constants.Swerve.maxAngularSpeed : 0.0);
         
         double xVel = (Math.abs(controller.getY()) > 0.2 ? controller.getY() : 0.0); 
         double yVel = (Math.abs(controller.getX()) > 0.2 ? controller.getX() : 0.0);
@@ -53,21 +49,30 @@ public class XboxTeleopDrive extends CommandBase{
         double sensitivity = (controller.getThrottle()*-1)+1.01;
         xVel = Math.signum(xVel) * Math.pow(xVel,2) * Constants.Swerve.maxSpeed * sensitivity; //square input while preserving sign
         yVel = Math.signum(yVel) * Math.pow(yVel,2) * Constants.Swerve.maxSpeed * sensitivity;
-
+        thetaVel *= sensitivity;
+        
+        if(controller.top().getAsBoolean()){
+            thetaVel=0.0;
+        }
+        
         // maintain heading if there's no rotational input
-        //  if (Math.abs(thetaVel) < 0.1){
-        //     if (isHeadingSet == false){
-        //         headingPID.reset();
-        //         isHeadingSet = true;
-        //         lastHeading = drivetrain.getRobotAngle();
-        //         headingPID.setSetpoint(lastHeading.getDegrees()%180);
-        //         thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
-        //     }else{
-        //         thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%180);
-        //     }
-        // } else{
-        //     isHeadingSet = false;
-        // }
+         if (Math.abs(thetaVel) < 0.1){
+            if (isHeadingSet == false){
+                    headingPID.reset();
+                    isHeadingSet = true;
+                    lastHeading = drivetrain.getRobotAngle();
+                    headingPID.setSetpoint(lastHeading.getDegrees()%360);
+                    thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%360);
+                    SmartDashboard.putNumber("calc theta",thetaVel);
+                    thetaVel = 0.0;
+             }else{
+                    thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%360);
+                    SmartDashboard.putNumber("calc theta",thetaVel);
+                    thetaVel = 0.0;
+             }
+         } else{
+                isHeadingSet = false;
+         }
         
         drivetrain.drive(
              isRobotRelative ? new ChassisSpeeds(xVel, yVel, thetaVel)

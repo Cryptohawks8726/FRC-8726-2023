@@ -56,7 +56,7 @@ public class ArmSubsystem extends SubsystemBase {
     tempFF = 0.0;
     setVolt = 0.43;
     arbFF = new ArmFeedforward(Arm.ARM_kS,Arm.ARM_kG,Arm.ARM_kV);
-    armConstraints = new Constraints(0.15, 0.05); // dg/s
+    armConstraints = new Constraints(0.10, 0.03); // dg/s
     controller = new ProfiledPIDController(Arm.ARM_kVP, Arm.ARM_kVI, Arm.ARM_kVD, armConstraints,0.2);
     controller.setGoal(getRadians());
     /*posPID = armMotor.getPIDController();

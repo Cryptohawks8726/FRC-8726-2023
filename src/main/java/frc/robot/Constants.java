@@ -30,11 +30,11 @@ public final class Constants {
         
         // PID and FF for voltage
 
-        public static final double ARM_kVP = 4.5;//maybe increase after kv
+        public static final double ARM_kVP = 4.8;//maybe increase after kv
         public static final double ARM_kVI = 0.0;
         public static final double ARM_kVD = 0.0;
         public static final double ARM_kS = 0.545;//545;
-        public static final double ARM_kV = 0.85;//increase kv
+        public static final double ARM_kV = 0.95;//increase kv
         public static final double ARM_kG = 1.2;//
 
         public static final double SPEED_RAD = 1.0; // increase later
@@ -43,8 +43,9 @@ public final class Constants {
         public static final double HIGHNODE_ANGLE = 10.0;
         public static final double MID_ANGLE = -10.0;
         public static final double MID_CUBE_ANGLE = -25.0;
-        public static final double SHELF_ANGLE = 13.0;
-        public static final double RETRACTED_ANGLE = -90.0;
+        public static final double SHELF_CONE = 3.0; //cone
+        public static final double SHELF_CUBE = 1.0;
+        public static final double RETRACTED_ANGLE = -95.0;
         public static final double FLOOR_ANGLE = -85.0;
         
 
@@ -69,7 +70,7 @@ public final class Constants {
         public static final int WRIST_SPARKMAX = 55;
         public static final int ARM_INTAKE_SPARKMAX = 50;
 
-        public static final double WRIST_kP = 3.5;
+        public static final double WRIST_kP = 3.8;
         public static final double WRIST_kI = 0.0;
         public static final double WRIST_kD = 0.0;
 
@@ -78,7 +79,7 @@ public final class Constants {
 
         public static final double WRIST_RETRACT_POS = 0.37;
         public static final double WRIST_EXTEND_POS = 0.74;
-        public static final double WRIST_SHELF_POS = 0.62;
+        public static final double WRIST_SHELF_POS = 0.66;
         
         public static final double WRIST_ENCODER_OFFSET = 0.2;
     }
