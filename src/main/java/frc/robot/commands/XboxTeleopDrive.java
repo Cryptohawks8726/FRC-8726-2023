@@ -16,7 +16,7 @@ public class XboxTeleopDrive extends CommandBase{
     private final CommandJoystick controller;
     
     private final SwerveDrive drivetrain;
-    private Rotation2d lastHeading;
+    private double lastHeading;
     private boolean isHeadingSet;
     private PIDController headingPID;
     
@@ -24,7 +24,7 @@ public class XboxTeleopDrive extends CommandBase{
         this.drivetrain = drivetrain;
         this.controller = controller;
         addRequirements(drivetrain);
-        headingPID = new PIDController(Constants.Swerve.kHeadingP, Constants.Swerve.kHeadingI, Constants.Swerve.kHeadingD, 20);
+        headingPID = new PIDController(/*Constants.Swerve.kHeadingP*/0.04, Constants.Swerve.kHeadingI, Constants.Swerve.kHeadingD, 20);
         headingPID.enableContinuousInput(0, 360);
     }
    
@@ -52,28 +52,40 @@ public class XboxTeleopDrive extends CommandBase{
         thetaVel *= sensitivity;
         
         if(controller.top().getAsBoolean()){
-            thetaVel=0.0;
+            thetaVel = 0.0;
+            double ang = drivetrain.gyro.getYaw()+180%360;
+            if(ang<90.0 || ang > 270.0){
+                lastHeading = 0.0;
+            }
+            else{
+                lastHeading = 180.0;
+                
+            }
+            isHeadingSet = true;
+            yVel = 0.0;
+            headingPID.setSetpoint(lastHeading);
         }
         
         // maintain heading if there's no rotational input
-         if (Math.abs(thetaVel) < 0.1){
+         if (Math.abs(thetaVel) < 0.3){
             if (isHeadingSet == false){
-                    headingPID.reset();
-                    isHeadingSet = true;
-                    lastHeading = drivetrain.getRobotAngle();
-                    headingPID.setSetpoint(lastHeading.getDegrees()%360);
-                    thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%360);
-                    SmartDashboard.putNumber("calc theta",thetaVel);
-                    thetaVel = 0.0;
+                headingPID.reset();
+                isHeadingSet = true;
+                lastHeading = drivetrain.gyro.getYaw()+180%360;
+                headingPID.setSetpoint(lastHeading);
+                thetaVel = headingPID.calculate(drivetrain.gyro.getYaw()+180%360);
+                SmartDashboard.putNumber("calc theta",thetaVel);
+                //thetaVel = 0.0;
              }else{
-                    thetaVel = headingPID.calculate(drivetrain.getRobotAngle().getDegrees()%360);
-                    SmartDashboard.putNumber("calc theta",thetaVel);
-                    thetaVel = 0.0;
+                thetaVel = headingPID.calculate(drivetrain.gyro.getYaw()+180%360);
+                SmartDashboard.putNumber("calc theta",thetaVel);
+                //thetaVel = 0.0;
              }
          } else{
-                isHeadingSet = false;
+            isHeadingSet = false;
          }
-        
+         SmartDashboard.putNumber("set heading",lastHeading);
+         SmartDashboard.putNumber("curr heading",drivetrain.gyro.getYaw()+180%360);
         drivetrain.drive(
              isRobotRelative ? new ChassisSpeeds(xVel, yVel, thetaVel)
             : ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, thetaVel, drivetrain.getRobotAngle())

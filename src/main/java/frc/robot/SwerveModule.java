@@ -10,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -89,7 +90,15 @@ public class SwerveModule implements Loggable{
         driveController.setD(Constants.Swerve.kDriveD);
         driveController.setFF(Constants.Swerve.kDriveFF);
 
+
+        // if (modConstants == Constants.Swerve.Module.BR || modConstants == Constants.Swerve.Module.BL) {
+        //     driveMotor.setInverted(true);
+        // }            
+        
         driveMotor.setInverted(true);
+
+
+
         /* 
         steerController.setP(Constants.Swerve.kSteerP);
         steerController.setI(Constants.Swerve.kSteerI);

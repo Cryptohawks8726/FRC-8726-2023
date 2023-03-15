@@ -249,7 +249,7 @@
     "Plot <5>": {
       "plots": [
         {
-          "height": 313,
+          "height": 0,
           "series": [
             {
               "color": [
@@ -281,7 +281,7 @@
               "autoFit": true
             }
           ],
-          "height": 332,
+          "height": 130,
           "series": [
             {
               "color": [
@@ -298,6 +298,33 @@
       "window": {
         "visible": false
       }
+    },
+    "Plot <7>": {
+      "plots": [
+        {
+          "height": 338,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/curr heading"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/set heading"
+            }
+          ]
+        }
+      ]
     }
   }
 }

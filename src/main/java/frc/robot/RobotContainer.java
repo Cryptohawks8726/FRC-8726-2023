@@ -22,10 +22,13 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.commands.auto.OneConeMobility;
+import frc.robot.commands.auto.OneCubeMobility;
 
 
 public class RobotContainer {
@@ -37,6 +40,9 @@ public class RobotContainer {
   private final SwerveDrive drivetrain;
   private final WristSubsystem wristSubsystem;
 
+  private final OneConeMobility OneConeAuto;
+  private final OneCubeMobility OneCubeAuto;
+
   private final LED ledStrip = new LED(Constants.LED_PORT, Constants.LED_LENGTH);
 
   private CommandXboxController operatorController;
@@ -44,7 +50,6 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-
     drivetrain = new SwerveDrive();
     armIntakeSubsystem = new ArmIntake2Subsystem();
     pneumaticHub = new PneumaticHub(Constants.COMPRESSOR_ID);
@@ -55,6 +60,9 @@ public class RobotContainer {
     wristSubsystem = new WristSubsystem();
     driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
     operatorController = new CommandXboxController(Constants.OPERATOR_XBOX);
+
+    OneConeAuto = new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true);
+    OneCubeAuto = new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true);
 
     configureButtonBindings();
   }
@@ -167,8 +175,8 @@ public class RobotContainer {
   //private SequentialCommandGroup driveOnBalance(){
     //return new InstantCommand(()->{drivetrain.set})
  // }
-  //public Command getAutonomousCommand() {
-  //  return armCommand;
- // }
+  public Command getAutonomousCommand() {
+   return OneConeAuto;
+ }
 }
 

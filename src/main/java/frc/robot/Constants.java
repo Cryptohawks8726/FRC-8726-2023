@@ -41,7 +41,7 @@ public final class Constants {
 
         //deg
         public static final double HIGHNODE_ANGLE = 10.0;
-        public static final double MID_ANGLE = -10.0;
+        public static final double MID_ANGLE = -9.0;
         public static final double MID_CUBE_ANGLE = -25.0;
         public static final double SHELF_CONE = 3.0; //cone
         public static final double SHELF_CUBE = 1.0;
@@ -78,8 +78,8 @@ public final class Constants {
         public static final double LOWER_WRIST_SPEED = -0.5;
 
         public static final double WRIST_RETRACT_POS = 0.37;
-        public static final double WRIST_EXTEND_POS = 0.74;
-        public static final double WRIST_SHELF_POS = 0.66;
+        public static final double WRIST_EXTEND_POS = 0.71;
+        public static final double WRIST_SHELF_POS = 0.63;
         
         public static final double WRIST_ENCODER_OFFSET = 0.2;
     }
