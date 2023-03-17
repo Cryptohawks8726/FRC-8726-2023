@@ -43,8 +43,8 @@ public class XboxTeleopDrive extends CommandBase{
 
         boolean isRobotRelative = controller.trigger().getAsBoolean();
         
-        double xVel = (Math.abs(controller.getY()) > 0.2 ? controller.getY() : 0.0); 
-        double yVel = (Math.abs(controller.getX()) > 0.2 ? controller.getX() : 0.0);
+        double xVel = (Math.abs(controller.getY()) > 0.2 ? -controller.getY() : 0.0); 
+        double yVel = (Math.abs(controller.getX()) > 0.2 ? -controller.getX() : 0.0);
         double thetaVel = (Math.abs(controller.getZ()) > 0.2 ? controller.getZ() * Constants.Swerve.maxAngularSpeed : 0.0);
         double sensitivity = (controller.getThrottle()*-1)+1.01;
         xVel = Math.signum(xVel) * Math.pow(xVel,2) * Constants.Swerve.maxSpeed * sensitivity; //square input while preserving sign

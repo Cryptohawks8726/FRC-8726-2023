@@ -33,12 +33,14 @@ public class WristSubsystem extends SubsystemBase {
     private boolean isExtended;
     private CANSparkMax wristMotor;
     private SparkMaxPIDController posPid;
+    private double posOffset;
 
     public WristSubsystem() {
        
         
         flag = true;
         isExtended = false;
+        posOffset =0.0;
 
         wristMotor = new CANSparkMax(ArmIntake.WRIST_SPARKMAX, MotorType.kBrushed);
         wristMotor.setIdleMode(IdleMode.kCoast);
@@ -89,13 +91,13 @@ public class WristSubsystem extends SubsystemBase {
 
     public void retractWrist(){
         isExtended = false;
-        posPid.setReference(ArmIntake.WRIST_RETRACT_POS, ControlType.kPosition);
+        posPid.setReference(ArmIntake.WRIST_RETRACT_POS+posOffset, ControlType.kPosition);
         SmartDashboard.putNumber("ref",ArmIntake.WRIST_RETRACT_POS);
     }
 
     public void extendWrist(){
         isExtended = true;
-        posPid.setReference(ArmIntake.WRIST_EXTEND_POS, ControlType.kPosition);
+        posPid.setReference(ArmIntake.WRIST_EXTEND_POS+posOffset, ControlType.kPosition);
         SmartDashboard.putNumber("ref",ArmIntake.WRIST_EXTEND_POS);
     }
 
@@ -109,11 +111,20 @@ public class WristSubsystem extends SubsystemBase {
     
     public void shelfExtend(){
         isExtended = true;
-        posPid.setReference(ArmIntake.WRIST_SHELF_POS, ControlType.kPosition);
+        posPid.setReference(ArmIntake.WRIST_SHELF_POS+posOffset, ControlType.kPosition);
     }
 
     public void stopWrist() {
         //wristMotor.set(0.0);
         posPid.setReference(encoder.getPosition(), ControlType.kPosition);
     }
+
+    public void incrementPos(){
+        posOffset+=0.005;
+    }
+
+    public void decrementPos(){
+        posOffset-=0.005;
+    }
+
 }

@@ -53,8 +53,8 @@ public class RobotContainer {
     drivetrain = new SwerveDrive();
     armIntakeSubsystem = new ArmIntake2Subsystem();
     pneumaticHub = new PneumaticHub(Constants.COMPRESSOR_ID);
-    pneumaticHub.disableCompressor();
-    //pneumaticHub.enableCompressorDigital();
+    //pneumaticHub.disableCompressor();
+    pneumaticHub.enableCompressorDigital();
     groundIntakeSubsystem = new GroundIntakeSubsystem();
     armSubsystem = new ArmSubsystem();
     wristSubsystem = new WristSubsystem();
@@ -132,6 +132,12 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> {
           wristSubsystem.retractWrist();
         })));
+
+      Trigger operatorLJ = operatorController.leftStick();
+      operatorLJ.onTrue(new InstantCommand(()->{wristSubsystem.decrementPos();}));
+
+      Trigger operatorRJ = operatorController.rightStick();
+      operatorRJ.onTrue(new InstantCommand(()->{wristSubsystem.incrementPos();}));
   }
 
   private void setGroundIntakeBindings(){
