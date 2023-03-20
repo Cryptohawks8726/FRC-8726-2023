@@ -11,6 +11,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.WristSubsystem;
 
+// 35 inches from nodes
 
 public class OneCubeMobility extends CommandBase {
     private SwerveDrive driveTrain;
@@ -58,8 +59,6 @@ public class OneCubeMobility extends CommandBase {
     }
     @Override
     public void execute() {
-        // 35 inches from nodes
-        
         // driveTrain.logValues();
         driveTrain.odometry.update(
              driveTrain.gyro.getRotation2d(), 
@@ -90,8 +89,8 @@ public class OneCubeMobility extends CommandBase {
             armIntake.intake().schedule();
             if(timer.get() > 1.5){
                 armIntake.stop().schedule();
-                double yPos = isBlueShelf ? 0.5 : -0.5;
-                if (setPosition(3.5, 0.0, 0.0, 2.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
+                double yPos = isBlueShelf ? 0.305 : -0.305;
+                if (setPosition(3.5, yPos, 0.0, 2.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
                     flag2 = false;
                 }
                 if (timer.get() > 3.0) {

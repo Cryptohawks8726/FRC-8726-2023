@@ -27,7 +27,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.commands.auto.OneConeBalance;
 import frc.robot.commands.auto.OneConeMobility;
+import frc.robot.commands.auto.OneConeNoDrive;
 import frc.robot.commands.auto.OneCubeMobility;
 
 
@@ -42,6 +44,8 @@ public class RobotContainer {
 
   private final OneConeMobility OneConeAuto;
   private final OneCubeMobility OneCubeAuto;
+  private final OneConeNoDrive OneConeNoDrive;
+  private OneConeBalance oneConeBalance;
 
   private final LED ledStrip = new LED(Constants.LED_PORT, Constants.LED_LENGTH);
 
@@ -60,18 +64,16 @@ public class RobotContainer {
     wristSubsystem = new WristSubsystem();
     driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
     operatorController = new CommandXboxController(Constants.OPERATOR_XBOX);
-
-    OneConeAuto = new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true);
-    OneCubeAuto = new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true);
-
+    oneConeBalance = new OneConeBalance(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false);
+    OneConeAuto = new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false);
+    OneCubeAuto = new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false);
+    OneConeNoDrive = new OneConeNoDrive(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false);
     configureButtonBindings();
   }
 
   private void configureButtonBindings() {
     //drive cmds
     drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverJoystick).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
-    Trigger driver12 = driverJoystick.button(12);
-    driver12.whileTrue(drivetrain.passiveBrake());
     setArmBindings();
     setGroundIntakeBindings();
     setLedBindings();
@@ -102,13 +104,13 @@ public class RobotContainer {
 
     Trigger operatorRT = operatorController.rightTrigger();
     operatorRT.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.SHELF_CONE) //cone
+      armSubsystem.setGoal(-31.5) //cone
       ;}));
 
-    Trigger operatorLT = operatorController.leftTrigger();
+    /*Trigger operatorLT = operatorController.leftTrigger();
     operatorLT.onTrue(new InstantCommand(()->{
       armSubsystem.setGoal(Arm.SHELF_CUBE) //cube 
-      ;}));
+      ;}));*/
 
     Trigger operatorIntake = operatorController.button(7);
     operatorIntake.onTrue(armIntakeSubsystem.eject())
@@ -138,6 +140,9 @@ public class RobotContainer {
 
       Trigger operatorRJ = operatorController.rightStick();
       operatorRJ.onTrue(new InstantCommand(()->{wristSubsystem.incrementPos();}));
+
+      Trigger operatorB = operatorController.b();
+      operatorB.onTrue(new InstantCommand(()->{armSubsystem.setGoal(-57.0);}));
   }
 
   private void setGroundIntakeBindings(){
@@ -182,7 +187,7 @@ public class RobotContainer {
     //return new InstantCommand(()->{drivetrain.set})
  // }
   public Command getAutonomousCommand() {
-   return OneConeAuto;
+   return OneCubeAuto;
  }
 }
 

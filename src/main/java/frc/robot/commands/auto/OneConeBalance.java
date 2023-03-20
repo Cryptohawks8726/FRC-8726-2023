@@ -4,16 +4,20 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Constants.Arm;
 import frc.robot.Constants.ArmIntake;
+import frc.robot.commands.Balance;
 import frc.robot.subsystems.ArmIntake2Subsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.WristSubsystem;
 
+// 27 inches from nodes
 
-public class OneConeMobility extends CommandBase {
+public class OneConeBalance extends CommandBase {
     private SwerveDrive driveTrain;
+    private Balance balCmd;
 
     private boolean flag = true;
     private boolean flag1 = true;
@@ -23,17 +27,19 @@ public class OneConeMobility extends CommandBase {
     private boolean armStarted = false;
     private boolean armUp = false;
     private boolean isBlueShelf;
+    private boolean balanceEngaged = false;
     
     private ArmIntake2Subsystem armIntake;
     private WristSubsystem wrist;
     private ArmSubsystem arm;
     private Timer timer = new Timer();
 
-    public OneConeMobility(SwerveDrive swerve, ArmIntake2Subsystem armIntake, WristSubsystem wrist, ArmSubsystem arm, Boolean blueShelf) {
+    public OneConeBalance(SwerveDrive swerve, ArmIntake2Subsystem armIntake, WristSubsystem wrist, ArmSubsystem arm, Boolean blueShelf) {
         driveTrain = swerve;
         this.armIntake = armIntake;
         this.arm = arm;
         this.wrist = wrist;
+        balCmd = new Balance(swerve);
 
         isBlueShelf = blueShelf;
 
@@ -91,7 +97,7 @@ public class OneConeMobility extends CommandBase {
             if(timer.get() > 1.5){
                 armIntake.stop().schedule();
                 double yPos = isBlueShelf ? -0.305 : 0.305;
-                if (setPosition(3.5, yPos, 0.0, 2.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
+                if (setPosition(2.5, 0.0, 0.0, 4.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
                     flag2 = false;
                 }
                 if (timer.get() > 3.0) {
@@ -101,6 +107,10 @@ public class OneConeMobility extends CommandBase {
          }
          if(!flag2){
             armRaised = false;
+            if(!balanceEngaged){
+                balCmd.schedule();
+                balanceEngaged = true;
+            }
          }
          
 

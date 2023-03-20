@@ -11,8 +11,9 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.WristSubsystem;
 
+// 27 inches from nodes
 
-public class OneConeMobility extends CommandBase {
+public class OneConeNoDrive extends CommandBase {
     private SwerveDrive driveTrain;
 
     private boolean flag = true;
@@ -29,7 +30,7 @@ public class OneConeMobility extends CommandBase {
     private ArmSubsystem arm;
     private Timer timer = new Timer();
 
-    public OneConeMobility(SwerveDrive swerve, ArmIntake2Subsystem armIntake, WristSubsystem wrist, ArmSubsystem arm, Boolean blueShelf) {
+    public OneConeNoDrive(SwerveDrive swerve, ArmIntake2Subsystem armIntake, WristSubsystem wrist, ArmSubsystem arm, Boolean blueShelf) {
         driveTrain = swerve;
         this.armIntake = armIntake;
         this.arm = arm;
@@ -91,7 +92,7 @@ public class OneConeMobility extends CommandBase {
             if(timer.get() > 1.5){
                 armIntake.stop().schedule();
                 double yPos = isBlueShelf ? -0.305 : 0.305;
-                if (setPosition(3.5, yPos, 0.0, 2.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
+                if (setPosition(0.0, 0.0, 0.0, 2.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
                     flag2 = false;
                 }
                 if (timer.get() > 3.0) {

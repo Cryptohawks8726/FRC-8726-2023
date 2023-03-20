@@ -41,7 +41,11 @@ public class Balance extends CommandBase {
            //     passiveBrake.schedule();
            // }
         } else {
-            SwerveModuleState modState = new SwerveModuleState(balance.calculate(ang),Rotation2d.fromDegrees(0));
+            double speed = 0.0;
+            if(Math.abs(balance.calculate(ang))>0.4){
+                speed = Math.signum(balance.calculate(ang))*0.4;
+            }
+            SwerveModuleState modState = new SwerveModuleState(speed,Rotation2d.fromDegrees(0));
             drivetrain.setModuleStates(new SwerveModuleState[]{modState,modState,modState,modState});
         }
     }

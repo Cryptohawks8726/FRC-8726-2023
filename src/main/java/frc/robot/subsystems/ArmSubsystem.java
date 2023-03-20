@@ -44,7 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     armMotor = new CANSparkMax(Arm.ARM_SPARKMAX, MotorType.kBrushless);
-    armMotor.setIdleMode(IdleMode.kCoast);
+    armMotor.setIdleMode(IdleMode.kBrake);
     armMotor.enableVoltageCompensation(12.0);
 
     encoder = armMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);

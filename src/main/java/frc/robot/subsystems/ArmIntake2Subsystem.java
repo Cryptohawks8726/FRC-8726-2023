@@ -53,7 +53,7 @@ public class ArmIntake2Subsystem extends SubsystemBase {
     }
 
     public void ejectIntake(){
-        motor.set(-0.6);
+        motor.set(-0.8);
         motorStatus = "Ejecting";
     }
 

@@ -68,7 +68,7 @@ public class GroundIntakeSubsystem extends SubsystemBase{
 
     public SequentialCommandGroup unstoreIntakeCmd(){
         return new InstantCommand(()->{this.lowerIntake();}, this)
-        .andThen(new WaitCommand(2.1))
+        .andThen(new WaitCommand(0.25))
         .andThen(()->{this.openIntake();})
         .andThen(()->{this.wheelsIn();});
     }
@@ -82,7 +82,7 @@ public class GroundIntakeSubsystem extends SubsystemBase{
 
     public SequentialCommandGroup dropPiece(){
         return new InstantCommand(()->{this.lowerIntake();},this)
-        .andThen(new WaitCommand(2.1))
+        .andThen(new WaitCommand(1.75))
         .andThen(()->{this.openIntake();})
         .andThen(()->{this.wheelsOut();});
     }   
