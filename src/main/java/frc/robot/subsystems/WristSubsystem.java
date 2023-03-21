@@ -11,39 +11,28 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
-
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.ArmIntake;
 
 
 public class WristSubsystem extends SubsystemBase {
-    private Solenoid piston;
     private SparkMaxAbsoluteEncoder encoder;
-    private Timer timer;
-    private boolean flag;
     private boolean isExtended;
     private CANSparkMax wristMotor;
     private SparkMaxPIDController posPid;
-    private double posOffset;
+    private DigitalInput limSwitch;
+    private double retractPos;
 
     public WristSubsystem() {
        
-        
-        flag = true;
+        limSwitch = new DigitalInput(0);
         isExtended = false;
-        posOffset =0.0;
+        retractPos = ArmIntake.WRIST_RETRACT_POS;
 
-        wristMotor = new CANSparkMax(ArmIntake.WRIST_SPARKMAX, MotorType.kBrushed);
-        wristMotor.setIdleMode(IdleMode.kCoast);
+        wristMotor = new CANSparkMax(ArmIntake.WRIST_SPARKMAX, MotorType.kBrushless);
+        wristMotor.setIdleMode(IdleMode.kBrake);
         wristMotor.setSmartCurrentLimit(30);
 
         encoder = wristMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
@@ -52,38 +41,26 @@ public class WristSubsystem extends SubsystemBase {
         
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20); // send can encoder pos data every 20ms
         wristMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20); // same but for vel
-        wristMotor.setInverted(true);
+        wristMotor.setInverted(false);
         posPid = wristMotor.getPIDController();
         posPid.setPositionPIDWrappingEnabled(false);
         posPid.setP(ArmIntake.WRIST_kP);
         posPid.setI(ArmIntake.WRIST_kI);
         posPid.setD(ArmIntake.WRIST_kD);
-        //posPid.setOutputRange(-0.5, 0.5);
         posPid.setFeedbackDevice(encoder);
-        posPid.setOutputRange(-0.8, 0.4, 0);
-
-        
+        posPid.setOutputRange(-0.1, 0.05, 0);
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Wrist Pos",encoder.getPosition());
-        
+        SmartDashboard.putBoolean("Wrist Lim switch", limSwitch.get());
+        if(!limSwitch.get()){
+            System.out.println("Lim Switch Skip:"+(retractPos-encoder.getPosition()));
+            retractPos = encoder.getPosition();
+            setReference(retractPos);
+        }
     }
-
-    @Override
-    public void simulationPeriodic() {}
-    /* 
-    public void raiseIntake() {
-        posPid.setReference(ArmIntake.RAISE_WRIST_SPEED, ControlType.kVelocity);
-        //wristMotor.set(Constants.RAISE_WRIST_SPEED);
-    }
-
-    public void lowerIntake() {
-        posPid.setReference(ArmIntake.LOWER_WRIST_SPEED, ControlType.kVelocity);
-        //wristMotor.set(Constants.LOWER_WRIST_SPEED);
-    }
-    */
 
     public void setReference(double setPoint){
         posPid.setReference(setPoint, ControlType.kPosition);
@@ -91,14 +68,14 @@ public class WristSubsystem extends SubsystemBase {
 
     public void retractWrist(){
         isExtended = false;
-        posPid.setReference(ArmIntake.WRIST_RETRACT_POS+posOffset, ControlType.kPosition);
-        SmartDashboard.putNumber("ref",ArmIntake.WRIST_RETRACT_POS);
+        posPid.setReference(retractPos, ControlType.kPosition);
+        SmartDashboard.putNumber("ref",retractPos);
     }
 
     public void extendWrist(){
         isExtended = true;
-        posPid.setReference(ArmIntake.WRIST_EXTEND_POS+posOffset, ControlType.kPosition);
-        SmartDashboard.putNumber("ref",ArmIntake.WRIST_EXTEND_POS);
+        posPid.setReference(retractPos+ArmIntake.EXTEND_DIFF, ControlType.kPosition);
+        SmartDashboard.putNumber("ref",retractPos+ArmIntake.EXTEND_DIFF);
     }
 
     public void toggleExtend(){
@@ -111,20 +88,11 @@ public class WristSubsystem extends SubsystemBase {
     
     public void shelfExtend(){
         isExtended = true;
-        posPid.setReference(ArmIntake.WRIST_SHELF_POS+posOffset, ControlType.kPosition);
+        posPid.setReference(retractPos+ArmIntake.SHELF_DIFF, ControlType.kPosition);
+        SmartDashboard.putNumber("ref",retractPos+ArmIntake.SHELF_DIFF);
     }
 
     public void stopWrist() {
-        //wristMotor.set(0.0);
         posPid.setReference(encoder.getPosition(), ControlType.kPosition);
     }
-
-    public void incrementPos(){
-        posOffset+=0.005;
-    }
-
-    public void decrementPos(){
-        posOffset-=0.005;
-    }
-
 }

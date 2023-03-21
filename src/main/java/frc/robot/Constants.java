@@ -70,18 +70,18 @@ public final class Constants {
         public static final int WRIST_SPARKMAX = 55;
         public static final int ARM_INTAKE_SPARKMAX = 50;
 
-        public static final double WRIST_kP = 3.8;
+        public static final double WRIST_kP = 6.0;
         public static final double WRIST_kI = 0.0;
         public static final double WRIST_kD = 0.0;
 
         public static final double RAISE_WRIST_SPEED = 0.5;
         public static final double LOWER_WRIST_SPEED = -0.5;
 
-        public static final double WRIST_RETRACT_POS = 0.37;
-        public static final double WRIST_EXTEND_POS = 0.73;
-        public static final double WRIST_SHELF_POS = 0.61;
+        public static final double WRIST_RETRACT_POS = 0.245;
+        public static final double EXTEND_DIFF = 0.126;// need to tune
+        public static final double SHELF_DIFF = 0.180; //need to tune
         
-        public static final double WRIST_ENCODER_OFFSET = 0.2;
+        public static final double WRIST_ENCODER_OFFSET = 0.6028818;
     }
 
     public static final class Swerve {
@@ -94,8 +94,8 @@ public final class Constants {
         public static final double wheelDiameterMeters = 0.098; // Measure and check later. Compensating for tread wear over comp could be cool
         public static final double driveConversionFactor = wheelDiameterMeters * Math.PI / driveGearRatio;
 
-        public static final double maxSpeed = 5.0; // m/s, I have no clue if this is realistic // TODO testing
-        public static final double maxAngularSpeed = 2.8; // rad/s
+        public static final double maxSpeed = 5.0; 
+        public static final double maxAngularSpeed = 2.0; 
         public static final double driverThetaDeadband = 0.05;
         public static final double driverTranslationDeadband = 1;
         // Electrical Constants
