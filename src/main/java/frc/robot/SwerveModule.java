@@ -9,13 +9,16 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.Swerve.ModulePosition;
 import io.github.oblarg.oblog.Loggable;
@@ -32,6 +35,7 @@ public class SwerveModule implements Loggable{
     private SwerveModuleState lastSetState;
     private SwerveModulePosition simulatedPosition;
     private PIDController contSteerController;
+    private SimpleMotorFeedforward velFF;
 
     public SwerveModule(Constants.Swerve.Module modConstants){
         modPos = modConstants.modPos;
@@ -80,6 +84,7 @@ public class SwerveModule implements Loggable{
         steerEncoder.setVelocityConversionFactor(360.0 / Constants.Swerve.steerGearRatio / 60.0); // d/s
 
         driveController = driveMotor.getPIDController();
+        velFF = new SimpleMotorFeedforward(0.0,2.4);
         //steerController = steerMotor.getPIDController();
         contSteerController = new PIDController(Constants.Swerve.kSteerP, Constants.Swerve.kSteerI, Constants.Swerve.kSteerD);
         contSteerController.enableContinuousInput(0, 360);
@@ -159,9 +164,10 @@ public class SwerveModule implements Loggable{
     public SwerveModule closedLoopDrive(SwerveModuleState setPoint){
         SwerveModuleState newSetPoint = SwerveModuleState.optimize(setPoint, Rotation2d.fromDegrees(absEncoder.getAbsolutePosition()));
         lastSetState = newSetPoint;
-        driveController.setReference(newSetPoint.speedMetersPerSecond, ControlType.kVelocity); // IDK if velocity control will work well
-        steerMotor.set(contSteerController.calculate(absEncoder.getAbsolutePosition(), MathUtil.inputModulus(newSetPoint.angle.getDegrees(), 0, 360)));
+        driveController.setReference(newSetPoint.speedMetersPerSecond, ControlType.kVelocity,0,velFF.calculate(newSetPoint.speedMetersPerSecond),ArbFFUnits.kVoltage); // IDK if velocity control will work well
         
+        steerMotor.set(contSteerController.calculate(absEncoder.getAbsolutePosition(), MathUtil.inputModulus(newSetPoint.angle.getDegrees(), 0, 360)));
+        SmartDashboard.putNumber("appliedOut"+modPos, driveMotor.getAppliedOutput());
         return this;
     }
     
