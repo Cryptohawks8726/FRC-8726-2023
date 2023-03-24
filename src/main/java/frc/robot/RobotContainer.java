@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import frc.robot.commands.auto.AutoBuilder;
 import frc.robot.commands.auto.OneConeBalance;
 import frc.robot.commands.auto.OneConeMobility;
 import frc.robot.commands.auto.OneConeNoDrive;
@@ -55,7 +54,7 @@ public class RobotContainer {
   private CommandJoystick driverJoystick;
   private SendableChooser<Command> autoChooser;
   private SendableChooser<Boolean> posChooser;
-  private AutoBuilder autos;
+
 
 
   public RobotContainer() {
@@ -74,7 +73,6 @@ public class RobotContainer {
     //OneCubeAuto = new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false);
     //OneConeNoDrive = new OneConeNoDrive(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false);
     posChooser = new SendableChooser<Boolean>();
-    autos = new AutoBuilder(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem);
     autoChooser = new SendableChooser<Command>();
    /* autoChooser.addOption("new One Cube Blue",autos.oneCubeMobilityCmd(true));
     autoChooser.addOption("new one cube not blue ", autos.oneCubeMobilityCmd(false));
@@ -206,7 +204,7 @@ public class RobotContainer {
     //return new InstantCommand(()->{drivetrain.set})
  // }
   public Command getAutonomousCommand() {
-    return new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true);
+    return autoChooser.getSelected();
  }
 }
 

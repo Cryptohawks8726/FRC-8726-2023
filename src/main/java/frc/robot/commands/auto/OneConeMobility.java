@@ -66,14 +66,14 @@ public class OneConeMobility extends CommandBase {
             driveTrain.getSwerveModulePositions()
         );
         if(armRaised){
-            arm.setGoal(Arm.HIGHNODE_ANGLE);
+            arm.setGoal(Arm.HIGHNODE_ANGLE,false);
             wrist.shelfExtend();
             if(armStarted == false){
                 timer.start();
                 armStarted=true;
             }
         }else{
-            arm.setGoal(Arm.RETRACTED_ANGLE);
+            arm.setGoal(Arm.RETRACTED_ANGLE,false);
             wrist.retractWrist();
         }
         if(armRaised && armStarted && timer.get() > 1.5){
