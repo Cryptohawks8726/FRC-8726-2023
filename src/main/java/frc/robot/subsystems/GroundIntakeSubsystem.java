@@ -21,6 +21,7 @@ public class GroundIntakeSubsystem extends SubsystemBase{
 
     private CANSparkMax leftMotor;
     private CANSparkMax rightMotor;
+    public boolean isExtended;
     
     public GroundIntakeSubsystem() {
 
@@ -30,6 +31,7 @@ public class GroundIntakeSubsystem extends SubsystemBase{
         rightMotor.setSmartCurrentLimit(20);
         rightMotor.setInverted(true);
         leftMotor.setInverted(false);
+        isExtended = false;
             
         intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, GroundIntake.CLAMP_PISTON);
         groundSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, GroundIntake.UPPER_PISTON,GroundIntake.LOWER_PISTON);
@@ -52,10 +54,12 @@ public class GroundIntakeSubsystem extends SubsystemBase{
 
     public void lowerIntake() {
         groundSolenoid.set(Value.kForward);
+        isExtended = true;
     }
 
     public void raiseIntake() {
         groundSolenoid.set(Value.kReverse);
+        isExtended = false;
     }
 
     public void closeIntake() {

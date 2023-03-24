@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.GroundIntakeSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.commands.auto.AutoBuilder;
 import frc.robot.commands.auto.OneConeBalance;
 import frc.robot.commands.auto.OneConeMobility;
 import frc.robot.commands.auto.OneConeNoDrive;
@@ -42,32 +44,49 @@ public class RobotContainer {
   private final SwerveDrive drivetrain;
   private final WristSubsystem wristSubsystem;
 
-  private final OneConeMobility OneConeAuto;
+  /*private final OneConeMobility OneConeAuto;
   private final OneCubeMobility OneCubeAuto;
   private final OneConeNoDrive OneConeNoDrive;
-  private OneConeBalance oneConeBalance;
+  private OneConeBalance oneConeBalance;*/
 
   private final LED ledStrip = new LED(Constants.LED_PORT, Constants.LED_LENGTH);
 
   private CommandXboxController operatorController;
   private CommandJoystick driverJoystick;
+  private SendableChooser<Command> autoChooser;
+  private SendableChooser<Boolean> posChooser;
+  private AutoBuilder autos;
 
 
   public RobotContainer() {
     drivetrain = new SwerveDrive();
     armIntakeSubsystem = new ArmIntake2Subsystem();
     pneumaticHub = new PneumaticHub(Constants.COMPRESSOR_ID);
-    //pneumaticHub.disableCompressor();
+    // /pneumaticHub.disableCompressor();
     pneumaticHub.enableCompressorDigital();
     groundIntakeSubsystem = new GroundIntakeSubsystem();
     armSubsystem = new ArmSubsystem();
     wristSubsystem = new WristSubsystem();
     driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
     operatorController = new CommandXboxController(Constants.OPERATOR_XBOX);
-    oneConeBalance = new OneConeBalance(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false);
-    OneConeAuto = new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false);
-    OneCubeAuto = new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false);
-    OneConeNoDrive = new OneConeNoDrive(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false);
+    //oneConeBalance = new OneConeBalance(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false);
+    //OneConeAuto = new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false);
+    //OneCubeAuto = new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false);
+    //OneConeNoDrive = new OneConeNoDrive(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false);
+    posChooser = new SendableChooser<Boolean>();
+    autos = new AutoBuilder(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem);
+    autoChooser = new SendableChooser<Command>();
+   /* autoChooser.addOption("new One Cube Blue",autos.oneCubeMobilityCmd(true));
+    autoChooser.addOption("new one cube not blue ", autos.oneCubeMobilityCmd(false));
+    autoChooser.addOption("new one cone blue", autos.oneConeMobilityCmd(true));
+    autoChooser.addOption("new one cone not blue", autos.oneConeMobilityCmd(false));*/
+    autoChooser.addOption("One Cube BlueShelf",new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true));
+    autoChooser.addOption("One Cube Not BlueShelf",new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false));
+    autoChooser.addOption("One Cone BlueShelf",new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true));
+    autoChooser.addOption("One Cone Not BlueShelf",new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false));
+    autoChooser.setDefaultOption("One Cone No Drive", new OneConeNoDrive(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false));
+    SmartDashboard.putData(autoChooser);
+
     configureButtonBindings();
   }
 
@@ -84,33 +103,33 @@ public class RobotContainer {
     
     Trigger operatorDown = operatorController.povDown();
     operatorDown.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.FLOOR_ANGLE)
+      armSubsystem.setGoal(Arm.FLOOR_ANGLE,groundIntakeSubsystem.isExtended)
       ;}));
     
     Trigger operatorLeft = operatorController.povLeft();
     operatorLeft.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.MID_CUBE_ANGLE)
+      armSubsystem.setGoal(Arm.MID_CUBE_ANGLE,groundIntakeSubsystem.isExtended)
       ;}));
     
     Trigger operatorRight = operatorController.povRight();
     operatorRight.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.MID_ANGLE)
+      armSubsystem.setGoal(Arm.MID_ANGLE,groundIntakeSubsystem.isExtended)
       ;}));
     
     Trigger opUp = operatorController.povUp();
     opUp.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.HIGHNODE_ANGLE)
+      armSubsystem.setGoal(Arm.HIGHNODE_ANGLE,groundIntakeSubsystem.isExtended)
       ;}));
 
     Trigger operatorRT = operatorController.rightTrigger();
     operatorRT.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(-31.5) //cone
+      armSubsystem.setGoal(Arm.SHELF_CONE,groundIntakeSubsystem.isExtended) //cone
       ;}));
 
-    /*Trigger operatorLT = operatorController.leftTrigger();
+    Trigger operatorLT = operatorController.leftTrigger();
     operatorLT.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.SHELF_CUBE) //cube 
-      ;}));*/
+      armSubsystem.setGoal(Arm.SHELF_CUBE,groundIntakeSubsystem.isExtended) //cube 
+      ;}));
 
     Trigger operatorIntake = operatorController.button(7);
     operatorIntake.onTrue(armIntakeSubsystem.eject())
@@ -129,20 +148,14 @@ public class RobotContainer {
 
     Trigger operatorY = operatorController.y();
     operatorY.onTrue(new InstantCommand(() -> {
-      armSubsystem.setGoal(Arm.RETRACTED_ANGLE);
+      armSubsystem.setGoal(Arm.RETRACTED_ANGLE,groundIntakeSubsystem.isExtended);
     })
         .andThen(new InstantCommand(() -> {
           wristSubsystem.retractWrist();
         })));
 
-      Trigger operatorLJ = operatorController.leftStick();
-      operatorLJ.onTrue(new InstantCommand(()->{wristSubsystem.decrementPos();}));
-
-      Trigger operatorRJ = operatorController.rightStick();
-      operatorRJ.onTrue(new InstantCommand(()->{wristSubsystem.incrementPos();}));
-
       Trigger operatorB = operatorController.b();
-      operatorB.onTrue(new InstantCommand(()->{armSubsystem.setGoal(-57.0);}));
+      operatorB.onTrue(new InstantCommand(()->{armSubsystem.setGoal(Arm.SUBSTATION_CONE_ANGLE,groundIntakeSubsystem.isExtended);}));
   }
 
   private void setGroundIntakeBindings(){
@@ -150,9 +163,15 @@ public class RobotContainer {
     Trigger operatorX = operatorController.x();
     operatorX.whileTrue(groundIntakeSubsystem.unstoreIntakeCmd())
       .onFalse(groundIntakeSubsystem.storeIntakeCmd());
-    // x.whileTrue(new StartEndCommand(() ->
-    // {groundIntakeSubsystem.unstoreIntake();}, () ->
-    // {groundIntakeSubsystem.storeIntake();}, groundIntakeSubsystem));
+    /*
+    Trigger operatorX = operatorController.x();
+    operatorX.onTrue(
+      groundIntakeSubsystem.isExtended ? new InstantCommand(()->{groundIntakeSubsystem.raiseIntake;})
+      :new InstantCommand(()->{groundIntakeSubsystem.lowerIntake;});
+
+      Trigger operatorA = operatorController.a();
+
+     */
 
     // pressing a ejects game piece for ground intake
     Trigger operatorA = operatorController.a();
@@ -187,7 +206,7 @@ public class RobotContainer {
     //return new InstantCommand(()->{drivetrain.set})
  // }
   public Command getAutonomousCommand() {
-   return OneCubeAuto;
+    return new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true);
  }
 }
 

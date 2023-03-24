@@ -42,11 +42,13 @@ public final class Constants {
         //deg
         public static final double HIGHNODE_ANGLE = 10.0;
         public static final double MID_ANGLE = -9.0;
-        public static final double MID_CUBE_ANGLE = -25.0;
-        public static final double SHELF_CONE = 3.0; //cone
+        public static final double MID_CUBE_ANGLE = -25.0; // remove?
+        public static final double SHELF_CONE = 3.0; 
         public static final double SHELF_CUBE = 1.0;
         public static final double RETRACTED_ANGLE = -95.0;
         public static final double FLOOR_ANGLE = -85.0;
+        public static final double SUBSTATION_CUBE_ANGLE = -57.0;
+        public static final double SUBSTATION_CONE_ANGLE = -31.5;
         
 
         public static final double ENCODER_OFFSET_CONFIG = 335.0433326;
@@ -78,7 +80,7 @@ public final class Constants {
         public static final double LOWER_WRIST_SPEED = -0.5;
 
         public static final double WRIST_RETRACT_POS = 0.245;
-        public static final double EXTEND_DIFF = 0.126;// need to tune
+        public static final double EXTEND_DIFF = 0.160;// need to tune
         public static final double SHELF_DIFF = 0.180; //need to tune
         
         public static final double WRIST_ENCODER_OFFSET = 0.6028818;

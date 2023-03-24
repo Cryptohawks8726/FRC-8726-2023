@@ -48,14 +48,14 @@ public class WristSubsystem extends SubsystemBase {
         posPid.setI(ArmIntake.WRIST_kI);
         posPid.setD(ArmIntake.WRIST_kD);
         posPid.setFeedbackDevice(encoder);
-        posPid.setOutputRange(-0.1, 0.05, 0);
+        posPid.setOutputRange(-0.1, 0.2, 0);
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Wrist Pos",encoder.getPosition());
         SmartDashboard.putBoolean("Wrist Lim switch", limSwitch.get());
-        if(!limSwitch.get()){
+        if(!limSwitch.get() && !isExtended){
             System.out.println("Lim Switch Skip:"+(retractPos-encoder.getPosition()));
             retractPos = encoder.getPosition();
             setReference(retractPos);
@@ -69,6 +69,7 @@ public class WristSubsystem extends SubsystemBase {
     public void retractWrist(){
         isExtended = false;
         posPid.setReference(retractPos, ControlType.kPosition);
+        //posPid.setReference(-0.1, ControlType.kVelocity);
         SmartDashboard.putNumber("ref",retractPos);
     }
 
