@@ -67,6 +67,7 @@ public class OneConeMobility extends CommandBase {
         );
         if(armRaised){
             arm.setGoal(Arm.HIGHNODE_ANGLE+2,false);
+            armIntake.intake().schedule();
             wrist.shelfExtend();
             if(armStarted == false){
                 timer.start();
