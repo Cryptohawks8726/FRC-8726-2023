@@ -96,4 +96,8 @@ public class WristSubsystem extends SubsystemBase {
     public void stopWrist() {
         posPid.setReference(encoder.getPosition(), ControlType.kPosition);
     }
+
+    public void setRetractPos(){
+        retractPos = encoder.getPosition();
+    }
 }

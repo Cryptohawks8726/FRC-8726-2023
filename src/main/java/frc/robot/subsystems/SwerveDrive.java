@@ -49,7 +49,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     private FieldObject2d[] modPoses;
    
     public SwerveDrive(){
-        gyro = new AHRS(SerialPort.Port.kUSB2);
+        gyro = new AHRS(SerialPort.Port.kUSB1);
         gyro.calibrate();
         modules = Arrays.asList(
             new SwerveModule(Constants.Swerve.Module.FR),
@@ -95,6 +95,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             gyro.getRotation2d(), 
             getSwerveModulePositions()
         );
+        SmartDashboard.putBoolean("gyro conn", gyro.isConnected());
         //modules.get(0).closedLoopDrive(testState);
         //modules.get(1).closedLoopDrive(testState);
         //modules.get(2).closedLoopDrive(testState);

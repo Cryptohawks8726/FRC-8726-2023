@@ -67,21 +67,23 @@ public class OneConeNoDrive extends CommandBase {
             driveTrain.getSwerveModulePositions()
         );
         if(armRaised){
-            arm.setGoal(Arm.HIGHNODE_ANGLE,false);
+            arm.configNormalConstraints();
+            arm.setGoal(Arm.HIGHNODE_ANGLE+2,false);
             wrist.shelfExtend();
+            armIntake.intake().schedule();
             if(armStarted == false){
                 timer.start();
                 armStarted=true;
             }
         }else{
-            arm.setGoal(Arm.RETRACTED_ANGLE,false);
+            //arm.setGoal(Arm.RETRACTED_ANGLE,false);
             wrist.retractWrist();
         }
-        if(armRaised && armStarted && timer.get() > 1.5){
+        if(armRaised && armStarted && timer.get() > 2.5){
             armUp = true;
         }
   
-        if(flag1 && armUp && setPosition(-0.65, 0.0, 0.0, 1.0, 0.5, 0.5, 0.05, 0.05, 5.0)) {
+        if(flag1 && armUp && setPosition(-0.65, 0.0, 0.0, 0.8, 0.5, 0.5, 0.05, 0.05, 5.0)) {
             flag1 = false;
             timer.reset();
             timer.start(); 
@@ -92,7 +94,7 @@ public class OneConeNoDrive extends CommandBase {
             if(timer.get() > 1.5){
                 armIntake.stop().schedule();
                 double yPos = isBlueShelf ? -0.305 : 0.305;
-                if (setPosition(0.0, 0.0, 0.0, 2.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
+                if (setPosition(-0.65, 0.0, 0.0, 0.8, 0.5, 0.5, 0.05, 0.1, 3.0)) {
                     flag2 = false;
                 }
                 if (timer.get() > 3.0) {

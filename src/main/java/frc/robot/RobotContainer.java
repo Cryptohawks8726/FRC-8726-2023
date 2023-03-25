@@ -166,7 +166,7 @@ public class RobotContainer {
         })));
 
       Trigger operatorB = operatorController.b();
-      operatorB.onTrue(new InstantCommand(()->{armSubsystem.setGoal(Arm.SUBSTATION_CONE_ANGLE,groundIntakeSubsystem.isExtended);}));
+      operatorB.onTrue(new InstantCommand(()->{armSubsystem.setGoal(Arm.SUBSTATION_CUBE_ANGLE,groundIntakeSubsystem.isExtended);}));
   }
 
   private void setGroundIntakeBindings(){

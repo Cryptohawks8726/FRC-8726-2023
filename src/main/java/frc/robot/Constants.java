@@ -40,7 +40,7 @@ public final class Constants {
         public static final double SPEED_RAD = 1.0; // increase later
 
         //deg
-        public static final double HIGHNODE_ANGLE = 10.0;
+        public static final double HIGHNODE_ANGLE = 10.0+2;
         public static final double MID_ANGLE = -9.0;
         public static final double MID_CUBE_ANGLE = -25.0; // remove?
         public static final double SHELF_CONE = 3.0; 
@@ -81,7 +81,7 @@ public final class Constants {
 
         public static final double WRIST_RETRACT_POS = 0.245;
         public static final double EXTEND_DIFF = 0.160;// need to tune
-        public static final double SHELF_DIFF = 0.180; //need to tune
+        public static final double SHELF_DIFF = 0.150; //need to tune
         
         public static final double WRIST_ENCODER_OFFSET = 0.6028818;
     }

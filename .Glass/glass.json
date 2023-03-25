@@ -1,6 +1,6 @@
 {
   "NetworkTables": {
-    "Persistent Values": {
+    "Transitory Values": {
       "open": false
     },
     "transitory": {
@@ -29,7 +29,15 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[2]": "Gyro",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/SendableChooser[1]": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/SendableChooser[1]": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables Settings": {
@@ -324,7 +332,10 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }
