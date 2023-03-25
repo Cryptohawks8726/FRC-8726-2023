@@ -89,7 +89,7 @@ public class OneCubeMobility extends CommandBase {
             armIntake.intake().schedule();
             if(timer.get() > 1.5){
                 armIntake.stop().schedule();
-                double yPos = isBlueShelf ? 0.105 : -0.105;
+                double yPos = isBlueShelf ? 0.205 : -0.205;
                 if (setPosition(3.5, yPos, 0.0, 2.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
                     flag2 = false;
                 }
