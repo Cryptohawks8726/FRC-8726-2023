@@ -75,11 +75,11 @@ public class OneCubeMobility extends CommandBase {
             arm.setGoal(Arm.RETRACTED_ANGLE,false);
             wrist.retractWrist();
         }
-        if(armRaised && armStarted && timer.get() > 1.5){
+        if(armRaised && armStarted && timer.get() > 2.5){
             armUp = true;
         }
   
-        if(flag1 && armUp && setPosition(-0.9, 0.0, 0.0, 1.0, 0.5, 0.5, 0.05, 0.05, 5.0)) {
+        if(flag1 && armUp && setPosition(-0.9, 0.0, 0.0, 0.8, 0.5, 0.5, 0.05, 0.05, 5.0)) {
             flag1 = false;
             timer.reset();
             timer.start(); 
@@ -89,7 +89,7 @@ public class OneCubeMobility extends CommandBase {
             armIntake.intake().schedule();
             if(timer.get() > 1.5){
                 armIntake.stop().schedule();
-                double yPos = isBlueShelf ? 0.305 : -0.305;
+                double yPos = isBlueShelf ? 0.105 : -0.105;
                 if (setPosition(3.5, yPos, 0.0, 2.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
                     flag2 = false;
                 }
