@@ -41,8 +41,8 @@ public final class Constants {
 
         //deg
         public static final double HIGHNODE_ANGLE = 10.0+2;
-        public static final double MID_ANGLE = -9.0;
-        public static final double MID_CUBE_ANGLE = -25.0; // remove?
+        public static final double MID_ANGLE = -6.0;
+        public static final double MID_CUBE_ANGLE = -9.0; // remove?
         public static final double SHELF_CONE = 3.0; 
         public static final double SHELF_CUBE = 1.0;
         public static final double RETRACTED_ANGLE = -95.0;

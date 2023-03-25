@@ -88,6 +88,7 @@ public class RobotContainer {
     autoChooser.addOption("One Cube Not BlueShelf",new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false));
     autoChooser.addOption("One Cone BlueShelf",new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true));
     autoChooser.addOption("One Cone Not BlueShelf",new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false));
+    autoChooser.addOption("Cone Balance", new OneConeBalance(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false));
     autoChooser.setDefaultOption("One Cone No Drive", new OneConeNoDrive(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false));
     SmartDashboard.putData(autoChooser);
     //driveCam = new UsbCamera("Drive", 1);

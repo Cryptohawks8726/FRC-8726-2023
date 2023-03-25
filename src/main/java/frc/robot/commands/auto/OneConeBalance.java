@@ -74,6 +74,7 @@ public class OneConeBalance extends CommandBase {
         );
         if(armRaised){
             arm.setGoal(Arm.HIGHNODE_ANGLE+2,false);
+            armIntake.intake().schedule();
             wrist.shelfExtend();
             if(armStarted == false){
                 timer.start();
@@ -98,7 +99,7 @@ public class OneConeBalance extends CommandBase {
             if(timer.get() > 1.5){
                 armIntake.stop().schedule();
                 double yPos = isBlueShelf ? -0.305 : 0.305;
-                if (setPosition(2.5, 0.0, 0.0, 4.0, 0.5, 0.5, 0.05, 0.1, 3.0)) {
+                if (setPosition(3.0, 0.0, 0.0, 4.5, 0.5, 0.5, 0.05, 0.1, 3.0)) {
                     flag2 = false;
                 }
                 if (timer.get() > 3.0) {
