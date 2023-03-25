@@ -65,7 +65,7 @@ public class OneCubeMobility extends CommandBase {
             driveTrain.getSwerveModulePositions()
         );
         if(armRaised){
-            arm.setGoal(Arm.MID_ANGLE + 5.0,false);
+            arm.setGoal(Arm.MID_ANGLE + 7.5,false);
             wrist.shelfExtend();
             if(armStarted == false){
                 timer.start();
