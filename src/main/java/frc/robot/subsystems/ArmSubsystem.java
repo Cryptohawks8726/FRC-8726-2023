@@ -46,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase {
     setVolt = 0.43;
     arbFF = new ArmFeedforward(Arm.ARM_kS,Arm.ARM_kG,Arm.ARM_kV);
     normalConstraints = new Constraints(0.10, 0.03); // dg/s
-    retractionConstraints = new Constraints(0.12, 0.04);
+    retractionConstraints = new Constraints(0.15, 0.05);
     controller = new ProfiledPIDController(Arm.ARM_kVP, Arm.ARM_kVI, Arm.ARM_kVD, normalConstraints,0.2);
     controller.setGoal(getRadians());
     brake = new Solenoid(PneumaticsModuleType.REVPH, Arm.BRAKE_PISTON);

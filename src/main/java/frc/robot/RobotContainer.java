@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CameraServerCvJNI;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -54,6 +58,8 @@ public class RobotContainer {
   private CommandJoystick driverJoystick;
   private SendableChooser<Command> autoChooser;
   private SendableChooser<Boolean> posChooser;
+  private UsbCamera driveCam;
+  private MjpegServer camServ;
 
 
 
@@ -84,6 +90,13 @@ public class RobotContainer {
     autoChooser.addOption("One Cone Not BlueShelf",new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false));
     autoChooser.setDefaultOption("One Cone No Drive", new OneConeNoDrive(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false));
     SmartDashboard.putData(autoChooser);
+    //driveCam = new UsbCamera("Drive", 1);
+    driveCam = CameraServer.startAutomaticCapture();
+    driveCam.setResolution(160, 120);
+ 
+    //camServ = new MjpegServer("drive cam", 1181);
+    //camServ.setSource(driveCam);
+    //driveCam.setResolution(320, 160);
 
     configureButtonBindings();
   }

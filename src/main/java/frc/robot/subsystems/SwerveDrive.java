@@ -49,7 +49,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
     private FieldObject2d[] modPoses;
    
     public SwerveDrive(){
-        gyro = new AHRS(SerialPort.Port.kUSB1);
+        gyro = new AHRS(SerialPort.Port.kUSB2);
         gyro.calibrate();
         modules = Arrays.asList(
             new SwerveModule(Constants.Swerve.Module.FR),
