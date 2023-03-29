@@ -45,7 +45,7 @@ public class ArmSubsystem extends SubsystemBase {
     tempFF = 0.0;
     setVolt = 0.43;
     arbFF = new ArmFeedforward(Arm.ARM_kS,Arm.ARM_kG,Arm.ARM_kV);
-    normalConstraints = new Constraints(0.10, 0.03); // dg/s
+    normalConstraints = new Constraints(0.30, 0.085); // dg/s
     retractionConstraints = new Constraints(0.15, 0.05);
     controller = new ProfiledPIDController(Arm.ARM_kVP, Arm.ARM_kVI, Arm.ARM_kVD, normalConstraints,0.2);
     controller.setGoal(getRadians());
@@ -71,13 +71,13 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void setGoal(double deg,boolean groundIntakeExtended){
     if(!groundIntakeExtended){
-    SmartDashboard.putNumber("last set deg",deg);
-    controller.setGoal(Math.toRadians(deg));
-    if(deg == Arm.RETRACTED_ANGLE){
-      configRetractConstraints();
-    }else{
-      configNormalConstraints();
-    }
+      SmartDashboard.putNumber("last set deg",deg);
+      controller.setGoal(Math.toRadians(deg));
+      if(deg == Arm.RETRACTED_ANGLE){
+        configRetractConstraints();
+      } else{
+        configNormalConstraints();
+      }
     }
   }
 

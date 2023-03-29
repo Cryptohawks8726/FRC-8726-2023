@@ -22,6 +22,7 @@ public class GroundIntakeSubsystem extends SubsystemBase{
     private CANSparkMax leftMotor;
     private CANSparkMax rightMotor;
     public boolean isExtended;
+    public boolean isOpen;
     
     public GroundIntakeSubsystem() {
 
@@ -32,6 +33,7 @@ public class GroundIntakeSubsystem extends SubsystemBase{
         rightMotor.setInverted(true);
         leftMotor.setInverted(false);
         isExtended = false;
+        isOpen = false;
             
         intakeSolenoid = new Solenoid(PneumaticsModuleType.REVPH, GroundIntake.CLAMP_PISTON);
         groundSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, GroundIntake.UPPER_PISTON,GroundIntake.LOWER_PISTON);
@@ -62,14 +64,31 @@ public class GroundIntakeSubsystem extends SubsystemBase{
         isExtended = false;
     }
 
+    public void toggleExtend(){
+        if(isExtended){
+            raiseIntake();
+        }else{
+            lowerIntake();
+        }
+    }
     public void closeIntake() {
         intakeSolenoid.set(false);
+        isOpen = false;
     } 
 
     public void openIntake() {
         intakeSolenoid.set(true);
+        isOpen = true;
     }
 
+    public void toggleClamp(){
+        if(isOpen){
+            closeIntake();
+        } else{
+            openIntake();
+        }
+    }
+    
     public SequentialCommandGroup unstoreIntakeCmd(){
         return new InstantCommand(()->{this.lowerIntake();}, this)
         .andThen(new WaitCommand(0.25))

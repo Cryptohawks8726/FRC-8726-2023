@@ -1,5 +1,7 @@
 package frc.robot.commands.auto;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -33,6 +35,7 @@ public class OneConeBalance extends CommandBase {
     private WristSubsystem wrist;
     private ArmSubsystem arm;
     private Timer timer = new Timer();
+    private AHRS gyro;
 
     public OneConeBalance(SwerveDrive swerve, ArmIntake2Subsystem armIntake, WristSubsystem wrist, ArmSubsystem arm, Boolean blueShelf) {
         driveTrain = swerve;
@@ -42,7 +45,7 @@ public class OneConeBalance extends CommandBase {
         balCmd = new Balance(swerve);
 
         isBlueShelf = blueShelf;
-
+        gyro = driveTrain.getGyro();
         addRequirements(swerve);
         addRequirements(arm);
         addRequirements(wrist);
@@ -99,7 +102,7 @@ public class OneConeBalance extends CommandBase {
             if(timer.get() > 1.5){
                 armIntake.stop().schedule();
                 double yPos = isBlueShelf ? -0.305 : 0.305;
-                if (setPosition(3.0, 0.0, 0.0, 4.5, 0.5, 0.5, 0.05, 0.1, 3.0)) {
+                if (setPosition(4.0, 0.0, 0.0, 4.8, 0.5, 0.5, 0.05, 0.1, 3.0)) {
                     flag2 = false;
                 }
                 if (timer.get() > 3.0) {
@@ -109,10 +112,18 @@ public class OneConeBalance extends CommandBase {
          }
          if(!flag2){
             armRaised = false;
-            if(!balanceEngaged){
-                balCmd.schedule();
-                balanceEngaged = true;
+            double ang = gyro.getRoll();
+            if(ang>12.5){
+                driveTrain.drive(new ChassisSpeeds(-0.25, 0.0, 0.0), false);
             }
+            else if(ang < -7){
+                driveTrain.drive(new ChassisSpeeds(0.25,0.0,0.0), false);
+            }
+            else if (ang <=12.5 && ang>=-7){
+                driveTrain.drive(new ChassisSpeeds(0.0,0.0,0.0),false);
+                //driveTrain.passiveBrake().schedule();
+            }
+            
          }
          
 

@@ -46,7 +46,7 @@ public final class Constants {
         public static final double SHELF_CONE = 3.0; 
         public static final double SHELF_CUBE = 1.0;
         public static final double RETRACTED_ANGLE = -95.0;
-        public static final double FLOOR_ANGLE = -85.0;
+        public static final double FLOOR_ANGLE = -82.5;
         public static final double SUBSTATION_CUBE_ANGLE = -57.0;
         public static final double SUBSTATION_CONE_ANGLE = -31.5;
         
@@ -65,7 +65,7 @@ public final class Constants {
         public static final int UPPER_PISTON = 7;
         public static final int LOWER_PISTON = 8;
 
-        public static final double WHEEL_SPEED = 0.2;
+        public static final double WHEEL_SPEED = 1.0;
     }
 
     public static final class ArmIntake{

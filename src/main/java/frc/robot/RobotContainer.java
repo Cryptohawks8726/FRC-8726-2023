@@ -166,31 +166,26 @@ public class RobotContainer {
           wristSubsystem.retractWrist();
         })));
 
-      Trigger operatorB = operatorController.b();
-      operatorB.onTrue(new InstantCommand(()->{armSubsystem.setGoal(Arm.SUBSTATION_CUBE_ANGLE,groundIntakeSubsystem.isExtended);}));
+    
   }
 
   private void setGroundIntakeBindings(){
+    //AIDAN
+    //X DOWN
+    // A SHOOT
+    //
+
+    Trigger operatorB = operatorController.b();
+    operatorB.whileTrue(new InstantCommand(()->{groundIntakeSubsystem.wheelsOut();}))
+    .onFalse(new InstantCommand(()->{groundIntakeSubsystem.wheelsOff();}));
     // holding x lowers and opens ground intake, releasing it closes and stores
     Trigger operatorX = operatorController.x();
-    operatorX.whileTrue(groundIntakeSubsystem.unstoreIntakeCmd())
-      .onFalse(groundIntakeSubsystem.storeIntakeCmd());
-    /*
-    Trigger operatorX = operatorController.x();
-    operatorX.onTrue(
-      groundIntakeSubsystem.isExtended ? new InstantCommand(()->{groundIntakeSubsystem.raiseIntake;})
-      :new InstantCommand(()->{groundIntakeSubsystem.lowerIntake;});
-
-      Trigger operatorA = operatorController.a();
-
-     */
+    operatorX.onTrue(new InstantCommand(()->{groundIntakeSubsystem.toggleExtend();}));
 
     // pressing a ejects game piece for ground intake
     Trigger operatorA = operatorController.a();
-    operatorA.whileTrue(groundIntakeSubsystem.dropPiece())
-      .onFalse((groundIntakeSubsystem.storeIntakeCmd()));
+    operatorA.onTrue(new InstantCommand(()->{groundIntakeSubsystem.toggleClamp();}));
   }
-
   private void setLedBindings(){
      // turns off the LED strip
      Trigger driver7 = driverJoystick.button(7);

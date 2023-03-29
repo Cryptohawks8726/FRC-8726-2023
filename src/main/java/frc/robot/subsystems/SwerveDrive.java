@@ -96,6 +96,7 @@ public class SwerveDrive extends SubsystemBase implements Loggable, Sendable{
             getSwerveModulePositions()
         );
         SmartDashboard.putBoolean("gyro conn", gyro.isConnected());
+        SmartDashboard.putNumber("pitch", gyro.getRoll());
         //modules.get(0).closedLoopDrive(testState);
         //modules.get(1).closedLoopDrive(testState);
         //modules.get(2).closedLoopDrive(testState);

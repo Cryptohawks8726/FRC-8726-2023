@@ -1,6 +1,6 @@
 {
   "NetworkTables": {
-    "Transitory Values": {
+    "Retained Values": {
       "open": false
     },
     "transitory": {
@@ -21,6 +21,9 @@
         }
       },
       "SmartDashboard": {
+        "DB": {
+          "open": true
+        },
         "open": true
       }
     },
