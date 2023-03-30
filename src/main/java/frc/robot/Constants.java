@@ -38,7 +38,7 @@ public final class Constants {
         public static final double driveConversionFactor = wheelDiameterMeters * Math.PI / driveGearRatio;
 
         public static final double maxSpeed = 5.0; // m/s, I have no clue if this is realistic // TODO testing
-        public static final double maxAngularSpeed = 2; // rad/s
+        public static final double maxAngularSpeed = 3.0; // rad/s
         public static final double driverThetaDeadband = 0.05;
         public static final double driverTranslationDeadband = 1;
         // Electrical Constants
@@ -59,7 +59,7 @@ public final class Constants {
         public static final double kSteerD = 0.0;
         public static final double kSteerFF = 0.0;
 
-        public static final double kHeadingP = 0.01;
+        public static final double kHeadingP = 0.04;
         public static final double kHeadingI = 0.0;
         public static final double kHeadingD = 0.0;
         public static final double kHeadingFF = 0.0;
