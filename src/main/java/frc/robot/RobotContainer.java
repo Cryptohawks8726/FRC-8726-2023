@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.OneConeBalance;
 import frc.robot.commands.auto.OneConeMobility;
 import frc.robot.commands.auto.OneConeNoDrive;
@@ -71,7 +72,7 @@ public class RobotContainer {
     pneumaticHub.enableCompressorDigital();
     groundIntakeSubsystem = new GroundIntakeSubsystem();
     armSubsystem = new ArmSubsystem();
-    wristSubsystem = new WristSubsystem();
+    wristSubsystem = new WristSubsystem(armSubsystem);
     driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
     operatorController = new CommandXboxController(Constants.OPERATOR_XBOX);
     //oneConeBalance = new OneConeBalance(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false);
@@ -163,7 +164,7 @@ public class RobotContainer {
       armSubsystem.setGoal(Arm.RETRACTED_ANGLE,groundIntakeSubsystem.isExtended);
     })
         .andThen(new InstantCommand(() -> {
-          wristSubsystem.retractWrist();
+          wristSubsystem.fullyRetractWrist();
         })));
 
     
@@ -184,7 +185,13 @@ public class RobotContainer {
 
     // pressing a ejects game piece for ground intake
     Trigger operatorA = operatorController.a();
-    operatorA.onTrue(new InstantCommand(()->{groundIntakeSubsystem.toggleClamp();}));
+    operatorA.onTrue(new InstantCommand(()->{groundIntakeSubsystem.toggleClamp();}));/*(groundIntakeSubsystem.isOpen) ?
+      new InstantCommand(()->{groundIntakeSubsystem.closeIntake();})
+      .andThen(new WaitCommand(0.25))
+      .andThen(new InstantCommand(()->{groundIntakeSubsystem.wheelsOff();})) 
+      : new InstantCommand(()->{groundIntakeSubsystem.openIntake();})
+      .andThen(new InstantCommand(()->{groundIntakeSubsystem.wheelsIn();}))
+      );*/
   }
   private void setLedBindings(){
      // turns off the LED strip

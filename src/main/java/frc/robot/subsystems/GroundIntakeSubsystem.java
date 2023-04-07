@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
@@ -28,10 +29,12 @@ public class GroundIntakeSubsystem extends SubsystemBase{
 
         leftMotor = new CANSparkMax(GroundIntake.LEFT_SPARKMAX, MotorType.kBrushless);
         rightMotor = new CANSparkMax(GroundIntake.RIGHT_SPARKMAX, MotorType.kBrushless);
-        leftMotor.setSmartCurrentLimit(20);
-        rightMotor.setSmartCurrentLimit(20);
+        leftMotor.setSmartCurrentLimit(10);
+        rightMotor.setSmartCurrentLimit(10);
         rightMotor.setInverted(true);
         leftMotor.setInverted(false);
+        rightMotor.setIdleMode(IdleMode.kBrake);
+        leftMotor.setIdleMode(IdleMode.kBrake);
         isExtended = false;
         isOpen = false;
             
@@ -40,13 +43,18 @@ public class GroundIntakeSubsystem extends SubsystemBase{
     }
 
     public void wheelsIn() {
-        leftMotor.set(-GroundIntake.WHEEL_SPEED);
-        rightMotor.set(-GroundIntake.WHEEL_SPEED); 
+       leftMotor.set(-0.1);
+       rightMotor.set(-0.1); 
     }
+
+    public void wheelsIntake(){
+        leftMotor.set(-0.2);
+        rightMotor.set(-0.2);
+        }
  
     public void wheelsOut() {
-        leftMotor.set(GroundIntake.WHEEL_SPEED);
-        rightMotor.set(GroundIntake.WHEEL_SPEED);
+       leftMotor.set(GroundIntake.WHEEL_SPEED);
+    rightMotor.set(GroundIntake.WHEEL_SPEED);
     }
 
     public void wheelsOff() {
@@ -84,11 +92,14 @@ public class GroundIntakeSubsystem extends SubsystemBase{
     public void toggleClamp(){
         if(isOpen){
             closeIntake();
+            wheelsIn();
+            //wheelsOff();
         } else{
             openIntake();
+            wheelsIntake();
         }
     }
-    
+
     public SequentialCommandGroup unstoreIntakeCmd(){
         return new InstantCommand(()->{this.lowerIntake();}, this)
         .andThen(new WaitCommand(0.25))

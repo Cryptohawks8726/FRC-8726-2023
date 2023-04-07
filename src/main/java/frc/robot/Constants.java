@@ -30,10 +30,10 @@ public final class Constants {
         
         // PID and FF for voltage
 
-        public static final double ARM_kVP = 4.8;//maybe increase after kv
+        public static final double ARM_kVP = 5.5;//4.8;//maybe increase after kv
         public static final double ARM_kVI = 0.0;
         public static final double ARM_kVD = 0.0;
-        public static final double ARM_kS = 0.545;//545;
+        public static final double ARM_kS = 0.85;//0.545;//545;
         public static final double ARM_kV = 0.95;//increase kv
         public static final double ARM_kG = 1.2;//
 
@@ -65,7 +65,7 @@ public final class Constants {
         public static final int UPPER_PISTON = 7;
         public static final int LOWER_PISTON = 8;
 
-        public static final double WHEEL_SPEED = 1.0;
+        public static final double WHEEL_SPEED = 0.5;
     }
 
     public static final class ArmIntake{
@@ -81,7 +81,7 @@ public final class Constants {
 
         public static final double WRIST_RETRACT_POS = 0.245;
         public static final double EXTEND_DIFF = 0.160;// need to tune
-        public static final double SHELF_DIFF = 0.150; //need to tune
+        public static final double SHELF_DIFF = 0.172; //need to tune
         
         public static final double WRIST_ENCODER_OFFSET = 0.6028818;
     }
@@ -97,7 +97,7 @@ public final class Constants {
         public static final double driveConversionFactor = wheelDiameterMeters * Math.PI / driveGearRatio;
 
         public static final double maxSpeed = 5.0; 
-        public static final double maxAngularSpeed = 2.0; 
+        public static final double maxAngularSpeed = 2.8; 
         public static final double driverThetaDeadband = 0.05;
         public static final double driverTranslationDeadband = 1;
         // Electrical Constants

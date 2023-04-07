@@ -24,9 +24,10 @@ public class WristSubsystem extends SubsystemBase {
     private SparkMaxPIDController posPid;
     private DigitalInput limSwitch;
     private double retractPos;
+    private ArmSubsystem arm;
 
-    public WristSubsystem() {
-       
+    public WristSubsystem(ArmSubsystem arm) {
+        this.arm = arm;
         limSwitch = new DigitalInput(0);
         isExtended = false;
         retractPos = ArmIntake.WRIST_RETRACT_POS;
@@ -55,10 +56,14 @@ public class WristSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Wrist Pos",encoder.getPosition());
         SmartDashboard.putBoolean("Wrist Lim switch", limSwitch.get());
-        if(!limSwitch.get() && !isExtended){
-            System.out.println("Lim Switch Skip:"+(retractPos-encoder.getPosition()));
+        if(!limSwitch.get() && !isExtended){ // if arm retracted
+            setReference(encoder.getPosition());
+            //System.out.println(Math.abs(-95.0-arm.getDegrees()));
+            //System.out.println("Lim Switch Skip:"+(retractPos-encoder.getPosition()));
+            if(Math.abs(-95.0-arm.getDegrees())<2.5){
             retractPos = encoder.getPosition();
             setReference(retractPos);
+            }
         }
     }
 
@@ -69,6 +74,15 @@ public class WristSubsystem extends SubsystemBase {
     public void retractWrist(){
         isExtended = false;
         posPid.setReference(retractPos-0.015, ControlType.kPosition);
+        //posPid.setReference(-0.1, ControlType.kVelocity);
+        SmartDashboard.putNumber("ref",retractPos);
+    }
+
+
+
+    public void fullyRetractWrist(){
+        isExtended = false;
+        posPid.setReference(retractPos-0.030, ControlType.kPosition);
         //posPid.setReference(-0.1, ControlType.kVelocity);
         SmartDashboard.putNumber("ref",retractPos);
     }
