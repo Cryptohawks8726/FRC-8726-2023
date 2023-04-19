@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -36,19 +35,16 @@ public class ActualXboxTeleopDrive extends CommandBase {
     See https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html 
         The controller axes have x as left-right and y as up-down
         */
-        // boolean isRobotRelative = controller.leftBumper().getAsBoolean();
 
         boolean isRobotRelative = controller.leftTrigger().getAsBoolean();
-        translationalSpeed = controller.rightTrigger().getAsBoolean() ? Swerve.maxSpeed : 2.5;
+        translationalSpeed = controller.rightTrigger().getAsBoolean() ? Swerve.maxSpeed : 3.0;
         thetaSpeed = controller.rightTrigger().getAsBoolean() ? Swerve.maxAngularSpeed : 2.0;
         // Get Controller Values
         double xVel = (Math.abs(controller.getLeftY()) > 0.15 ? controller.getLeftY() : 0.0); 
         double yVel = (Math.abs(controller.getLeftX()) > 0.15 ? controller.getLeftX() : 0.0);
         double thetaVel = (Math.abs(controller.getRightX()) > 0.20 ? -controller.getRightX() * thetaSpeed : 0.0);
-        double sensitivity = Math.pow(controller.getRightTriggerAxis(), 2);
-        xVel = -Math.signum(xVel) * Math.pow(xVel,2) * translationalSpeed ;//* sensitivity; //square input while preserving sign
-        yVel = -Math.signum(yVel) * Math.pow(yVel,2) * translationalSpeed ;//* sensitivity;
-        //thetaVel *= sensitivity;
+        xVel = -Math.signum(xVel) * Math.pow(xVel,2) * translationalSpeed ;//square input while preserving sign
+        yVel = -Math.signum(yVel) * Math.pow(yVel,2) * translationalSpeed ;
 
         // maintain heading if there's no rotational input
          if (thetaVel == 0.0 && ((Math.abs(xVel)>0.2) ||(Math.abs(yVel)>0.2))){

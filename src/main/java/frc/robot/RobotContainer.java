@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SerialPort;
+import frc.robot.commands.ActualXboxTeleopDrive;
 import frc.robot.commands.Balance;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -57,10 +58,10 @@ public class RobotContainer {
   private final SwerveDrive drivetrain = new SwerveDrive(gyro);
   private final CommandXboxController operatorController = new CommandXboxController(0); 
 
-  // private final CommandXboxController driverController;
+  private final CommandXboxController driverController;
   
   private final HashMap<String, Command> eventMap = new HashMap<>();
-  private final CommandJoystick driverController;
+  //private final CommandJoystick driverController;
   
   private final SwerveAutoBuilder auto;
 
@@ -69,7 +70,7 @@ public class RobotContainer {
   public RobotContainer() {
     
     
-    // driverController = new CommandXboxController(0);
+    driverController = new CommandXboxController(0);
     auto = new SwerveAutoBuilder(
       drivetrain::getPoseEstimate,
       drivetrain::resetOdometry,
@@ -81,9 +82,8 @@ public class RobotContainer {
       true,
       drivetrain
     );
-    //driverController = new Joystick(0);
     
-    driverController = new CommandJoystick(0);
+    //driverController = new CommandJoystick(0);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -99,7 +99,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    drivetrain.setDefaultCommand(new XboxTeleopDrive(drivetrain,driverController).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+    drivetrain.setDefaultCommand(new ActualXboxTeleopDrive(drivetrain,driverController).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     // Trigger driverRightBumper = driverController.rightBumper();
     // driverRightBumper.whileTrue(drivetrain.passiveBrake());
     // Trigger driverRightTrigger = driverController.rightTrigger();
