@@ -96,8 +96,10 @@ public final class Constants {
         public static final double wheelDiameterMeters = 0.098; // Measure and check later. Compensating for tread wear over comp could be cool
         public static final double driveConversionFactor = wheelDiameterMeters * Math.PI / driveGearRatio;
 
-        public static final double maxSpeed = 5.0; 
+        public static final double maxSpeed = 5.0;
+        public static final double maxDemoSpeed = 0.2; 
         public static final double maxAngularSpeed = 2.8; 
+        public static final double maxDemoAngularSpeed = 0.25;
         public static final double driverThetaDeadband = 0.05;
         public static final double driverTranslationDeadband = 1;
         // Electrical Constants
