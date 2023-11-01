@@ -21,12 +21,11 @@ public class preSeasonArm extends SubsystemBase {
     public preSeasonArm() {
         motor = new CANSparkMax(0, MotorType.kBrushless);
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
-        encoder.setZeroOffset(10.5); //testing to see if the encoder variable works (next meeting bc andrew isnt here)
-        System.out.println(encoder.getZeroOffset());
     }
 
     @Override
     public void periodic() {
-        
+        encoder.setPositionConversionFactor(.5);
+        encoder.getPosition();
     }
 }
