@@ -23,6 +23,7 @@ import frc.robot.commands.Balance;
 import frc.robot.commands.XboxTeleopDrive;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.preSeasonArm;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -43,10 +44,9 @@ public class RobotContainer {
 
   private final PneumaticHub pneumaticHub;
   private final GroundIntakeSubsystem groundIntakeSubsystem;
+  private final preSeasonArm preArm;
   private final ArmIntake2Subsystem armIntakeSubsystem;
-  private final ArmSubsystem armSubsystem;
   private final SwerveDrive drivetrain;
-  private final WristSubsystem wristSubsystem;
 
   /*private final OneConeMobility OneConeAuto;
   private final OneCubeMobility OneCubeAuto;
@@ -66,13 +66,12 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain = new SwerveDrive();
-    armIntakeSubsystem = new ArmIntake2Subsystem();
     pneumaticHub = new PneumaticHub(Constants.COMPRESSOR_ID);
-    // /pneumaticHub.disableCompressor();
-    pneumaticHub.enableCompressorDigital();
+    pneumaticHub.disableCompressor();
+    //pneumaticHub.enableCompressorDigital();
     groundIntakeSubsystem = new GroundIntakeSubsystem();
-    armSubsystem = new ArmSubsystem();
-    wristSubsystem = new WristSubsystem(armSubsystem);
+    armIntakeSubsystem = new ArmIntake2Subsystem();
+    preArm = new preSeasonArm();
     driverJoystick = new CommandJoystick(Constants.DRIVER_CONTROLLER);
     operatorController = new CommandXboxController(Constants.OPERATOR_XBOX);
     //oneConeBalance = new OneConeBalance(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false);
@@ -85,12 +84,12 @@ public class RobotContainer {
     autoChooser.addOption("new one cube not blue ", autos.oneCubeMobilityCmd(false));
     autoChooser.addOption("new one cone blue", autos.oneConeMobilityCmd(true));
     autoChooser.addOption("new one cone not blue", autos.oneConeMobilityCmd(false));*/
-    autoChooser.addOption("One Cube BlueShelf",new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true));
-    autoChooser.addOption("One Cube Not BlueShelf",new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false));
-    autoChooser.addOption("One Cone BlueShelf",new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, true));
-    autoChooser.addOption("One Cone Not BlueShelf",new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,armSubsystem, false));
-    autoChooser.addOption("Cone Balance", new OneConeBalance(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false));
-    autoChooser.setDefaultOption("One Cone No Drive", new OneConeNoDrive(drivetrain, armIntakeSubsystem, wristSubsystem, armSubsystem, false));
+    //autoChooser.addOption("One Cube BlueShelf",new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,preArm, true));
+    //autoChooser.addOption("One Cube Not BlueShelf",new OneCubeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,preArm, false));
+   // autoChooser.addOption("One Cone BlueShelf",new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,preArm, true));
+    //autoChooser.addOption("One Cone Not BlueShelf",new OneConeMobility(drivetrain,armIntakeSubsystem,wristSubsystem,preArm, false));
+    //autoChooser.addOption("Cone Balance", new OneConeBalance(drivetrain, armIntakeSubsystem, wristSubsystem, preArm, false));
+    //autoChooser.setDefaultOption("One Cone No Drive", new OneConeNoDrive(drivetrain, armIntakeSubsystem, wristSubsystem, preArm, false));
     SmartDashboard.putData(autoChooser);
     //driveCam = new UsbCamera("Drive", 1);
     driveCam = CameraServer.startAutomaticCapture();
@@ -116,55 +115,54 @@ public class RobotContainer {
     
     Trigger operatorDown = operatorController.povDown();
     operatorDown.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.FLOOR_ANGLE,groundIntakeSubsystem.isExtended)
       ;}));
     
     Trigger operatorLeft = operatorController.povLeft();
     operatorLeft.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.MID_CUBE_ANGLE,groundIntakeSubsystem.isExtended)
+    
       ;}));
     
     Trigger operatorRight = operatorController.povRight();
     operatorRight.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.MID_ANGLE,groundIntakeSubsystem.isExtended)
+  
       ;}));
     
     Trigger opUp = operatorController.povUp();
     opUp.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.HIGHNODE_ANGLE,groundIntakeSubsystem.isExtended)
+      
       ;}));
 
     Trigger operatorRT = operatorController.rightTrigger();
     operatorRT.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.SHELF_CONE,groundIntakeSubsystem.isExtended) //cone
+      
       ;}));
 
     Trigger operatorLT = operatorController.leftTrigger();
     operatorLT.onTrue(new InstantCommand(()->{
-      armSubsystem.setGoal(Arm.SHELF_CUBE,groundIntakeSubsystem.isExtended) //cube 
+       
       ;}));
 
     Trigger operatorIntake = operatorController.button(7);
-    operatorIntake.onTrue(armIntakeSubsystem.eject())
-    .onFalse(armIntakeSubsystem.stop());
+   // operatorIntake.onTrue(armIntakeSubsystem.eject())
+   // .onFalse(armIntakeSubsystem.stop());
 
     Trigger operatorExtake = operatorController.button(8);
-    operatorExtake.onTrue(armIntakeSubsystem.intake())
-    .onFalse(armIntakeSubsystem.stop());
+    //operatorExtake.onTrue(armIntakeSubsystem.intake())
+    //.onFalse(armIntakeSubsystem.stop());
 
 
     Trigger operatorLB = operatorController.leftBumper();
-    operatorLB.onTrue(new InstantCommand(()->{wristSubsystem.shelfExtend();})); //cube
+    //operatorLB.onTrue(new InstantCommand(()->{wristSubsystem.shelfExtend();})); //cube
 
     Trigger operatorRB = operatorController.rightBumper();
-    operatorRB.onTrue(new InstantCommand(()->{wristSubsystem.toggleExtend();}));
+    //operatorRB.onTrue(new InstantCommand(()->{wristSubsystem.toggleExtend();}));
 
     Trigger operatorY = operatorController.y();
     operatorY.onTrue(new InstantCommand(() -> {
-      armSubsystem.setGoal(Arm.RETRACTED_ANGLE,groundIntakeSubsystem.isExtended);
+      
     })
         .andThen(new InstantCommand(() -> {
-          wristSubsystem.fullyRetractWrist();
+          //wristSubsystem.fullyRetractWrist();
         })));
 
     

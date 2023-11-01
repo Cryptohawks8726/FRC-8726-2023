@@ -9,7 +9,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 
+import frc.robot.Constants.Arm;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class preSeasonArm extends SubsystemBase {
@@ -19,13 +23,14 @@ public class preSeasonArm extends SubsystemBase {
     
 
     public preSeasonArm() {
-        motor = new CANSparkMax(0, MotorType.kBrushless);
+        motor = new CANSparkMax(Arm.ARM_SPARKMAX, MotorType.kBrushless);
+        motor.setIdleMode(IdleMode.kCoast);
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
     }
 
     @Override
     public void periodic() {
-        encoder.setPositionConversionFactor(.5);
-        encoder.getPosition();
+        encoder.setPositionConversionFactor(360);
+        SmartDashboard.putNumber("ArmEncoderPos",encoder.getPosition());
     }
 }
