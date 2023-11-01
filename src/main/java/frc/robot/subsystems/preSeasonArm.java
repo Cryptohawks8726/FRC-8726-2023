@@ -10,17 +10,19 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class preSeasonArm extends SubsystemBase {
     private SparkMaxAbsoluteEncoder encoder;
     private CANSparkMax motor;
-    private SparkMaxPIDController pidController;
+    private PIDController pidController;
     
 
     public preSeasonArm() {
         motor = new CANSparkMax(0, MotorType.kBrushless);
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+        pidController = new PIDController(10f,0f,0f);
     }
 
     @Override
