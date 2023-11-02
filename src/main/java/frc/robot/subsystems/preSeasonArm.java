@@ -13,19 +13,20 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import frc.robot.Constants.Arm;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class preSeasonArm extends SubsystemBase {
     private SparkMaxAbsoluteEncoder encoder;
     private CANSparkMax motor;
-    private SparkMaxPIDController pidController;
+    private PIDController pidController;
     
 
     public preSeasonArm() {
         motor = new CANSparkMax(Arm.ARM_SPARKMAX, MotorType.kBrushless);
         motor.setIdleMode(IdleMode.kCoast);
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
+        pidController = new PIDController(10f,0f,0f);
     }
 
     @Override
