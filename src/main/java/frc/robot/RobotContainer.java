@@ -24,6 +24,7 @@ import frc.robot.commands.XboxTeleopDrive;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.preSeasonArm;
+import frc.robot.subsystems.preSeasonWrist;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -134,7 +135,7 @@ public class RobotContainer {
 
     Trigger operatorRT = operatorController.rightTrigger();
     operatorRT.onTrue(new InstantCommand(()->{
-      
+      preArm.setGoal(Arm.MID_ANGLE);
       ;}));
 
     Trigger operatorLT = operatorController.leftTrigger();
@@ -175,7 +176,7 @@ public class RobotContainer {
     //
 
     Trigger operatorB = operatorController.b();
-    operatorB.whileTrue(new InstantCommand(()->{groundIntakeSubsystem.wheelsOut();}))
+    operatorB.whileTrue(new InstantCommand(()->{}))
     .onFalse(new InstantCommand(()->{groundIntakeSubsystem.wheelsOff();}));
     // holding x lowers and opens ground intake, releasing it closes and stores
     Trigger operatorX = operatorController.x();
