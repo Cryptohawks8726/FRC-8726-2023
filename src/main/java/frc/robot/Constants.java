@@ -34,7 +34,7 @@ public final class Constants {
         public static final double ARM_kVI = 0.0;
         public static final double ARM_kVD = 0.0;
         public static final double ARM_kS = 0.85;//0.545;//545;
-        public static final double ARM_kV = 0.95;//increase kv
+        public static final double ARM_kV = 1;//increase kv
         public static final double ARM_kG = 1.2;//
 
         public static final double SPEED_RAD = 1.0; // increase later
