@@ -28,17 +28,17 @@ public class preSeasonArm extends SubsystemBase {
 
     public preSeasonArm() {
         motor = new CANSparkMax(Arm.ARM_SPARKMAX, MotorType.kBrushless);
-        motor.setIdleMode(IdleMode.kCoast);
+        motor.setIdleMode(IdleMode.kBrake);
         encoder = motor.getAbsoluteEncoder(Type.kDutyCycle);
         encoder.setPositionConversionFactor(2*Math.PI);
-        contraints = new Constraints(.5f, 1f);
-        pidController = new ProfiledPIDController(2f, 0f, .25f, contraints); //new ProfiledPIDController(2f,0f,.25f);
+        contraints = new Constraints(1.2f, 1.2f);
+        pidController = new ProfiledPIDController(7.5f, 0f, 0f, contraints); //new ProfiledPIDController(2f,0f,.25f);
         pidController.setGoal(-1.57f); // resting
-        armFF = new ArmFeedforward(Arm.ARM_kS,Arm.ARM_kG,Arm.ARM_kV);
+        armFF = new ArmFeedforward(Arm.ARM_kS,Arm.ARM_kG-0.35,Arm.ARM_kV);
     }
 
     @Override
-    public void periodic() {
+    public void periodic() { // one period is *probably* 0.2 seconds
         //encoder.setPositionConversionFactor(360);
         //SmartDashboard.putNumber("ArmEncoderPos",encoder.getPosition());
         double currentOutput = pidController.calculate(getRadians());
@@ -48,10 +48,12 @@ public class preSeasonArm extends SubsystemBase {
         // feed foward WARNING: GET VELOCITY ERROR MIGHT NOT BE SAME AS EXACT VELOCITY
         // pidController.getVelocityError()
         double ff = armFF.calculate(pidController.getSetpoint().position, pidController.getSetpoint().velocity);
-        SmartDashboard.putNumber("actualposition", encoder.getPosition());
-        SmartDashboard.putNumber("velocity", pidController.getSetpoint().velocity);
-        SmartDashboard.putNumber("position", pidController.getSetpoint().position);
-        //motor.setVoltage(ff+currentOutput);
+        SmartDashboard.putNumber("Voltage", currentOutput);
+        SmartDashboard.putNumber("actualPosition", getRadians());
+        SmartDashboard.putNumber("actualVelocity", encoder.getVelocity()*2*Math.PI);
+        SmartDashboard.putNumber("calculatedVelocity", pidController.getSetpoint().velocity);
+        SmartDashboard.putNumber("calculatedPosition", pidController.getSetpoint().position);
+        motor.setVoltage(ff+currentOutput);
 
     }
 

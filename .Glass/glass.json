@@ -54,7 +54,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": 250,
+          "height": 334,
           "series": [
             {
               "color": [
@@ -102,7 +102,7 @@
     "Plot <1>": {
       "plots": [
         {
-          "height": 267,
+          "height": 231,
           "series": [
             {
               "color": [
@@ -155,7 +155,7 @@
               "autoFit": true
             }
           ],
-          "height": -46,
+          "height": 338,
           "series": [
             {
               "color": [
@@ -164,7 +164,7 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/Arm Deg"
+              "id": "NT:/SmartDashboard/actualPosition"
             },
             {
               "color": [
@@ -173,19 +173,21 @@
                 0.32156863808631897,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/last set deg"
+              "id": "NT:/SmartDashboard/calculatedPosition"
             }
           ]
         }
-      ],
-      "window": {
-        "visible": false
-      }
+      ]
     },
     "Plot <3>": {
       "plots": [
         {
-          "height": 332,
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "height": 336,
           "series": [
             {
               "color": [
@@ -194,7 +196,25 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/FLactdeg"
+              "id": "NT:/SmartDashboard/Voltage"
+            }
+          ]
+        }
+      ]
+    },
+    "Plot <4>": {
+      "plots": [
+        {
+          "height": 297,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/actualVelocity"
             },
             {
               "color": [
@@ -203,62 +223,11 @@
                 0.32156863808631897,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/FLabsdeg"
-            },
-            {
-              "color": [
-                0.3333333432674408,
-                0.658823549747467,
-                0.4078431725502014,
-                1.0
-              ],
-              "id": "NT:/SmartDashboard/FLsetdeg"
-            },
-            {
-              "color": [
-                0.7686275243759155,
-                0.30588236451148987,
-                0.32156863808631897,
-                1.0
-              ],
-              "id": "NT:/SmartDashboard/BLabsdeg"
-            },
-            {
-              "color": [
-                0.5058823823928833,
-                0.44705885648727417,
-                0.7019608020782471,
-                1.0
-              ],
-              "id": "NT:/SmartDashboard/BLsetvel"
+              "id": "NT:/SmartDashboard/calculatedVelocity"
             }
           ]
         }
-      ],
-      "window": {
-        "visible": false
-      }
-    },
-    "Plot <4>": {
-      "plots": [
-        {
-          "height": 332,
-          "series": [
-            {
-              "color": [
-                0.2980392277240753,
-                0.44705885648727417,
-                0.6901960968971252,
-                1.0
-              ],
-              "id": "NT:/SmartDashboard/Applied Output"
-            }
-          ]
-        }
-      ],
-      "window": {
-        "visible": false
-      }
+      ]
     },
     "Plot <5>": {
       "plots": [
