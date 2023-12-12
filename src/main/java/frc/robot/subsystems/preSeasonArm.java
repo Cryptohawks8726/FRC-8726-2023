@@ -53,6 +53,7 @@ public class preSeasonArm extends SubsystemBase {
         SmartDashboard.putNumber("actualVelocity", encoder.getVelocity()*2*Math.PI);
         SmartDashboard.putNumber("calculatedVelocity", pidController.getSetpoint().velocity);
         SmartDashboard.putNumber("calculatedPosition", pidController.getSetpoint().position);
+        SmartDashboard.putNumber("armHeight", getHeight(getRadians()));
         motor.setVoltage(ff+currentOutput);
 
     }
@@ -61,7 +62,25 @@ public class preSeasonArm extends SubsystemBase {
         pidController.setGoal(radians);
     }
 
+    // height in meters
+    public void setHeightGoal(double height) {
+        pidController.setGoal(heightToRadians(height));
+    }
+
     public double getRadians(){
         return encoder.getPosition() - 3.825 - (Math.PI/2); // - Arm.ENCODER_OFFSET_SUBTRACT*Math.PI/180
     }
+
+    public double getHeight(double radians) { // gets height in meters from radians
+        return 1.06 + (0.95 * Math.sin(radians)); // 1.06 is the pivot position, 0.95 is the arm length
+    }
+
+    public double heightToRadians(double height) {
+        double x = (height-1.06)/0.95;
+        x = Math.max(x, -1);
+        x = Math.min(x, 1);
+        return Math.asin(x);
+    }
+
+
 }

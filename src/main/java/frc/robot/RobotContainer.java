@@ -135,7 +135,8 @@ public class RobotContainer {
 
     Trigger operatorRT = operatorController.rightTrigger();
     operatorRT.onTrue(new InstantCommand(()->{
-      preArm.setGoal(0); // 90 degrees
+      //preArm.setGoal(0); // 90 degrees
+      preArm.setHeightGoal(.6);
       ;}));
 
     Trigger operatorLT = operatorController.leftTrigger();
